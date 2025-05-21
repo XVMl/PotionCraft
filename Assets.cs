@@ -14,7 +14,7 @@ namespace PotionCraft
     {
         public class UI
         {
-            public static Asset<Texture2D> UITexture(string path)=> ModContent.Request<Texture2D>("Potion/Assets/" + path);
+            public static Asset<Texture2D> UITexture(string path)=> ModContent.Request<Texture2D>("PotionCraft/Assets/UI/" + path);
 
             public static Texture2D ItemSlotBackgroud => UITexture("Scoreboard").Value;
 

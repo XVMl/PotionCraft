@@ -1,1 +1,6 @@
-
+Items: {
+	TestPotion: {
+		DisplayName: Test Potion
+		Tooltip: ""
+	}
+}
