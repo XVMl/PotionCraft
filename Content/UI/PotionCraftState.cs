@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Luminance.Common.Utilities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
 using System;
 using System.Collections.Generic;
@@ -22,6 +24,8 @@ namespace PotionCraft.Content.UI
         public Item Potion = new();
 
         public PotionSlot potionslot;
+
+        public PurifyingButton purifyingbutton;
         public override void OnInitialize()
         {
             iGrid = new UIGrid();
@@ -30,13 +34,15 @@ namespace PotionCraft.Content.UI
             iGrid.HAlign = 0.5f;
             iGrid.VAlign = 0.5f;
             potionslot = new(this);
+            purifyingbutton = new(this);
             Append(iGrid);
+            iGrid.Append(purifyingbutton);
             iGrid.Append(potionslot);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Assets.UI.ItemSlotBackgroud, iGrid.GetDimensions().ToRectangle(), Color.White);
+            spriteBatch.Draw(Assets.UI.Panel, iGrid.GetDimensions().ToRectangle(), Color.White);
         }
 
     }
@@ -69,8 +75,10 @@ namespace PotionCraft.Content.UI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
+            spriteBatch.Draw(Assets.UI.Slot, GetDimensions().ToRectangle(), Color.White);
             if (!PotionCraftState.Potion.IsAir)
             {
+                Main.inventoryScale = 2.3076925f;
                 ItemSlot.Draw(spriteBatch, ref PotionCraftState.Potion, 21, GetDimensions().Position());
                 if (IsMouseHovering)
                 {
@@ -80,7 +88,50 @@ namespace PotionCraft.Content.UI
                     return;
                 }
             }
-            spriteBatch.Draw(Assets.UI.ItemSlotBackgroud, GetDimensions().ToRectangle(), Color.White);
         }
     }
+
+    public class PurifyingButton:UIElement
+    {
+
+        public PotionCraftState PotionCraftState;
+
+        public static TestPotion AsPotion(Item item)
+        {
+            if (item.ModItem is TestPotion testPotion)
+            {
+                return testPotion;
+            }
+            Mod instance = ModContent.GetInstance<PotionCraft>();
+            if (item.ModItem==null)
+            {
+                instance.Logger.Warn($"Item was erroneously casted to Potion");
+            }
+            else
+            {
+                instance.Logger.Warn($"Item was erroneously casted to Potion");
+            }
+            return ModContent.GetInstance<TestPotion>();
+        }
+
+        public PurifyingButton(PotionCraftState potionCraftState)
+        {
+            PotionCraftState= potionCraftState;
+            Width.Set(200f, 0);
+            Height.Set(32f, 0);
+        }
+
+        public override void LeftClick(UIMouseEvent evt)
+        {
+            if (PotionCraftState.Potion.IsAir) return;
+            TestPotion tes= AsPotion(PotionCraftState.Potion);
+            tes.BuffDictionary.Add(34, 300);
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Assets.UI.Button, GetDimensions().ToRectangle(), Color.White);
+        }
+    }
+
 }

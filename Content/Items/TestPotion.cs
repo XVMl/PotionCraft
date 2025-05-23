@@ -14,7 +14,9 @@ namespace PotionCraft.Content.Items
     {
         public static string PotionName;
 
-        public static Dictionary<int, int> BuffDictionary=new();
+        public Dictionary<int, int> BuffDictionary=new();
+
+        public string Tool="123";
 
         public override void SetStaticDefaults()
         {
@@ -45,6 +47,15 @@ namespace PotionCraft.Content.Items
             var BuffID = tag.Get<List<int>>("BuffID");
             var BuffTime = tag.Get<List<int>>("BuffTime");
             BuffDictionary = BuffID.Zip(BuffTime, (k, v) => new { Key = k, value = v }).ToDictionary(x => x.Key, x => x.value);
+            foreach (var key in BuffID)
+            {
+                Tool += key;
+            }
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            tooltips.Add(new TooltipLine(Mod, "SDKN", Tool));
         }
 
         public void Purifying(Action action)
@@ -54,7 +65,6 @@ namespace PotionCraft.Content.Items
 
         public override bool? UseItem(Player player)
         {
-            
             return true;
         }
 
