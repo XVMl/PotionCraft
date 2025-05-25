@@ -25,12 +25,17 @@ namespace PotionCraft
             public static Texture2D Button=>UITexture("Button_Filtering").Value;
 
             public static Texture2D Slot => UITexture("Slot_Back").Value;
+
+            public static Texture2D BackGround => UITexture("Background").Value;
+         
+            public static Texture2D BackGround1 => UITexture("Background1").Value;
         }
         public class Items
         { 
         
         }
 
-
     }
+
+    
 }

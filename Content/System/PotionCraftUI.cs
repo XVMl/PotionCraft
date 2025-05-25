@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PotionCraft.Content.Items;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -73,15 +74,39 @@ namespace PotionCraft.Content.System
 
     }
 
+    public class PotionElement:UIElement
+    {
+        public TestPotion AsPotion(Item item)
+        {
+            if (item.ModItem is TestPotion testPotion)
+            {
+                return testPotion;
+            }
+            Mod instance = ModContent.GetInstance<PotionCraft>();
+            if (item.ModItem == null)
+            {
+                instance.Logger.Warn($"Item was erroneously casted to Potion");
+            }
+            else
+            {
+                instance.Logger.Warn($"Item was erroneously casted to Potion");
+            }
+            return ModContent.GetInstance<TestPotion>();
+        }
+
+    }
+    /// <summary>
+    /// 自动注册加载继承它的子类
+    /// </summary>
     public abstract class AutoUIState:UIState
     {
         public virtual string TypeName { get; }
 
+        public Item Potion=new();
+
         public virtual bool IsLoaded() => true;
 
         public abstract string Layers_FindIndex { get; }
-
-        public static Asset<Texture2D> BaseTexture(string path) => ModContent.Request<Texture2D>("DuanWu/Content/UI/" + path);
 
     }
 }

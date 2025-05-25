@@ -17,44 +17,50 @@ namespace PotionCraft.Content.UI
 {
     public class PotionCraftState : AutoUIState
     {
+        public static bool ActiveState;
+
+        public enum CraftUIState
+        {
+            Purificating,
+            MashUp,
+            Boling
+        }
+
+        public static CraftUIState CraftState;
+
+        public override bool IsLoaded() => ActiveState;
         public override string Layers_FindIndex => "Vanilla: Interface Logic 2";
 
-        private UIGrid iGrid;
-
-        public Item Potion = new();
-
-        public PotionSlot potionslot;
-
-        public PurifyingButton purifyingbutton;
+        public UIElement area;
         public override void OnInitialize()
         {
-            iGrid = new UIGrid();
-            iGrid.Width.Set(200, 0);
-            iGrid.Height.Set(200, 0);
-            iGrid.HAlign = 0.5f;
-            iGrid.VAlign = 0.5f;
-            potionslot = new(this);
-            purifyingbutton = new(this);
-            Append(iGrid);
-            iGrid.Append(purifyingbutton);
-            iGrid.Append(potionslot);
+            area=new UIElement() 
+            { 
+                HAlign=0.5f,
+                VAlign=0.5f,
+            };
+            area.Width.Set(400f,0);
+            area.Height.Set(300f, 0);
+            Append(area);
+
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Assets.UI.Panel, iGrid.GetDimensions().ToRectangle(), Color.White);
+            spriteBatch.Draw(Assets.UI.BackGround1,area.GetDimensions().ToRectangle(), Color.White);
         }
 
     }
 
-    public class PotionSlot : UIElement
+    public class PotionSlot<T> : UIElement where T : AutoUIState
     {
-        public PotionCraftState PotionCraftState;
-        public PotionSlot(PotionCraftState potionCraftState)
+        public T PotionCraftState;
+
+        public PotionSlot(T potionCraftState)
         {
             PotionCraftState = potionCraftState;
-            Width.Set(120f, 0f);
-            Height.Set(120f, 0f);
+            Width.Set(80f, 0f);
+            Height.Set(80f, 0f);
         }
 
         public override void LeftClick(UIMouseEvent evt)
@@ -78,60 +84,19 @@ namespace PotionCraft.Content.UI
             spriteBatch.Draw(Assets.UI.Slot, GetDimensions().ToRectangle(), Color.White);
             if (!PotionCraftState.Potion.IsAir)
             {
-                Main.inventoryScale = 2.3076925f;
+                Main.inventoryScale = 2.0f;
                 ItemSlot.Draw(spriteBatch, ref PotionCraftState.Potion, 21, GetDimensions().Position());
-                if (IsMouseHovering)
-                {
-                    Main.LocalPlayer.mouseInterface = true;
-                    Main.HoverItem = PotionCraftState.Potion.Clone();
-                    Main.hoverItemName = "a";
-                    return;
-                }
+                //if (IsMouseHovering)
+                //{
+                //    Main.LocalPlayer.mouseInterface = true;
+                //    Main.HoverItem = PotionCraftState.Potion.Clone();
+                //    Main.hoverItemName = "a";
+                //    return;
+                //}
             }
         }
-    }
 
-    public class PurifyingButton:UIElement
-    {
 
-        public PotionCraftState PotionCraftState;
-
-        public static TestPotion AsPotion(Item item)
-        {
-            if (item.ModItem is TestPotion testPotion)
-            {
-                return testPotion;
-            }
-            Mod instance = ModContent.GetInstance<PotionCraft>();
-            if (item.ModItem==null)
-            {
-                instance.Logger.Warn($"Item was erroneously casted to Potion");
-            }
-            else
-            {
-                instance.Logger.Warn($"Item was erroneously casted to Potion");
-            }
-            return ModContent.GetInstance<TestPotion>();
-        }
-
-        public PurifyingButton(PotionCraftState potionCraftState)
-        {
-            PotionCraftState= potionCraftState;
-            Width.Set(200f, 0);
-            Height.Set(32f, 0);
-        }
-
-        public override void LeftClick(UIMouseEvent evt)
-        {
-            if (PotionCraftState.Potion.IsAir) return;
-            TestPotion tes= AsPotion(PotionCraftState.Potion);
-            tes.BuffDictionary.Add(34, 300);
-        }
-
-        protected override void DrawSelf(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(Assets.UI.Button, GetDimensions().ToRectangle(), Color.White);
-        }
     }
 
 }

@@ -7,17 +7,18 @@ using Terraria.ID;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.Localization;
+using System.Reflection;
 
 namespace PotionCraft.Content.Items
 {
     public class TestPotion:ModItem
     {
-        public static string PotionName;
+        public string PotionName="";
 
         public Dictionary<int, int> BuffDictionary=new();
 
-        public string Tool="123";
-
+        static readonly MethodInfo SetName = typeof(LocalizedText).GetMethod("SetValue", BindingFlags.NonPublic | BindingFlags.Instance)!;
         public override void SetStaticDefaults()
         {
 
@@ -40,6 +41,7 @@ namespace PotionCraft.Content.Items
         {
             tag["BuffID"] = BuffDictionary.Keys.ToList();
             tag["BuffTime"] =BuffDictionary.Values.ToList();
+            tag["PotionName"] = PotionName;
         }
 
         public override void LoadData(TagCompound tag)
@@ -47,24 +49,51 @@ namespace PotionCraft.Content.Items
             var BuffID = tag.Get<List<int>>("BuffID");
             var BuffTime = tag.Get<List<int>>("BuffTime");
             BuffDictionary = BuffID.Zip(BuffTime, (k, v) => new { Key = k, value = v }).ToDictionary(x => x.Key, x => x.value);
-            foreach (var key in BuffID)
+            PotionName = tag.GetString("PotionName");
+            UpdataName();
+        }
+
+        public void Purifying()
+        { 
+            foreach (var buff in BuffDictionary.Keys.ToList())
             {
-                Tool += key;
+                BuffDictionary[buff] *= 2;
+            }
+            if (BuffDictionary.Count==1)
+            {
+                PotionName = "纯化" + PotionName;
+            }
+            else
+            {
+                PotionName = "纯化(" + PotionName+")";
+            }
+        }
+
+        public void MashUp()
+        { 
+            
+        }
+
+        public void UpdataName()
+        {
+            try
+            {
+                SetName.Invoke(DisplayName,[PotionName]);
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            tooltips.Add(new TooltipLine(Mod, "SDKN", Tool));
-        }
-
-        public void Purifying(Action action)
-        {
-            
+            tooltips.Add(new TooltipLine(Mod, "Potion", PotionName));
         }
 
         public override bool? UseItem(Player player)
         {
+            Main.NewText(DisplayName.Key + " " + DisplayName.Value);
             return true;
         }
 

@@ -3,4 +3,9 @@ Items: {
 		DisplayName: Test Potion
 		Tooltip: ""
 	}
+
+	TestSwitch: {
+		DisplayName: Test Switch
+		Tooltip: ""
+	}
 }
