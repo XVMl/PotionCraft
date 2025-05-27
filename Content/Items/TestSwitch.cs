@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static PotionCraft.Content.System.AutoUIState;
 
 namespace PotionCraft.Content.Items
 {
@@ -41,7 +42,7 @@ namespace PotionCraft.Content.Items
             player.itemAnimation = Item.useAnimation;
             if (player.altFunctionUse==2)
             {
-
+                PotionCraftState.CraftState = (CraftUIState)((int)(PotionCraftState.CraftState + 1) % 3);
             }
             else
             {

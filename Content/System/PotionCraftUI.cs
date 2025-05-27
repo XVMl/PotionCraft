@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
+using static PotionCraft.Assets;
 
 namespace PotionCraft.Content.System
 {
@@ -76,6 +77,24 @@ namespace PotionCraft.Content.System
 
     public class PotionElement:UIElement
     {
+        public bool IsPotion(Item item)
+        {
+            if (item.ModItem is TestPotion)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool IsMaterial(Item item)
+        {
+            if (item.consumable&&item.buffType!=0)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public TestPotion AsPotion(Item item)
         {
             if (item.ModItem is TestPotion testPotion)
@@ -102,7 +121,17 @@ namespace PotionCraft.Content.System
     {
         public virtual string TypeName { get; }
 
-        public Item Potion=new();
+        public Item Potion = new();
+
+        public Item Material = new();
+
+        public Item CreatedPotion=new();
+        public enum CraftUIState
+        {
+            Purificating,
+            MashUp,
+            Boling
+        }
 
         public virtual bool IsLoaded() => true;
 

@@ -9,16 +9,17 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.Localization;
 using System.Reflection;
+using Microsoft.Xna.Framework;
 
 namespace PotionCraft.Content.Items
 {
-    public class TestPotion:ModItem
+    public class TestPotion : ModItem
     {
-        public string PotionName="";
+        public string PotionName = "";
 
-        public Dictionary<int, int> BuffDictionary=new();
+        public Dictionary<int, int> BuffDictionary = new();
 
-        static readonly MethodInfo SetName = typeof(LocalizedText).GetMethod("SetValue", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        //static readonly MethodInfo SetName = typeof(LocalizedText).GetMethod("SetValue", BindingFlags.NonPublic | BindingFlags.Instance)!;
         public override void SetStaticDefaults()
         {
 
@@ -40,7 +41,7 @@ namespace PotionCraft.Content.Items
         public override void SaveData(TagCompound tag)
         {
             tag["BuffID"] = BuffDictionary.Keys.ToList();
-            tag["BuffTime"] =BuffDictionary.Values.ToList();
+            tag["BuffTime"] = BuffDictionary.Values.ToList();
             tag["PotionName"] = PotionName;
         }
 
@@ -54,36 +55,62 @@ namespace PotionCraft.Content.Items
         }
 
         public void Purifying()
-        { 
+        {
             foreach (var buff in BuffDictionary.Keys.ToList())
             {
                 BuffDictionary[buff] *= 2;
             }
-            if (BuffDictionary.Count==1)
+            if (BuffDictionary.Count == 1)
             {
                 PotionName = "纯化" + PotionName;
             }
             else
             {
-                PotionName = "纯化(" + PotionName+")";
+                PotionName = "纯化(" + PotionName + ")";
             }
         }
 
-        public void MashUp()
-        { 
-            
+        public void MashUp(TestPotion Material)
+        {
+            foreach (var buff in Material.BuffDictionary.Keys.ToList())
+            {
+                if (BuffDictionary.TryGetValue(buff, out int value))
+                {
+                    BuffDictionary[buff] += value;
+                }
+                else
+                {
+                    BuffDictionary.Add(buff, value);
+                }
+            }
+            PotionName += " 和 " + Material.DisplayName.Value;
+            UpdataName();
+        }
+
+        public void MashUp(Item Material)
+        {
+            if (BuffDictionary.ContainsKey(Material.buffType))
+            {
+                BuffDictionary[Material.buffType] += Material.buffTime;
+            }
+            else
+            {
+                BuffDictionary.TryAdd(Material.buffType, Material.buffTime);
+            }
+            PotionName += " 和 " + Lang.GetBuffName(Material.buffType);
+            UpdataName();
         }
 
         public void UpdataName()
         {
-            try
-            {
-                SetName.Invoke(DisplayName,[PotionName]);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            //try
+            //{
+            //    SetName.Invoke(DisplayName, [PotionName]);
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -93,7 +120,6 @@ namespace PotionCraft.Content.Items
 
         public override bool? UseItem(Player player)
         {
-            Main.NewText(DisplayName.Key + " " + DisplayName.Value);
             return true;
         }
 

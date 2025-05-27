@@ -19,13 +19,6 @@ namespace PotionCraft.Content.UI
     {
         public static bool ActiveState;
 
-        public enum CraftUIState
-        {
-            Purificating,
-            MashUp,
-            Boling
-        }
-
         public static CraftUIState CraftState;
 
         public override bool IsLoaded() => ActiveState;
@@ -63,7 +56,23 @@ namespace PotionCraft.Content.UI
             Height.Set(80f, 0f);
         }
 
-        public override void LeftClick(UIMouseEvent evt)
+        //public override void LeftClick(UIMouseEvent evt)
+        //{
+        //    if (!Main.mouseItem.IsAir && PotionCraftState.Potion.IsAir)
+        //    {
+        //        PotionCraftState.Potion = Main.mouseItem.Clone();
+        //        Main.LocalPlayer.HeldItem.TurnToAir();
+        //        Main.mouseItem.TurnToAir();
+        //        return;
+        //    }
+        //    if (Main.mouseItem.IsAir && !PotionCraftState.Potion.IsAir)
+        //    {
+        //        Main.mouseItem = PotionCraftState.Potion.Clone();
+        //        PotionCraftState.Potion.TurnToAir();
+        //    }
+        //}
+
+        public override void RightClick(UIMouseEvent evt)
         {
             if (!Main.mouseItem.IsAir && PotionCraftState.Potion.IsAir)
             {
@@ -86,16 +95,124 @@ namespace PotionCraft.Content.UI
             {
                 Main.inventoryScale = 2.0f;
                 ItemSlot.Draw(spriteBatch, ref PotionCraftState.Potion, 21, GetDimensions().Position());
-                //if (IsMouseHovering)
-                //{
-                //    Main.LocalPlayer.mouseInterface = true;
-                //    Main.HoverItem = PotionCraftState.Potion.Clone();
-                //    Main.hoverItemName = "a";
-                //    return;
-                //}
+                if (IsMouseHovering)
+                {
+                    Main.LocalPlayer.mouseInterface = true;
+                    Main.HoverItem = PotionCraftState.Potion.Clone();
+                    Main.hoverItemName = "a";
+                    return;
+                }
             }
         }
 
+    }
+
+    public class MaterialSlot<T> : PotionElement where T : AutoUIState
+    {
+        public T PotionCraftState;
+
+        public MaterialSlot(T potionCraftState)
+        {
+            PotionCraftState = potionCraftState;
+            Width.Set(80f, 0f);
+            Height.Set(80f, 0f);
+        }
+
+        //public override void LeftClick(UIMouseEvent evt)
+        //{
+        //    if (!Main.mouseItem.IsAir && PotionCraftState.Material.IsAir)
+        //    {
+        //        if (!IsMaterial(Main.mouseItem))
+        //        {
+        //            return;
+        //        }
+        //        PotionCraftState.Material = Main.mouseItem.Clone();
+        //        Main.LocalPlayer.HeldItem.TurnToAir();
+        //        Main.mouseItem.TurnToAir();
+        //        return;
+        //    }
+        //    if (Main.mouseItem.IsAir && !PotionCraftState.Material.IsAir)
+        //    {
+        //        Main.mouseItem = PotionCraftState.Material.Clone();
+        //        PotionCraftState.Material.TurnToAir();
+        //    }
+        //}
+
+        public override void RightClick(UIMouseEvent evt)
+        {
+            if (!Main.mouseItem.IsAir && PotionCraftState.Material.IsAir)
+            {
+                if (!IsMaterial(Main.mouseItem))
+                {
+                    return;
+                }
+                PotionCraftState.Material = Main.mouseItem.Clone();
+                Main.LocalPlayer.HeldItem.TurnToAir();
+                Main.mouseItem.TurnToAir();
+                return;
+            }
+            if (Main.mouseItem.IsAir && !PotionCraftState.Material.IsAir)
+            {
+                Main.mouseItem = PotionCraftState.Material.Clone();
+                PotionCraftState.Material.TurnToAir();
+            }
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Assets.UI.Slot, GetDimensions().ToRectangle(), Color.White);
+            if (!PotionCraftState.Material.IsAir)
+            {
+                Main.inventoryScale = 2.0f;
+                ItemSlot.Draw(spriteBatch, ref PotionCraftState.Material, 21, GetDimensions().Position());
+                if (IsMouseHovering)
+                {
+                    Main.LocalPlayer.mouseInterface = true;
+                    Main.HoverItem = PotionCraftState.Material.Clone();
+                    Main.hoverItemName = "a";
+                    return;
+                }
+            }
+        }
+
+    }
+
+    public class CreatedPotionSlot<T> : PotionElement where T : AutoUIState
+    {
+        public T PotionCraftState;
+
+        public CreatedPotionSlot(T potionCraftState)
+        {
+            PotionCraftState = potionCraftState;
+            Width.Set(80f, 0f);
+            Height.Set(80f, 0f);
+        }
+
+        public override void LeftClick(UIMouseEvent evt)
+        {
+            if (Main.mouseItem.IsAir && !PotionCraftState.CreatedPotion.IsAir)
+            {
+                Main.mouseItem = PotionCraftState.CreatedPotion.Clone();
+                PotionCraftState.CreatedPotion.TurnToAir();
+            }
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Assets.UI.Panel, GetDimensions().ToRectangle(), Color.White);
+            if (!PotionCraftState.CreatedPotion.IsAir)
+            {
+                Main.inventoryScale = 2.0f;
+                ItemSlot.Draw(spriteBatch, ref PotionCraftState.CreatedPotion, 21, GetDimensions().Position());
+                if (IsMouseHovering)
+                {
+                    Main.LocalPlayer.mouseInterface = true;
+                    Main.HoverItem = PotionCraftState.CreatedPotion.Clone();
+                    Main.hoverItemName = "a";
+                    return;
+                }
+            }
+        }
 
     }
 

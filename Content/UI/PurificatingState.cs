@@ -16,28 +16,50 @@ namespace PotionCraft.Content.UI
     public class PurificatingState : AutoUIState
     {
         public override bool IsLoaded() => PotionCraftState.CraftState == PotionCraftState.CraftUIState.Purificating && PotionCraftState.ActiveState;
-       
-        public override string Layers_FindIndex => "Vanilla: Interface Logic 2";
+        public override string Layers_FindIndex => "Vanilla: Interface Logic 3";
 
         public PotionSlot<PurificatingState> potionslot;
 
+        public MaterialSlot<PurificatingState> material;
+
         public PurifyingButton purifyingbutton;
+
+        private UIElement CreatedPotionSlot;
 
         public override void OnInitialize()
         {
+            CreatedPotionSlot = new UIElement()
+            { 
+                HAlign = 0.5f,
+                VAlign = 0.3f,
+            };
+            CreatedPotionSlot.Width.Set(120f, 0);
+            CreatedPotionSlot.Height.Set(120f, 0);
+            Append(CreatedPotionSlot);
+
             potionslot = new(this)
             {
-                HAlign = 0.5f,
+                HAlign = 0.45f,
                 VAlign = 0.5f,
             };
             Append(potionslot);
+
+            material = new(this)
+            { 
+                HAlign = 0.55f,
+                VAlign = 0.5f,
+            };
+            Append(material);
+
             purifyingbutton = new(this)
             {
-                VAlign = 0.75f,
+                VAlign = 0.65f,
                 HAlign = 0.5f,
             };
             Append(purifyingbutton);
+
         }
+
     }
 
     public class PurifyingButton : PotionElement
@@ -58,11 +80,6 @@ namespace PotionCraft.Content.UI
             TestPotion tes = AsPotion(purificatingState.Potion);
             tes.BuffDictionary.TryAdd(34, 300);
             tes.Purifying();
-            tes.UpdataName();
-            foreach (var item in tes.BuffDictionary)
-            {
-                Main.NewText(item.Key);
-            }
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
