@@ -70,36 +70,36 @@ namespace PotionCraft.Content.Items
             }
         }
 
-        public void MashUp(TestPotion Material)
-        {
-            foreach (var buff in Material.BuffDictionary.Keys.ToList())
-            {
-                if (BuffDictionary.TryGetValue(buff, out int value))
-                {
-                    BuffDictionary[buff] += value;
-                }
-                else
-                {
-                    BuffDictionary.Add(buff, value);
-                }
-            }
-            PotionName += " 和 " + Material.DisplayName.Value;
-            UpdataName();
-        }
+        //public void MashUp(TestPotion Material)
+        //{
+        //    foreach (var buff in Material.BuffDictionary.Keys.ToList())
+        //    {
+        //        if (BuffDictionary.TryGetValue(buff, out int value))
+        //        {
+        //            BuffDictionary[buff] += value;
+        //        }
+        //        else
+        //        {
+        //            BuffDictionary.Add(buff, value);
+        //        }
+        //    }
+        //    PotionName += " 和 " + Material.DisplayName.Value;
+        //    UpdataName();
+        //}
 
-        public void MashUp(Item Material)
-        {
-            if (BuffDictionary.ContainsKey(Material.buffType))
-            {
-                BuffDictionary[Material.buffType] += Material.buffTime;
-            }
-            else
-            {
-                BuffDictionary.TryAdd(Material.buffType, Material.buffTime);
-            }
-            PotionName += " 和 " + Lang.GetBuffName(Material.buffType);
-            UpdataName();
-        }
+        //public void MashUp(Item Material)
+        //{
+        //    if (BuffDictionary.ContainsKey(Material.buffType))
+        //    {
+        //        BuffDictionary[Material.buffType] += Material.buffTime;
+        //    }
+        //    else
+        //    {
+        //        BuffDictionary.TryAdd(Material.buffType, Material.buffTime);
+        //    }
+        //    PotionName += " 和 " + Lang.GetBuffName(Material.buffType);
+        //    UpdataName();
+        //}
 
         public void UpdataName()
         {
@@ -115,11 +115,15 @@ namespace PotionCraft.Content.Items
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            tooltips.Add(new TooltipLine(Mod, "Potion", PotionName));
+            tooltips.Add(new TooltipLine(Mod, "Potion", PotionName+"药剂"));
         }
 
         public override bool? UseItem(Player player)
         {
+            foreach (var item in BuffDictionary)
+            {
+                player.AddBuff(item.Key, item.Value);
+            }
             return true;
         }
 

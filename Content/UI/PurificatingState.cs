@@ -15,7 +15,10 @@ namespace PotionCraft.Content.UI
 {
     public class PurificatingState : AutoUIState
     {
-        public override bool IsLoaded() => PotionCraftState.CraftState == PotionCraftState.CraftUIState.Purificating && PotionCraftState.ActiveState;
+        public override bool IsLoaded()
+        {
+            return false;
+        }
         public override string Layers_FindIndex => "Vanilla: Interface Logic 3";
 
         public PotionSlot<PurificatingState> potionslot;
@@ -24,19 +27,8 @@ namespace PotionCraft.Content.UI
 
         public PurifyingButton purifyingbutton;
 
-        private UIElement CreatedPotionSlot;
-
         public override void OnInitialize()
         {
-            CreatedPotionSlot = new UIElement()
-            { 
-                HAlign = 0.5f,
-                VAlign = 0.3f,
-            };
-            CreatedPotionSlot.Width.Set(120f, 0);
-            CreatedPotionSlot.Height.Set(120f, 0);
-            Append(CreatedPotionSlot);
-
             potionslot = new(this)
             {
                 HAlign = 0.45f,
@@ -76,7 +68,7 @@ namespace PotionCraft.Content.UI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            if (purificatingState.Potion.IsAir) return;
+            if (purificatingState.Material.IsAir) return;
             TestPotion tes = AsPotion(purificatingState.Potion);
             tes.BuffDictionary.TryAdd(34, 300);
             tes.Purifying();

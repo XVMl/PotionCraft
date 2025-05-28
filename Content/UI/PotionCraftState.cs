@@ -20,8 +20,6 @@ namespace PotionCraft.Content.UI
         public static bool ActiveState;
 
         public static CraftUIState CraftState;
-
-        public override bool IsLoaded() => ActiveState;
         public override string Layers_FindIndex => "Vanilla: Interface Logic 2";
 
         public UIElement area;
@@ -45,7 +43,7 @@ namespace PotionCraft.Content.UI
 
     }
 
-    public class PotionSlot<T> : UIElement where T : AutoUIState
+    public class PotionSlot<T> : PotionElement where T : AutoUIState
     {
         public T PotionCraftState;
 
@@ -56,24 +54,24 @@ namespace PotionCraft.Content.UI
             Height.Set(80f, 0f);
         }
 
-        //public override void LeftClick(UIMouseEvent evt)
+        //public override void SafeClick(UIMouseEvent evt)
         //{
         //    if (!Main.mouseItem.IsAir && PotionCraftState.Potion.IsAir)
         //    {
         //        PotionCraftState.Potion = Main.mouseItem.Clone();
         //        Main.LocalPlayer.HeldItem.TurnToAir();
         //        Main.mouseItem.TurnToAir();
-        //        return;
         //    }
-        //    if (Main.mouseItem.IsAir && !PotionCraftState.Potion.IsAir)
-        //    {
+        //    else if (Main.mouseItem.IsAir && !PotionCraftState.Potion.IsAir)
+        //    { 
         //        Main.mouseItem = PotionCraftState.Potion.Clone();
         //        PotionCraftState.Potion.TurnToAir();
         //    }
         //}
 
-        public override void RightClick(UIMouseEvent evt)
+        public override void LeftClick(UIMouseEvent evt)
         {
+            base.LeftClick(evt);
             if (!Main.mouseItem.IsAir && PotionCraftState.Potion.IsAir)
             {
                 PotionCraftState.Potion = Main.mouseItem.Clone();
@@ -118,27 +116,7 @@ namespace PotionCraft.Content.UI
             Height.Set(80f, 0f);
         }
 
-        //public override void LeftClick(UIMouseEvent evt)
-        //{
-        //    if (!Main.mouseItem.IsAir && PotionCraftState.Material.IsAir)
-        //    {
-        //        if (!IsMaterial(Main.mouseItem))
-        //        {
-        //            return;
-        //        }
-        //        PotionCraftState.Material = Main.mouseItem.Clone();
-        //        Main.LocalPlayer.HeldItem.TurnToAir();
-        //        Main.mouseItem.TurnToAir();
-        //        return;
-        //    }
-        //    if (Main.mouseItem.IsAir && !PotionCraftState.Material.IsAir)
-        //    {
-        //        Main.mouseItem = PotionCraftState.Material.Clone();
-        //        PotionCraftState.Material.TurnToAir();
-        //    }
-        //}
-
-        public override void RightClick(UIMouseEvent evt)
+        public override void LeftClick(UIMouseEvent evt)
         {
             if (!Main.mouseItem.IsAir && PotionCraftState.Material.IsAir)
             {

@@ -15,7 +15,7 @@ namespace PotionCraft.Content.UI
 {
     public class MashUpState : AutoUIState
     {
-        public override bool IsLoaded() => PotionCraftState.CraftState == CraftUIState.MashUp && PotionCraftState.ActiveState;
+        public override bool IsLoaded() => true;
 
         public override string Layers_FindIndex => "Vanilla: Interface Logic 3";
 
@@ -85,12 +85,20 @@ namespace PotionCraft.Content.UI
                     CreatedPotion.BuffDictionary.Add(buff, value);
                 }
             }
-            CreatedPotion.PotionName += " 和 " + Material.DisplayName.Value;
+            if (CreatedPotion.BuffDictionary.Count == 0)
+            {
+                CreatedPotion.PotionName += Material.DisplayName.Value;
+            }
+            else 
+            { 
+                CreatedPotion.PotionName += " 和 " + Material.DisplayName.Value;
+            }
         }
 
         public void MashUp(Item Potion, Item Material)
         {
-            TestPotion CreatedPotion = AsPotion(Potion.Clone());
+            MashUpState.CreatedPotion = Potion.Clone();
+            TestPotion CreatedPotion = AsPotion(MashUpState.CreatedPotion);
             if (CreatedPotion.BuffDictionary.ContainsKey(Material.buffType))
             {
                 CreatedPotion.BuffDictionary[Material.buffType] += Material.buffTime;
@@ -99,28 +107,31 @@ namespace PotionCraft.Content.UI
             {
                 CreatedPotion.BuffDictionary.TryAdd(Material.buffType, Material.buffTime);
             }
-
-            CreatedPotion.PotionName += " 和 " + Lang.GetBuffName(Material.buffType);
-            CreatedPotion.UpdataName();
+            if (CreatedPotion.BuffDictionary.Count == 1)
+            {
+                CreatedPotion.PotionName += Lang.GetBuffName(Material.buffType);
+            }
+            else
+            {
+                CreatedPotion.PotionName += " 和 " + Lang.GetBuffName(Material.buffType);
+            }
         }
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            Item item = new();
-            item.SetDefaults(ModContent.ItemType<TestPotion>());
-            AsPotion(item).PotionName += "Test";
-            MashUpState.Material = item.Clone();
-
             if (MashUpState.Potion.IsAir || MashUpState.Material.IsAir) return;
-            TestPotion tes = AsPotion(MashUpState.Potion);
             if (IsMaterial(MashUpState.Material))
             {
-                tes.MashUp(MashUpState.Material);
+                MashUp(MashUpState.Potion, MashUpState.Material);
             }
             else
             {
-                tes.MashUp(AsPotion(MashUpState.Material));
+                MashUp(MashUpState.Potion, AsPotion(MashUpState.Material));
             }
+            //Item item = new();
+            //item.SetDefaults(ModContent.ItemType<TestPotion>());
+            //AsPotion(item).PotionName += "Test";
+            //MashUpState.Material = item.Clone();
 
         }
 

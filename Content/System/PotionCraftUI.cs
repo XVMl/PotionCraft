@@ -95,6 +95,11 @@ namespace PotionCraft.Content.System
             return false;
         }
 
+        public void PurificatingMaterial()
+        {
+
+        }
+
         public TestPotion AsPotion(Item item)
         {
             if (item.ModItem is TestPotion testPotion)
