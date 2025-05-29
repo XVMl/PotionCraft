@@ -15,7 +15,7 @@ namespace PotionCraft.Content.UI
 {
     public class MashUpState : AutoUIState
     {
-        public override bool IsLoaded() => true;
+        public override bool IsLoaded() => false;
 
         public override string Layers_FindIndex => "Vanilla: Interface Logic 3";
 
@@ -29,33 +29,33 @@ namespace PotionCraft.Content.UI
 
         public override void OnInitialize()
         {
-            PotionSlot = new(this)
-            {
-                HAlign = 0.4f,
-                VAlign = 0.5f,
-            };
-            Append(PotionSlot);
+            //PotionSlot = new(this)
+            //{
+            //    HAlign = 0.4f,
+            //    VAlign = 0.5f,
+            //};
+            //Append(PotionSlot);
 
-            CreatedPotionSlot = new(this)
-            { 
-                HAlign = 0.5f,
-                VAlign = 0.45f,
-            };
-            Append(CreatedPotionSlot);
+            //CreatedPotionSlot = new(this)
+            //{ 
+            //    HAlign = 0.5f,
+            //    VAlign = 0.45f,
+            //};
+            //Append(CreatedPotionSlot);
 
-            MaterialSlot = new(this)
-            {
-                HAlign = 0.6f,
-                VAlign = 0.5f,
-            };
-            Append(MaterialSlot);
+            //MaterialSlot = new(this)
+            //{
+            //    HAlign = 0.6f,
+            //    VAlign = 0.5f,
+            //};
+            //Append(MaterialSlot);
 
-            mashupbutton = new(this)
-            {  
-                VAlign = 0.65f,
-                HAlign = 0.5f,
-            };
-            Append(mashupbutton);
+            //mashupbutton = new(this)
+            //{  
+            //    VAlign = 0.65f,
+            //    HAlign = 0.5f,
+            //};
+            //Append(mashupbutton);
 
         }
 

@@ -29,26 +29,26 @@ namespace PotionCraft.Content.UI
 
         public override void OnInitialize()
         {
-            potionslot = new(this)
-            {
-                HAlign = 0.45f,
-                VAlign = 0.5f,
-            };
-            Append(potionslot);
+            //potionslot = new(this)
+            //{
+            //    HAlign = 0.45f,
+            //    VAlign = 0.5f,
+            //};
+            //Append(potionslot);
 
-            material = new(this)
-            { 
-                HAlign = 0.55f,
-                VAlign = 0.5f,
-            };
-            Append(material);
+            //material = new(this)
+            //{ 
+            //    HAlign = 0.55f,
+            //    VAlign = 0.5f,
+            //};
+            //Append(material);
 
-            purifyingbutton = new(this)
-            {
-                VAlign = 0.65f,
-                HAlign = 0.5f,
-            };
-            Append(purifyingbutton);
+            //purifyingbutton = new(this)
+            //{
+            //    VAlign = 0.65f,
+            //    HAlign = 0.5f,
+            //};
+            //Append(purifyingbutton);
 
         }
 

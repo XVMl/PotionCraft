@@ -10,6 +10,9 @@ using Terraria.ModLoader.IO;
 using Terraria.Localization;
 using System.Reflection;
 using Microsoft.Xna.Framework;
+using PotionCraft.Content.System;
+using System.Collections.ObjectModel;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PotionCraft.Content.Items
 {
@@ -111,6 +114,11 @@ namespace PotionCraft.Content.Items
             //{
             //    throw;
             //}
+        }
+
+        public override bool PreDrawTooltip(ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y)
+        {
+             return base.PreDrawTooltip(lines, ref x, ref y);
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)

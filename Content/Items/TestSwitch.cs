@@ -42,7 +42,7 @@ namespace PotionCraft.Content.Items
             player.itemAnimation = Item.useAnimation;
             if (player.altFunctionUse==2)
             {
-                PotionCraftState.CraftState = (CraftUIState)((int)(PotionCraftState.CraftState + 1) % 3);
+                //PotionCraftState.CraftState = (CraftUIState)((int)(PotionCraftState.CraftState + 1) % 3);
             }
             else
             {
