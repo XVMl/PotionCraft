@@ -4,10 +4,12 @@ using Luminance.Core.Hooking;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;
+using PotionCraft.Content.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
@@ -23,45 +25,105 @@ namespace PotionCraft.Content.System
         {
             LoadPotionTooltipBG();
         }
+
+        static readonly FieldInfo X = typeof(Rectangle).GetField(nameof(Rectangle.X))!;
+
+        static readonly FieldInfo Y = typeof(Rectangle).GetField(nameof(Rectangle.Y))!;
+
+        static readonly FieldInfo W = typeof(Rectangle).GetField(nameof(Rectangle.Width))!;
+
+        static readonly FieldInfo H = typeof(Rectangle).GetField(nameof(Rectangle.Height))!;
+
+        static readonly FieldInfo SpriteBatch = typeof(Main).GetField(nameof(Main.spriteBatch))!;
+
+        static readonly MethodInfo Assetsbuttion = typeof(Assets).GetMethod(nameof(Assets.UI.Button))!;
+
+        static readonly MethodInfo White = typeof(Color).GetMethod("get_White")!;
+        
+        static readonly MethodInfo _DrawInvBG = typeof(Utils).GetMethod(nameof(Utils.DrawInvBG),BindingFlags.Public|BindingFlags.Static,[ 
+            typeof(SpriteBatch),
+            typeof(int),
+            typeof(int),
+            typeof(int),
+            typeof(int),
+            typeof(Color)
+        ]);
+
+        //static readonly MethodInfo Draw = typeof(Main).GetMethod(nameof(Main.spriteBatch.Draw), BindingFlags.Public, new Type[] {
+        //    typeof(Texture2D),
+        //    typeof(Vector2),
+        //    typeof(Rectangle?),
+        //    typeof(Color),
+        //})!;
+
         private static void LoadPotionTooltipBG()
         {
             new ManagedILEdit("The Potion`s tooltip background", ModContent.GetInstance<PotionCraft>(), edit =>
             {
-                IL_Main.MouseText_DrawItemTooltip += edit.SubscriptionWrapper;
+                IL_Utils.DrawInvBG_SpriteBatch_Rectangle_Color += edit.SubscriptionWrapper;
             }, edit =>
             {
-                IL_Main.MouseText_DrawItemTooltip -= edit.SubscriptionWrapper;
+                IL_Utils.DrawInvBG_SpriteBatch_Rectangle_Color -= edit.SubscriptionWrapper;
             }, PotionTooltipBG).Apply();
         }
-        private static void PotionTooltipBG(ILContext context,ManagedILEdit edit)
+        private static void PotionTooltipBG(ILContext context, ManagedILEdit edit)
         {
             ILCursor cursor = new ILCursor(context);
-            MethodInfo drawInventoryBgMethod = typeof(Utils).GetMethod("DrawInvBG", new Type[]
-            {
-            typeof(SpriteBatch),
-            typeof(Rectangle),
-            typeof(Color)
-            })!;
-            if (!cursor.TryGotoNext(MoveType.Before, i => i.MatchCallOrCallvirt(drawInventoryBgMethod)))
+            //MethodInfo drawInventoryBgMethod = typeof(Utils).GetMethod("DrawInvBG", new Type[]
+            //{
+            //typeof(SpriteBatch),
+            //typeof(Rectangle),
+            //typeof(Color)
+            //})!;
+            if (!cursor.TryGotoNext(MoveType.AfterLabel,
+                    i => i.MatchRet()
+                ))
             {
                 edit.LogFailure("Could not find the DrawInvBG call.");
                 return;
             }
-            cursor.EmitDelegate(() => {
-                return;
-            });
+            //cursor.EmitLdcI4(5);
+            //cursor.EmitDelegate((int x) =>
+            //{
+            //    Main.NewText(x);
+            //});
             
+            cursor.EmitLdarg0();
+            cursor.EmitLdarg1();
+            cursor.EmitLdfld(X);
+            cursor.EmitLdarg1();
+            cursor.EmitLdfld(Y);
+            cursor.EmitLdarg1();
+            cursor.EmitLdfld(W);
+            cursor.EmitLdarg1();
+            cursor.EmitLdfld(H);
+            cursor.EmitCall(White);
+            cursor.EmitCall(_DrawInvBG);
+            cursor.EmitRet();
 
 
+            //cursor.EmitNop();
+            //cursor.EmitLdfld(SpriteBatch);
+            //cursor.EmitCall(Assetsbuttion);
+            //cursor.EmitLdarg1();
+            //cursor.EmitCall(White);
+            //cursor.EmitCallvirt(Draw);
+            //cursor.EmitNop();
+            //cursor.EmitRet();
         }
+
 
         public static void DrawInvBG(SpriteBatch sb, Rectangle R, Color c = default(Color))
         {
             DrawInvBG(sb, R.X, R.Y, R.Width, R.Height, c);
-            Main.spriteBatch.Draw(Assets.UI.Button, R, Color.White);
+            if (!(Main.HoverItem.type == ModContent.ItemType<TestPotion>()))
+            {
+                return;
+            }
         }
         public static void DrawInvBG(SpriteBatch sb, int x, int y, int w, int h, Color c = default(Color))
         {
+            Main.NewText(x);
             if (c == default(Color))
                 c = new Color(63, 65, 151, 255) * 0.785f;
 

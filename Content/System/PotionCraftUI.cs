@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
 using static PotionCraft.Assets;
@@ -46,8 +47,9 @@ namespace PotionCraft.Content.System
         {
             foreach (UserInterface type in _UserInterface)
             {
-                UserInterface userInterface = type;
-                userInterface?.Update(gameTime);
+                type.Update(gameTime);
+                //UserInterface userInterface = type;
+                //userInterface?.Update(gameTime);
             }
         }
 
@@ -84,6 +86,14 @@ namespace PotionCraft.Content.System
                 return true;
             }
             return false;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (IsMouseHovering)
+            {
+                Main.LocalPlayer.mouseInterface = true;
+            }
         }
 
         public bool IsMaterial(Item item)

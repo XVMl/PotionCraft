@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
@@ -26,7 +27,6 @@ namespace PotionCraft.Content.UI
 
         public Item item = new();
 
-        public ItemEditorSlot slot;
         public override void OnInitialize()
         {
             area = new UIElement()
@@ -37,70 +37,13 @@ namespace PotionCraft.Content.UI
             area.Width.Set(400f, 0);
             area.Height.Set(300f, 0);
             Append(area);
-            slot = new(this)
-            {
-                HAlign = 0.5f,
-                VAlign = 0.5f,
-            };
-            Append(slot);
-            
-
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            //spriteBatch.Draw(Assets.UI.BackGround1,area.GetDimensions().ToRectangle(), Color.White);
+            spriteBatch.Draw(Assets.UI.BackGround1,area.GetDimensions().ToRectangle(), Color.White);
         }
 
-    }
-
-    public class ItemEditorSlot : UIElement
-    {
-        public PotionCraftState parent;
-
-        public ItemEditorSlot(PotionCraftState parent)
-        {
-            this.parent = parent;
-            Width.Set(100, 0);
-            Height.Set(100, 0);
-        }
-
-        public override void LeftClick(UIMouseEvent evt)
-        {
-            base.LeftClick(evt);
-            if (!Main.mouseItem.IsAir && parent.item.IsAir)
-            {
-                parent.item = Main.mouseItem.Clone();
-                Main.LocalPlayer.HeldItem.TurnToAir();
-                Main.mouseItem.TurnToAir();
-            }
-            else if (Main.mouseItem.IsAir && !parent.item.IsAir)
-            {
-                Main.mouseItem = parent.item.Clone();
-                parent.item.TurnToAir();
-            }
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(Assets.UI.Slot, GetDimensions().ToRectangle(), Color.White);
-            if (!parent.item.IsAir)
-            {
-                Main.inventoryScale = 36 / 52f * 120 / 36f;
-                ItemSlot.Draw(spriteBatch, ref parent.item, 21, GetDimensions().Position());
-
-                if (IsMouseHovering)
-                {
-                    Main.LocalPlayer.mouseInterface = true;
-                    Main.HoverItem = parent.item.Clone(); 
-                    Main.hoverItemName = "a";
-                }
-            }
-            else
-            {
-                //Utils.DrawBorderString(spriteBatch, LocalizationHelper.GetToolText("ItemEditor.PlaceItemHere"), GetDimensions().Center(), Color.LightGray, 1, 0.5f, 0.5f);
-            }
-        }
     }
 
     public class PotionSlot<T> : PotionElement where T : AutoUIState
@@ -131,7 +74,6 @@ namespace PotionCraft.Content.UI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            base.LeftClick(evt);
             if (!Main.mouseItem.IsAir && PotionCraftState.Potion.IsAir)
             {
                 PotionCraftState.Potion = Main.mouseItem.Clone();
@@ -155,7 +97,6 @@ namespace PotionCraft.Content.UI
                 ItemSlot.Draw(spriteBatch, ref PotionCraftState.Potion, 21, GetDimensions().Position());
                 if (IsMouseHovering)
                 {
-                    Main.NewText("S#F");
                     Main.LocalPlayer.mouseInterface = true;
                     Main.HoverItem = PotionCraftState.Potion.Clone();
                     Main.hoverItemName = "a";
