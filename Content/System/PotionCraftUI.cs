@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
+using PotionCraft.Content.UI;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -77,8 +78,10 @@ namespace PotionCraft.Content.System
 
     }
 
-    public class PotionElement:UIElement
+    public class PotionElement<T>:UIElement where T : AutoUIState
     {
+        public T PotionCraftState;
+
         public bool IsPotion(Item item)
         {
             if (item.ModItem is TestPotion)
@@ -88,17 +91,13 @@ namespace PotionCraft.Content.System
             return false;
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            if (IsMouseHovering)
-            {
-                Main.LocalPlayer.mouseInterface = true;
-            }
-        }
-
         public bool IsMaterial(Item item)
         {
             if (item.consumable&&item.buffType!=0)
+            {
+                return true;
+            }
+            if (item.type==ModContent.ItemType<MagicPanacea>())
             {
                 return true;
             }
@@ -126,6 +125,26 @@ namespace PotionCraft.Content.System
                 instance.Logger.Warn($"Item was erroneously casted to Potion");
             }
             return ModContent.GetInstance<TestPotion>();
+        }
+
+        public virtual void CraftClick(UIMouseEvent evt)
+        {
+            PotionCraftState.Potion.stack -= 1;
+            PotionCraftState.Material.stack -= 1;
+        }
+
+        public override void LeftClick(UIMouseEvent evt)
+        {
+            base.LeftClick(evt);
+            CraftClick(evt);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (IsMouseHovering)
+            {
+                Main.LocalPlayer.mouseInterface = true;
+            }
         }
 
     }

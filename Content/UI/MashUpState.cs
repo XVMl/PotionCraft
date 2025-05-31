@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -15,9 +16,9 @@ namespace PotionCraft.Content.UI
 {
     public class MashUpState : AutoUIState
     {
-        public override bool IsLoaded() => false;
+        public override bool IsLoaded() => PotionCraftState.ActiveState && PotionCraftState.CraftState == CraftUIState.MashUp;
 
-        public override string Layers_FindIndex => "Vanilla: Interface Logic 3";
+        public override string Layers_FindIndex => "Vanilla: Mouse Text";
 
         private PotionSlot<MashUpState> PotionSlot;
 
@@ -29,44 +30,44 @@ namespace PotionCraft.Content.UI
 
         public override void OnInitialize()
         {
-            //PotionSlot = new(this)
-            //{
-            //    HAlign = 0.4f,
-            //    VAlign = 0.5f,
-            //};
-            //Append(PotionSlot);
+            PotionSlot = new(this)
+            {
+                HAlign = 0.4f,
+                VAlign = 0.5f,
+            };
+            Append(PotionSlot);
 
-            //CreatedPotionSlot = new(this)
-            //{ 
-            //    HAlign = 0.5f,
-            //    VAlign = 0.45f,
-            //};
-            //Append(CreatedPotionSlot);
+            CreatedPotionSlot = new(this)
+            {
+                HAlign = 0.5f,
+                VAlign = 0.45f,
+            };
+            Append(CreatedPotionSlot);
 
-            //MaterialSlot = new(this)
-            //{
-            //    HAlign = 0.6f,
-            //    VAlign = 0.5f,
-            //};
-            //Append(MaterialSlot);
+            MaterialSlot = new(this)
+            {
+                HAlign = 0.6f,
+                VAlign = 0.5f,
+            };
+            Append(MaterialSlot);
 
-            //mashupbutton = new(this)
-            //{  
-            //    VAlign = 0.65f,
-            //    HAlign = 0.5f,
-            //};
-            //Append(mashupbutton);
+            mashupbutton = new(this)
+            {
+                VAlign = 0.65f,
+                HAlign = 0.5f,
+            };
+            Append(mashupbutton);
 
         }
 
     }
 
-    public class MashUpButton:PotionElement
+    public class MashUpButton : PotionElement<MashUpState>
     {
-        private MashUpState MashUpState { get; set; }
+        //private MashUpState MashUpState { get; set; }
         public MashUpButton(MashUpState mashUpState) 
         {
-            MashUpState = mashUpState;
+            PotionCraftState = mashUpState;
             Width.Set(100f, 0);
             Height.Set(32f, 0);
         }
@@ -97,8 +98,8 @@ namespace PotionCraft.Content.UI
 
         public void MashUp(Item Potion, Item Material)
         {
-            MashUpState.CreatedPotion = Potion.Clone();
-            TestPotion CreatedPotion = AsPotion(MashUpState.CreatedPotion);
+            PotionCraftState.CreatedPotion = Potion.Clone();
+            TestPotion CreatedPotion = AsPotion(PotionCraftState.CreatedPotion);
             if (CreatedPotion.BuffDictionary.ContainsKey(Material.buffType))
             {
                 CreatedPotion.BuffDictionary[Material.buffType] += Material.buffTime;
@@ -109,30 +110,31 @@ namespace PotionCraft.Content.UI
             }
             if (CreatedPotion.BuffDictionary.Count == 1)
             {
-                CreatedPotion.PotionName += Lang.GetBuffName(Material.buffType);
+                CreatedPotion.PotionName += LanguageHelper.ColorfulBuffName(Material.buffType);
             }
             else
             {
-                CreatedPotion.PotionName += " 和 " + Lang.GetBuffName(Material.buffType);
+                CreatedPotion.PotionName += " 和 " + LanguageHelper.ColorfulBuffName(Material.buffType);
+                Main.NewText(Lang.GetBuffName(Material.buffType));
             }
         }
 
-        public override void LeftClick(UIMouseEvent evt)
+        public override void CraftClick(UIMouseEvent evt)
         {
-            if (MashUpState.Potion.IsAir || MashUpState.Material.IsAir) return;
-            if (IsMaterial(MashUpState.Material))
+            if (PotionCraftState.Potion.IsAir || PotionCraftState.Material.IsAir) return;
+            if (IsMaterial(PotionCraftState.Material))
             {
-                MashUp(MashUpState.Potion, MashUpState.Material);
+                MashUp(PotionCraftState.Potion, PotionCraftState.Material);
             }
             else
             {
-                MashUp(MashUpState.Potion, AsPotion(MashUpState.Material));
+                MashUp(PotionCraftState.Potion, AsPotion(PotionCraftState.Material));
             }
             //Item item = new();
             //item.SetDefaults(ModContent.ItemType<TestPotion>());
             //AsPotion(item).PotionName += "Test";
             //MashUpState.Material = item.Clone();
-
+            base.CraftClick(evt);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

@@ -21,7 +21,7 @@ namespace PotionCraft.Content.UI
         public static bool ActiveState;
 
         public static CraftUIState CraftState;
-        public override string Layers_FindIndex => "Vanilla: Mouse Text";
+        public override string Layers_FindIndex => "Vanilla: Interface Logic 3";
 
         public UIElement area;
 
@@ -46,10 +46,8 @@ namespace PotionCraft.Content.UI
 
     }
 
-    public class PotionSlot<T> : PotionElement where T : AutoUIState
+    public class PotionSlot<T> : PotionElement<T> where T : AutoUIState
     {
-        public T PotionCraftState;
-
         public PotionSlot(T potionCraftState)
         {
             PotionCraftState = potionCraftState;
@@ -107,9 +105,8 @@ namespace PotionCraft.Content.UI
 
     }
 
-    public class MaterialSlot<T> : PotionElement where T : AutoUIState
+    public class MaterialSlot<T> : PotionElement<T> where T : AutoUIState
     {
-        public T PotionCraftState;
 
         public MaterialSlot(T potionCraftState)
         {
@@ -157,9 +154,8 @@ namespace PotionCraft.Content.UI
 
     }
 
-    public class CreatedPotionSlot<T> : PotionElement where T : AutoUIState
+    public class CreatedPotionSlot<T> : PotionElement<T> where T : AutoUIState
     {
-        public T PotionCraftState;
 
         public CreatedPotionSlot(T potionCraftState)
         {

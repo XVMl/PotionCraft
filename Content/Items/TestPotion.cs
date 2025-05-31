@@ -103,8 +103,8 @@ namespace PotionCraft.Content.Items
                 return;
             }
             
-            tooltips.Add((TooltipLine)Internal_TooltipLine.Invoke(["ItemName", PotionName + "药剂"]));
-            tooltips.Add(new TooltipLine(Mod, "s", Language.GetTextValue("Mods.PotionCraft.BuffColors.Calamity.2")));
+            //tooltips.Add((TooltipLine)Internal_TooltipLine.Invoke(["ItemName", PotionName + "药剂"]));
+            tooltips.Add(new TooltipLine(Mod, "s", PotionName));
         }
 
         public override bool? UseItem(Player player)
@@ -113,7 +113,7 @@ namespace PotionCraft.Content.Items
             {
                 player.AddBuff(item.Key, item.Value);
             }
-            string s = LanguageHelper.ColorfulBuffName(0);
+            string s = LanguageHelper.ColorfulBuffName("Battle");
             if (s!=null)
             {
                 Main.NewText(s);
