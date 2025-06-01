@@ -18,9 +18,8 @@ namespace PotionCraft.Content.UI
 {
     public class PotionCraftState : AutoUIState
     {
-        public static bool ActiveState;
+        public override bool IsLoaded() => ActiveState;
 
-        public static CraftUIState CraftState;
         public override string Layers_FindIndex => "Vanilla: Interface Logic 3";
 
         public UIElement area;

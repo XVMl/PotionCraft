@@ -9,9 +9,10 @@ using Terraria.ModLoader;
 
 namespace PotionCraft.Content.NPCs
 {
-    public class Thiu:ModNPC
+    public class Thou:ModNPC
     {
-        public override string Texture => "PotionCraft/Assets/NPCs/Thiu";
+        public override string Texture => "PotionCraft/Assets/NPCs/Thou";
+
         public override void SetStaticDefaults()
         {
             Main.npcFrameCount[Type] = 25;
@@ -26,6 +27,7 @@ namespace PotionCraft.Content.NPCs
 
         public override void SetDefaults()
         {
+            NPC.dontTakeDamage = false;
             NPC.lifeMax = 20000;
             NPC.damage = 0;
             NPC.defense = 0;
@@ -38,6 +40,21 @@ namespace PotionCraft.Content.NPCs
             NPC.aiStyle = 7;
         }
 
+        public override bool CheckDead()
+        {
+            NPC.life = 1;
+            return false;
+        }
 
+        public override bool CanChat()
+        {
+            return base.CanChat();
+        }
+
+        public override string GetChat()
+        {
+            //Main.LocalPlayer.TalkNPC
+            return base.GetChat();
+        }
     }
 }

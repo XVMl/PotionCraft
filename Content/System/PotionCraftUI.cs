@@ -12,7 +12,6 @@ using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
-using static PotionCraft.Assets;
 
 namespace PotionCraft.Content.System
 {
@@ -77,10 +76,17 @@ namespace PotionCraft.Content.System
         }
 
     }
-
+    /// <summary>
+    /// 包含药品界面常用方法，承载PotionState
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class PotionElement<T>:UIElement where T : AutoUIState
     {
         public T PotionCraftState;
+
+        public static readonly int PurifyingCountMax = 12;
+
+        public static readonly int MashUpCountMax = 14;
 
         public bool IsPotion(Item item)
         {
@@ -104,11 +110,11 @@ namespace PotionCraft.Content.System
             return false;
         }
 
-        public void PurificatingMaterial()
-        {
-
-        }
-
+        /// <summary>
+        /// 转化为测试药剂
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public TestPotion AsPotion(Item item)
         {
             if (item.ModItem is TestPotion testPotion)
@@ -155,11 +161,18 @@ namespace PotionCraft.Content.System
     {
         public virtual string TypeName { get; }
 
+        public static bool ActiveState;
+
+        public static CraftUIState CraftState;
+
         public Item Potion = new();
 
         public Item Material = new();
 
         public Item CreatedPotion=new();
+        /// <summary>
+        /// 工艺界面的状态名称
+        /// </summary>
         public enum CraftUIState
         {
             Purificating,

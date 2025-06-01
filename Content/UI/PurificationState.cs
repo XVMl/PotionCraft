@@ -9,20 +9,21 @@ using System.Threading.Tasks;
 using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria;
+using static PotionCraft.Content.System.LanguageHelper;
 using Microsoft.Xna.Framework;
 
 namespace PotionCraft.Content.UI
 {
-    public class PurificatingState : AutoUIState
+    public class PurificationState : AutoUIState
     {
-        public override bool IsLoaded() => PotionCraftState.ActiveState && PotionCraftState.CraftState == CraftUIState.Purificating;
+        public override bool IsLoaded() => ActiveState && CraftState == CraftUIState.Purificating;
         public override string Layers_FindIndex => "Vanilla: Mouse Text";
 
-        public PotionSlot<PurificatingState> potionslot;
+        public PotionSlot<PurificationState> potionslot;
 
-        public MaterialSlot<PurificatingState> material;
+        public MaterialSlot<PurificationState> material;
         
-        protected CreatedPotionSlot<PurificatingState> CreatedPotionSlot;
+        protected CreatedPotionSlot<PurificationState> CreatedPotionSlot;
 
         public PurifyingButton purifyingbutton;
 
@@ -60,12 +61,10 @@ namespace PotionCraft.Content.UI
 
     }
 
-    public class PurifyingButton : PotionElement<PurificatingState>
+    public class PurifyingButton : PotionElement<PurificationState>
     {
 
-        //public PurificatingState purificatingState;
-
-        public PurifyingButton(PurificatingState purificatingState)
+        public PurifyingButton(PurificationState purificatingState)
         {
             PotionCraftState = purificatingState;
             Width.Set(100f, 0);
@@ -76,7 +75,6 @@ namespace PotionCraft.Content.UI
         {
             if (!AsPotion(Potion).PotionName.Equals(AsPotion(Material)) && Material.type != ModContent.ItemType<MagicPanacea>())
             {
-                Main.NewText("!");
                 return;
             }
             PotionCraftState.CreatedPotion = Potion.Clone();
@@ -85,20 +83,19 @@ namespace PotionCraft.Content.UI
             {
                 CreatedPotion.BuffDictionary[buff] *= 2;
             }
+            CreatedPotion.PurifyingCount++;
             if (CreatedPotion.BuffDictionary.Count == 1)
             {
-                CreatedPotion.PotionName = "纯化" + CreatedPotion.PotionName;
+                CreatedPotion.PotionName = ColorfulFont("Purifying."+(Math.Min(12, CreatedPotion.PurifyingCount)).ToString()) + " "+ CreatedPotion.PotionName;
             }
             else
             {
-                CreatedPotion.PotionName = "纯化(" + CreatedPotion.PotionName + ")";
+                CreatedPotion.PotionName = ColorfulFont("Purifying." + (Math.Min(12, CreatedPotion.PurifyingCount)).ToString())+"(" + CreatedPotion.PotionName + ")";
             }
-            Main.NewText("!!");
         }
 
         public override void CraftClick(UIMouseEvent evt)
         {
-            Main.NewText("!!!");
             if (PotionCraftState.Potion.IsAir || PotionCraftState.Material.IsAir) return;
             Purifying(PotionCraftState.Potion, PotionCraftState.Material);
             base.CraftClick(evt);

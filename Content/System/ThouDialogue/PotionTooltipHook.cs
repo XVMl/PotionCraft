@@ -16,15 +16,21 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
 
-namespace PotionCraft.Content.System
+namespace PotionCraft.Content.System.ThiuDialogue
 {
-    
-    public class PotionTooltipHook:ModSystem
+    /// <summary>
+    /// 此Hook用于修改物品提示栏背景
+    /// </summary>
+    public class PotionTooltipHook : ModSystem
     {
         public override void PostSetupContent()
         {
             LoadPotionTooltipBG();
         }
+
+        static readonly FieldInfo HoverItem = typeof(Main).GetField(nameof(Main.HoverItem))!;
+
+        static readonly FieldInfo type = typeof(Item).GetField(nameof(Item.type))!;
 
         static readonly FieldInfo X = typeof(Rectangle).GetField(nameof(Rectangle.X))!;
 
@@ -39,8 +45,8 @@ namespace PotionCraft.Content.System
         static readonly MethodInfo Assetsbuttion = typeof(Assets).GetMethod(nameof(Assets.UI.Button))!;
 
         static readonly MethodInfo White = typeof(Color).GetMethod("get_White")!;
-        
-        static readonly MethodInfo _DrawInvBG = typeof(Utils).GetMethod(nameof(Utils.DrawInvBG),BindingFlags.Public|BindingFlags.Static,[ 
+
+        static readonly MethodInfo _DrawInvBG = typeof(Utils).GetMethod(nameof(Utils.DrawInvBG), BindingFlags.Public | BindingFlags.Static, [
             typeof(SpriteBatch),
             typeof(int),
             typeof(int),
@@ -69,12 +75,6 @@ namespace PotionCraft.Content.System
         private static void PotionTooltipBG(ILContext context, ManagedILEdit edit)
         {
             ILCursor cursor = new ILCursor(context);
-            //MethodInfo drawInventoryBgMethod = typeof(Utils).GetMethod("DrawInvBG", new Type[]
-            //{
-            //typeof(SpriteBatch),
-            //typeof(Rectangle),
-            //typeof(Color)
-            //})!;
             if (!cursor.TryGotoNext(MoveType.AfterLabel,
                     i => i.MatchRet()
                 ))
@@ -82,12 +82,11 @@ namespace PotionCraft.Content.System
                 edit.LogFailure("Could not find the DrawInvBG call.");
                 return;
             }
-            //cursor.EmitLdcI4(5);
-            //cursor.EmitDelegate((int x) =>
-            //{
-            //    Main.NewText(x);
-            //});
-            
+            cursor.EmitLdsfld(HoverItem);
+            cursor.EmitLdfld(type);
+            cursor.EmitLdcI4(ModContent.ItemType<TestPotion>());
+            cursor.EmitCeq();
+            cursor.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[cursor.Index]);
             cursor.EmitLdarg0();
             cursor.EmitLdarg1();
             cursor.EmitLdfld(X);
@@ -99,32 +98,21 @@ namespace PotionCraft.Content.System
             cursor.EmitLdfld(H);
             cursor.EmitCall(White);
             cursor.EmitCall(_DrawInvBG);
-            cursor.EmitRet();
-
-
-            //cursor.EmitNop();
-            //cursor.EmitLdfld(SpriteBatch);
-            //cursor.EmitCall(Assetsbuttion);
-            //cursor.EmitLdarg1();
-            //cursor.EmitCall(White);
-            //cursor.EmitCallvirt(Draw);
-            //cursor.EmitNop();
-            //cursor.EmitRet();
         }
 
 
-        public static void DrawInvBG(SpriteBatch sb, Rectangle R, Color c = default(Color))
+        public static void DrawInvBG(SpriteBatch sb, Rectangle R, Color c = default)
         {
-            DrawInvBG(sb, R.X, R.Y, R.Width, R.Height, c);
-            if (!(Main.HoverItem.type == ModContent.ItemType<TestPotion>()))
+            if (Main.HoverItem.type == ModContent.ItemType<TestPotion>())
             {
-                return;
+                DrawInvBG(sb, R.X, R.Y, R.Width, R.Height, Color.White);
             }
+            DrawInvBG(sb, R.X, R.Y, R.Width, R.Height, c);
         }
-        public static void DrawInvBG(SpriteBatch sb, int x, int y, int w, int h, Color c = default(Color))
+        public static void DrawInvBG(SpriteBatch sb, int x, int y, int w, int h, Color c = default)
         {
             Main.NewText(x);
-            if (c == default(Color))
+            if (c == default)
                 c = new Color(63, 65, 151, 255) * 0.785f;
 
             Texture2D value = TextureAssets.InventoryBack13.Value;

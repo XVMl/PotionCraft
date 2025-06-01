@@ -15,107 +15,101 @@ Items: {
 	}
 }
 
-BuffColors: {
-	TModLoader: {
-		AmmoConservation: "[c/907A2D:Ammo Conservation]"
-		Archery: "[c/965600:Archery]"
-		Battle: "[c/592575:Battle]"
-		BiomeSight: "[c/C6A5DE:Biome Sight]"
-		Builder: "[c/8D64A9:Builder]"
-		Calming: "[c/4681B2:Calming]"
-		Crate: "[c/98622F:Crate]"
-		Dangersense: "[c/BD5715:Dangersense]"
-		Endurance: "[c/585858:Endurance]"
-		Featherfall: "[c/3FACBF:Featherfall]"
-		Fishing: "[c/1E7371:Fishing]"
-		Flipper: "[c/167F8D:Flipper]"
-		GenderChange: "[c/AF97DC:Gender Change]"
-		Gills: "[c/2E51C5:Gills]"
-		Gravitation: "[c/481C90:Gravitation]"
-		Heartreach: "[c/5186C9:Heartreach]"
-		Hunter: "[c/B96B3A:Hunter]"
-		Inferno: "[c/E14D08:Inferno]"
-		Invisibility: "[c/C8D2CC:Invisibility]"
-		Ironskin: "[c/8C7D71:Ironskin]"
-		Lifeforce: "[c/3E6D84:Lifeforce]"
-		Love: "[c/A52B33:Love]"
-		LesserLuck: "[c/8B8BA8:Lesser Luck]"
-		Luck: "[c/4B4C54:Luck]"
-		GreaterLuck: "[c/8D1874:Greater Luck]"
-		MagicPower: "[c/7949D2:Magic Power]"
-		MagicRegeneration: "[c/7949D2:Magic Regeneration]"
-		Mining: "[c/587A6B:Mining]"
-		NightOwl: "[c/6FE623:Night Owl]"
-		ObsidianSkin: "[c/3B3232:Obsidian Skin]"
-		Rage: "[c/963E44:Rage]"
-		Recall: "[c/3E7CAB:Recall]"
-		Regeneration: "[c/e60a8b:Regeneration]"
-		Return: "[c/4E4442:Return]"
-		Shine: "[c/F2E055:Shine]"
-		Sonar: "[c/2E6DBB:Sonar]"
-		Spelunker: "[c/D1D5DF:Spelunker]"
-		Stink: "[c/5E834D:Stink]"
-		Summoning: "[c/3D7320:Summoning]"
-		Swiftness: "[c/7CE551:Swiftness]"
-		Teleportation: "[c/63C3CB:Teleportation]"
-		Thorns: "[c/569A5D:Thorns]"
-		Titan: "[c/7CBDB9:Titan]"
-		Warmth: "[c/FDD273:Warmth]"
-		WaterWalking: "[c/3E74B7:Water Walking]"
-		Wormhole: "[c/536645:Wormhole]"
-		Wrath: "[c/720000:Wrath]"
+Colorfulfont: {
+	Craftfont: {
+		Purifying: {
+			1: "[c/FC14E2:Purifying]"
+			2: "[c/FC14D8:Purifying]"
+			3: "[c/FC14CD:Purifying]"
+			4: "[c/FC14C3:Purifying]"
+			5: "[c/FC14BA:Purifying]"
+			6: "[c/FC14B0:Purifying]"
+			7: "[c/FC14A6:Purifying]"
+			8: "[c/FC149C:Purifying]"
+			9: "[c/FC1492:Purifying]"
+			10: "[c/FC1488:Purifying]"
+			11: "[c/FC147E:Purifying]"
+			12: "[c/FC105C:Purifying]"
+		}
+
+		Purifyingleftparenthesis: {
+			1: "[c/FC14E2:(]"
+			2: "[c/FC14D8:(]"
+		}
+
+		MashUp: {
+			And: {
+				1: "[c/7A1FE6:And]"
+				2: "[c/6B19D1:And]"
+				3: "[c/5C14BC:And]"
+				4: "[c/4D0F9F:And]"
+				5: "[c/3E0B87:And]"
+				6: "[c/340773:And]"
+				7: "[c/2B065F:And]"
+				8: "[c/21044B:And]"
+				9: "[c/190238:And]"
+				10: "[c/100024:And]"
+				11: "[c/0D0036:And]"
+				12: "[c/0A004A:And]"
+				13: "[c/0a0032:And]"
+				14: "[c/02000f:And]"
+			}
+		}
 	}
 
-	Calamity: {
-		1: "[c/1E1E1E:黑曜石皮]"
-		2: "[c/FF8C00:再生]"
-		3: "[c/90EE90:敏捷]"
-		4: "[c/006400:鱼鳃]"
-		6: "[c/8A2BE2:魔力再生]"
-		7: "[c/8A2BE2:魔能]"
-		8: "[c/87CEEB:羽落]"
-		9: "[c/CD8B19:洞穴探险]"
-		10: "[c/00CECB:隐身]"
-		11: "[c/FFFF00:光芒]"
-		12: "[c/B0C4DE:夜猫子]"
-		13: "[c/800080:战斗]"
-		14: "[c/008000:荆棘]"
-		15: "[c/0000FF:水上漂]"
-		16: "[c/FF8C00:箭术]"
-		17: "[c/FF4500:猎人]"
-		18: "[c/9400D3:重力]"
-		48: "[c/FF1493:蜂蜜]"
-		57: "[c/003200:妖灵]"
-		58: "[c/87CEFA:快速治疗]"
-		59: "[c/FF1493:神圣防护]"
-		62: "[c/87CEEB:冰障]"
-		63: "[c/FF4500:恐慌！]"
-		71: "[c/003200:武器灌注：酸性毒液]"
-		73: "[c/008000:武器灌注：诅咒焰]"
-		74: "[c/DC143C:武器灌注：火焰]"
-		75: "[c/FFD700:武器灌注：金]"
-		76: "[c/FFFF00:武器灌注：灵液]"
-		77: "[c/808080:武器灌注：纳米机器人]"
-		78: "[c/DAD2E9:武器灌注：彩纸]"
-		79: "[c/006400:武器灌注：毒药]"
-		93: "[c/8B4513:弹药储备]"
-		104: "[c/4682B4:挖矿]"
-		105: "[c/FFA500:拾心]"
-		106: "[c/A52A2A:冷静]"
-		107: "[c/5F9E9C:建筑工]"
-		108: "[c/228B22:泰坦]"
-		109: "[c/228B22:脚蹼]"
-		110: "[c/00C7FF:召唤]"
-		111: "[c/FF4500:危险感]"
-		112: "[c/8B4513:弹药储备]"
-		113: "[c/B22222:生命力]"
-		114: "[c/808080:耐力]"
-		115: "[c/DC143C:暴怒]"
-		116: "[c/DC143C:狱火]"
-		117: "[c/FF0000:怒气]"
-		121: "[c/ADD8E6:钓鱼]"
-		122: "[c/DAD2E9:声呐]"
-		123: "[c/8B4513:宝匣]"
+	BuffColors: {
+		TModLoader: {
+			AmmoConservation: "[c/907A2D:Ammo Conservation]"
+			Archery: "[c/965600:Archery]"
+			Battle: "[c/592575:Battle]"
+			BiomeSight: "[c/C6A5DE:Biome Sight]"
+			Builder: "[c/8D64A9:Builder]"
+			Calming: "[c/4681B2:Calming]"
+			Crate: "[c/98622F:Crate]"
+			Dangersense: "[c/BD5715:Dangersense]"
+			Endurance: "[c/585858:Endurance]"
+			Featherfall: "[c/3FACBF:Featherfall]"
+			Fishing: "[c/1E7371:Fishing]"
+			Flipper: "[c/167F8D:Flipper]"
+			GenderChange: "[c/AF97DC:Gender Change]"
+			Gills: "[c/2E51C5:Gills]"
+			Gravitation: "[c/481C90:Gravitation]"
+			Heartreach: "[c/5186C9:Heartreach]"
+			Hunter: "[c/B96B3A:Hunter]"
+			Inferno: "[c/E14D08:Inferno]"
+			Invisibility: "[c/C8D2CC:Invisibility]"
+			Ironskin: "[c/8C7D71:Ironskin]"
+			Lifeforce: "[c/3E6D84:Lifeforce]"
+			Love: "[c/A52B33:Love]"
+			LesserLuck: "[c/8B8BA8:Lesser Luck]"
+			Luck: "[c/4B4C54:Luck]"
+			GreaterLuck: "[c/8D1874:Greater Luck]"
+			MagicPower: "[c/7949D2:Magic Power]"
+			MagicRegeneration: "[c/7949D2:Magic Regeneration]"
+			Mining: "[c/587A6B:Mining]"
+			NightOwl: "[c/6FE623:Night Owl]"
+			ObsidianSkin: "[c/3B3232:Obsidian Skin]"
+			Rage: "[c/963E44:Rage]"
+			Recall: "[c/3E7CAB:Recall]"
+			Regeneration: "[c/e60a8b:Regeneration]"
+			Return: "[c/4E4442:Return]"
+			Shine: "[c/F2E055:Shine]"
+			Sonar: "[c/2E6DBB:Sonar]"
+			Spelunker: "[c/D1D5DF:Spelunker]"
+			Stink: "[c/5E834D:Stink]"
+			Summoning: "[c/3D7320:Summoning]"
+			Swiftness: "[c/7CE551:Swiftness]"
+			Teleportation: "[c/63C3CB:Teleportation]"
+			Thorns: "[c/569A5D:Thorns]"
+			Titan: "[c/7CBDB9:Titan]"
+			Warmth: "[c/FDD273:Warmth]"
+			WaterWalking: "[c/3E74B7:Water Walking]"
+			Wormhole: "[c/536645:Wormhole]"
+			Wrath: "[c/720000:Wrath]"
+		}
+
+		Calamity: {
+		}
 	}
 }
 
@@ -134,4 +128,21 @@ NPCs: {
 			Princess_LovesNPC: I like {NPCName}.
 		}
 	}
+
+	Thou: {
+		DisplayName: Thou
+
+		TownNPCMood: {
+			Content: I am content.
+			NoHome: I hate not having a home.
+			FarFromHome: I am too far from home.
+			LoveSpace: I love having so much space.
+			DislikeCrowded: I dislike how crowded I am.
+			HateCrowded: I hate how crowded I am.
+			LikeNPC_Princess: I like {NPCName}.
+			Princess_LovesNPC: I like {NPCName}.
+		}
+	}
 }
+
+Projectiles.TestRay.DisplayName: Test Ray

@@ -18,10 +18,19 @@ namespace PotionCraft.Content.Items
 {
     public class TestPotion : ModItem
     {
+        /// <summary>
+        /// 将会显示的药剂名
+        /// </summary>
         public string PotionName = "";
-
-        public override LocalizedText DisplayName => base.DisplayName;
-
+        /// <summary>
+        /// 精炼的次数，用于改变字体颜色
+        /// </summary>
+        public int PurifyingCount;
+        /// <summary>
+        /// 组合的次数，用于改变字体颜色
+        /// </summary>
+        public int MashUpCount;
+        
         public Dictionary<int, int> BuffDictionary = new();
 
         static readonly ConstructorInfo Internal_TooltipLine = typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null,new Type[]{
@@ -52,6 +61,8 @@ namespace PotionCraft.Content.Items
             tag["BuffID"] = BuffDictionary.Keys.ToList();
             tag["BuffTime"] = BuffDictionary.Values.ToList();
             tag["PotionName"] = PotionName;
+            //tag["PurifyingCount"] = PurifyingCount;
+            //tag["MashUpCount"] = MashUpCount;
         }
 
         public override void LoadData(TagCompound tag)
@@ -60,7 +71,6 @@ namespace PotionCraft.Content.Items
             var BuffTime = tag.Get<List<int>>("BuffTime");
             BuffDictionary = BuffID.Zip(BuffTime, (k, v) => new { Key = k, value = v }).ToDictionary(x => x.Key, x => x.value);
             PotionName = tag.GetString("PotionName");
-            UpdataName();
         }
 
         public void Purifying()

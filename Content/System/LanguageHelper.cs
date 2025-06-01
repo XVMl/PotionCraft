@@ -14,8 +14,9 @@ namespace PotionCraft.Content.System
         public static string TryGetLanguagValue(string path)
         {
             string lang = null;
-            string key = "Mods.PotionCraft." + path.Replace(" ","");
+            string key = "Mods.PotionCraft.Colorfulfont." + path.Replace(" ", "");
             lang += Language.GetTextValue(key);
+            Main.NewText(lang);
             if (lang.Equals(key))
             {
                 return null;
@@ -23,8 +24,11 @@ namespace PotionCraft.Content.System
             return lang;
         }
 
+        public static string ColorfulFont(string path) => TryGetLanguagValue("Craftfont." + path);
+
         public static string ColorfulBuffName(string path)=>TryGetLanguagValue("BuffColors.TModLoader." + path);
 
         public static string ColorfulBuffName(int buffid) => TryGetLanguagValue("BuffColors.TModLoader." + Lang.GetBuffName(buffid));
+
     }
 }

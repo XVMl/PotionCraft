@@ -11,12 +11,12 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
-
+using static PotionCraft.Content.System.LanguageHelper;
 namespace PotionCraft.Content.UI
 {
     public class MashUpState : AutoUIState
     {
-        public override bool IsLoaded() => PotionCraftState.ActiveState && PotionCraftState.CraftState == CraftUIState.MashUp;
+        public override bool IsLoaded() => ActiveState && CraftState == CraftUIState.MashUp;
 
         public override string Layers_FindIndex => "Vanilla: Mouse Text";
 
@@ -92,7 +92,7 @@ namespace PotionCraft.Content.UI
             }
             else 
             { 
-                CreatedPotion.PotionName += " 和 " + Material.DisplayName.Value;
+                CreatedPotion.PotionName +=" "+ ColorfulFont("MashUp" + (Math.Min(14, CreatedPotion.PurifyingCount)).ToString()) +" "+ Material.DisplayName.Value;
             }
         }
 
@@ -110,12 +110,12 @@ namespace PotionCraft.Content.UI
             }
             if (CreatedPotion.BuffDictionary.Count == 1)
             {
-                CreatedPotion.PotionName += LanguageHelper.ColorfulBuffName(Material.buffType);
+                CreatedPotion.PotionName += ColorfulBuffName(Material.buffType);
             }
             else
             {
-                CreatedPotion.PotionName += " 和 " + LanguageHelper.ColorfulBuffName(Material.buffType);
-                Main.NewText(Lang.GetBuffName(Material.buffType));
+                CreatedPotion.MashUpCount++;
+                CreatedPotion.PotionName +=" "+ColorfulFont("MashUp.And." + (Math.Min(14, CreatedPotion.MashUpCount)).ToString()) +" "+ ColorfulBuffName(Material.buffType);
             }
         }
 

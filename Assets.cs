@@ -20,6 +20,8 @@ namespace PotionCraft
             
             public static readonly string Items = Assets + "Items/";
 
+            public static readonly string Noise = Assets + "Noise/";
+
         }
         public class UI
         {
@@ -47,6 +49,11 @@ namespace PotionCraft
         public class NPCs
         {
             public static Asset<Texture2D> NPCsTexture(string path) => ModContent.Request<Texture2D>("PotionCraft/Assets/NPCs/" + path);
+
+            public static Texture2D DendriticNoiseZoomedOut => NPCsTexture("DendriticNoiseZoomedOut").Value;
+
+            public static Texture2D BloomCircleSmall => NPCsTexture("BloomCircleSmall").Value;
+
         }
     }
 
