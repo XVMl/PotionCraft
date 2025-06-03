@@ -44,7 +44,7 @@ namespace PotionCraft.Content.System.ThiuDialogue
 
         static readonly MethodInfo Assetsbuttion = typeof(Assets).GetMethod(nameof(Assets.UI.Button))!;
 
-        static readonly MethodInfo White = typeof(Color).GetMethod("get_White")!;
+        static readonly MethodInfo DarkSlateBlue = typeof(Color).GetMethod("get_DarkSlateBlue")!;
 
         static readonly MethodInfo _DrawInvBG = typeof(Utils).GetMethod(nameof(Utils.DrawInvBG), BindingFlags.Public | BindingFlags.Static, [
             typeof(SpriteBatch),
@@ -75,6 +75,15 @@ namespace PotionCraft.Content.System.ThiuDialogue
         private static void PotionTooltipBG(ILContext context, ManagedILEdit edit)
         {
             ILCursor cursor = new ILCursor(context);
+            ILCursor il= new ILCursor(context);
+            if (!il.TryGotoNext(MoveType.AfterLabel,
+                    i => i.MatchLdarg0(),
+                    i => i.MatchLdarg1()
+                ))
+            {
+                edit.LogFailure("Could not find the DrawInvBG call.");
+                return;
+            }
             if (!cursor.TryGotoNext(MoveType.AfterLabel,
                     i => i.MatchRet()
                 ))
@@ -82,9 +91,15 @@ namespace PotionCraft.Content.System.ThiuDialogue
                 edit.LogFailure("Could not find the DrawInvBG call.");
                 return;
             }
+            il.EmitLdsfld(HoverItem);
+            il.EmitLdfld(type);
+            il.EmitLdcI4(ModContent.ItemType<TestPotion>());
+            il.EmitCeq();
+            il.Emit(Mono.Cecil.Cil.OpCodes.Brtrue_S, context.Instrs[cursor.Index]);
+
             cursor.EmitLdsfld(HoverItem);
             cursor.EmitLdfld(type);
-            cursor.EmitLdcI4(ModContent.ItemType<TestPotion>());
+            cursor.EmitLdcI4(ModContent.ItemType<MagicPanacea>());
             cursor.EmitCeq();
             cursor.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[cursor.Index]);
             cursor.EmitLdarg0();
@@ -96,7 +111,7 @@ namespace PotionCraft.Content.System.ThiuDialogue
             cursor.EmitLdfld(W);
             cursor.EmitLdarg1();
             cursor.EmitLdfld(H);
-            cursor.EmitCall(White);
+            cursor.EmitCall(DarkSlateBlue);
             cursor.EmitCall(_DrawInvBG);
         }
 
@@ -111,7 +126,7 @@ namespace PotionCraft.Content.System.ThiuDialogue
         }
         public static void DrawInvBG(SpriteBatch sb, int x, int y, int w, int h, Color c = default)
         {
-            Main.NewText(x);
+            
             if (c == default)
                 c = new Color(63, 65, 151, 255) * 0.785f;
 

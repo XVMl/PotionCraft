@@ -12,7 +12,7 @@ using Terraria;
 using static PotionCraft.Content.System.LanguageHelper;
 using Microsoft.Xna.Framework;
 
-namespace PotionCraft.Content.UI
+namespace PotionCraft.Content.UI.CraftUI
 {
     public class PurificationState : AutoUIState
     {
@@ -22,7 +22,7 @@ namespace PotionCraft.Content.UI
         public PotionSlot<PurificationState> potionslot;
 
         public MaterialSlot<PurificationState> material;
-        
+
         protected CreatedPotionSlot<PurificationState> CreatedPotionSlot;
 
         public PurifyingButton purifyingbutton;
@@ -71,7 +71,7 @@ namespace PotionCraft.Content.UI
             Height.Set(32f, 0);
         }
 
-        private void Purifying(Item Potion,Item Material)
+        private void Purifying(Item Potion, Item Material)
         {
             if (!AsPotion(Potion).PotionName.Equals(AsPotion(Material)) && Material.type != ModContent.ItemType<MagicPanacea>())
             {
@@ -86,11 +86,11 @@ namespace PotionCraft.Content.UI
             CreatedPotion.PurifyingCount++;
             if (CreatedPotion.BuffDictionary.Count == 1)
             {
-                CreatedPotion.PotionName = ColorfulFont("Purifying."+(Math.Min(12, CreatedPotion.PurifyingCount)).ToString()) + " "+ CreatedPotion.PotionName;
+                CreatedPotion.PotionName = ColorfulFont("Purifying." + Math.Min(12, CreatedPotion.PurifyingCount).ToString()) + " " + CreatedPotion.PotionName;
             }
             else
             {
-                CreatedPotion.PotionName = ColorfulFont("Purifying." + (Math.Min(12, CreatedPotion.PurifyingCount)).ToString())+"(" + CreatedPotion.PotionName + ")";
+                CreatedPotion.PotionName = ColorfulFont("Purifying." + Math.Min(12, CreatedPotion.PurifyingCount).ToString()) + "(" + CreatedPotion.PotionName + ")";
             }
         }
 

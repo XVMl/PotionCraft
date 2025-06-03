@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
-namespace PotionCraft.Content.UI
+namespace PotionCraft.Content.UI.CraftUI
 {
     public class PotionCraftState : AutoUIState
     {
@@ -40,7 +40,7 @@ namespace PotionCraft.Content.UI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Assets.UI.BackGround1,area.GetDimensions().ToRectangle(), Color.White);
+            spriteBatch.Draw(Assets.UI.BackGround1, area.GetDimensions().ToRectangle(), Color.White);
         }
 
     }
@@ -53,21 +53,6 @@ namespace PotionCraft.Content.UI
             Width.Set(80f, 0f);
             Height.Set(80f, 0f);
         }
-
-        //public override void SafeClick(UIMouseEvent evt)
-        //{
-        //    if (!Main.mouseItem.IsAir && PotionCraftState.Potion.IsAir)
-        //    {
-        //        PotionCraftState.Potion = Main.mouseItem.Clone();
-        //        Main.LocalPlayer.HeldItem.TurnToAir();
-        //        Main.mouseItem.TurnToAir();
-        //    }
-        //    else if (Main.mouseItem.IsAir && !PotionCraftState.Potion.IsAir)
-        //    { 
-        //        Main.mouseItem = PotionCraftState.Potion.Clone();
-        //        PotionCraftState.Potion.TurnToAir();
-        //    }
-        //}
 
         public override void LeftClick(UIMouseEvent evt)
         {
@@ -181,7 +166,7 @@ namespace PotionCraft.Content.UI
                 ItemSlot.Draw(spriteBatch, ref PotionCraftState.CreatedPotion, 21, GetDimensions().Position());
                 if (IsMouseHovering)
                 {
-                    
+
                     Main.LocalPlayer.mouseInterface = true;
                     Main.HoverItem = PotionCraftState.CreatedPotion.Clone();
                     Main.hoverItemName = "a";

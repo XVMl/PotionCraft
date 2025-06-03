@@ -112,7 +112,7 @@ namespace PotionCraft.Content.Items
             {
                 return;
             }
-            
+            tooltips.Clear();
             //tooltips.Add((TooltipLine)Internal_TooltipLine.Invoke(["ItemName", PotionName + "药剂"]));
             tooltips.Add(new TooltipLine(Mod, "s", PotionName));
         }

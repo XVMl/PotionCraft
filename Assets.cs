@@ -40,6 +40,8 @@ namespace PotionCraft
             public static Texture2D BackGround => UITexture("Background").Value;
          
             public static Texture2D BackGround1 => UITexture("Background1").Value;
+
+            public static Texture2D Tooltip => UITexture("Tooltip").Value;
         }
         public class Items
         {

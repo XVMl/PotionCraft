@@ -1,6 +1,6 @@
 ﻿using Luminance.Assets;
 using Luminance.Common.Utilities;
-using PotionCraft.Content.UI;
+using PotionCraft.Content.UI.CraftUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;

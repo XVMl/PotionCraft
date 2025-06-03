@@ -39,7 +39,7 @@ namespace PotionCraft.Content.Projectiles.Thou
         /// <summary>
         /// How long this laserbeam should exist for, in frames.
         /// </summary>
-        public static int Lifetime => Utilities.SecondsToFrames(3.75f);
+        public static int Lifetime => SecondsToFrames(3.75f);
 
         /// <summary>
         /// The maximum length of this laserbeam.
@@ -81,19 +81,17 @@ namespace PotionCraft.Content.Projectiles.Thou
 
         public override void AI()
         {
-            
 
             AimTowardsMouse();
 
-            NPC solyn = Main.npc[SolynIndex];
             Vector2 offsetBetweenOwners = Owner.Center - Owner.Center;
             Projectile.Center = Owner.Center + offsetBetweenOwners * 0.5f + Projectile.velocity * 100f;
 
             LaserbeamLength = Clamp(LaserbeamLength + 175f, 0f, MaxLaserbeamLength);
 
-            ScreenShakeSystem.StartShake(Utilities.InverseLerp(0f, 20f, Time) * 2f);
+            //ScreenShakeSystem.StartShake(Utilities.InverseLerp(0f, 20f, Time) * 2f);
 
-            CreateOuterParticles();
+            //CreateOuterParticles();
 
             Time++;
         }
@@ -193,10 +191,10 @@ namespace PotionCraft.Content.Projectiles.Thou
             Texture2D glow =Assets.NPCs.BloomCircleSmall;
             Texture2D flare = MiscTexturesRegistry.ShineFlareTexture.Value;
 
-            for (int i = 0; i < 3; i++)
-                Main.spriteBatch.Draw(flare, drawPosition, null, Projectile.GetAlpha(LensFlareColor with { A = 0 }), 0f, flare.Size() * 0.5f, shineIntensity * 2f, 0, 0f);
-            for (int i = 0; i < 2; i++)
-                Main.spriteBatch.Draw(glow, drawPosition, null, Projectile.GetAlpha(LensFlareColor with { A = 0 }), 0f, glow.Size() * 0.5f, shineIntensity * 2f, 0, 0f);
+            //for (int i = 0; i < 3; i++)
+            //    Main.spriteBatch.Draw(flare, drawPosition, null, Projectile.GetAlpha(LensFlareColor with { A = 0 }), 0f, flare.Size() * 0.5f, shineIntensity * 2f, 0, 0f);
+            //for (int i = 0; i < 2; i++)
+            //    Main.spriteBatch.Draw(glow, drawPosition, null, Projectile.GetAlpha(LensFlareColor with { A = 0 }), 0f, glow.Size() * 0.5f, shineIntensity * 2f, 0, 0f);
 
             return false;
         }

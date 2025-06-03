@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,8 +54,9 @@ namespace PotionCraft.Content.NPCs
 
         public override string GetChat()
         {
-            //Main.LocalPlayer.TalkNPC
             return base.GetChat();
         }
+
+
     }
 }

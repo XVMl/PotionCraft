@@ -12,7 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 using static PotionCraft.Content.System.LanguageHelper;
-namespace PotionCraft.Content.UI
+namespace PotionCraft.Content.UI.CraftUI
 {
     public class MashUpState : AutoUIState
     {
@@ -65,7 +65,7 @@ namespace PotionCraft.Content.UI
     public class MashUpButton : PotionElement<MashUpState>
     {
         //private MashUpState MashUpState { get; set; }
-        public MashUpButton(MashUpState mashUpState) 
+        public MashUpButton(MashUpState mashUpState)
         {
             PotionCraftState = mashUpState;
             Width.Set(100f, 0);
@@ -90,9 +90,9 @@ namespace PotionCraft.Content.UI
             {
                 CreatedPotion.PotionName += Material.DisplayName.Value;
             }
-            else 
-            { 
-                CreatedPotion.PotionName +=" "+ ColorfulFont("MashUp" + (Math.Min(14, CreatedPotion.PurifyingCount)).ToString()) +" "+ Material.DisplayName.Value;
+            else
+            {
+                CreatedPotion.PotionName += " " + ColorfulFont("MashUp" + Math.Min(14, CreatedPotion.PurifyingCount).ToString()) + " " + Material.DisplayName.Value;
             }
         }
 
@@ -115,7 +115,7 @@ namespace PotionCraft.Content.UI
             else
             {
                 CreatedPotion.MashUpCount++;
-                CreatedPotion.PotionName +=" "+ColorfulFont("MashUp.And." + (Math.Min(14, CreatedPotion.MashUpCount)).ToString()) +" "+ ColorfulBuffName(Material.buffType);
+                CreatedPotion.PotionName += " " + ColorfulFont("MashUp.And." + Math.Min(14, CreatedPotion.MashUpCount).ToString()) + " " + ColorfulBuffName(Material.buffType);
             }
         }
 

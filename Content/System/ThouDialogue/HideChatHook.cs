@@ -9,42 +9,53 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
 using System.Reflection;
+using PotionCraft.Content.NPCs;
 namespace PotionCraft.Content.System.ThiuDialogue
 {
     public class HideChatHook:ModSystem
     {
         public override void PostSetupContent()
         {
-            Loadprojectile();
-        }
-        private static void Loadprojectile()
-        {
-            new ManagedILEdit("The Potion`s tooltip background", ModContent.GetInstance<PotionCraft>(), edit =>
-            {
-                IL_Projectile.NewProjectile_IEntitySource_float_float_float_float_int_int_float_int_float_float_float += edit.SubscriptionWrapper;
-            }, edit =>
-            {
-                IL_Projectile.NewProjectile_IEntitySource_float_float_float_float_int_int_float_int_float_float_float -= edit.SubscriptionWrapper;
-            }, NewProjectile).Apply();
+            LoadHideChatUI();
         }
 
-        private static void NewProjectile(ILContext context,ManagedILEdit edit)
+        static readonly FieldInfo player = typeof(Main).GetField(nameof(Main.player))!;
+        
+        static readonly FieldInfo myplayer = typeof(Main).GetField(nameof(Main.myPlayer))!;
+
+        private static void LoadHideChatUI()
+        {
+            new ManagedILEdit("Hide Chat Hook ERROR!", ModContent.GetInstance<PotionCraft>(), edit =>
+            {
+                IL_Main.GUIChatDrawInner += edit.SubscriptionWrapper;
+            }, edit =>
+            {
+                IL_Main.GUIChatDrawInner -= edit.SubscriptionWrapper;
+            },HideChatUI ).Apply();
+        }
+
+        private static void HideChatUI(ILContext context, ManagedILEdit edit) 
         {
             ILCursor cursor = new ILCursor(context);
             if (!cursor.TryGotoNext(MoveType.AfterLabel,
-                    i => i.MatchLdloc0(),
-                    i => i.MatchRet()
-                ))
+                i => i.MatchLdsfld(player),
+                i => i.MatchLdsfld(myplayer)))
             {
-                edit.LogFailure("Could not find the NewProjectile call.");
+                edit.LogFailure("Find ERROR!");
                 return;
             }
-            cursor.EmitLdarg(5);
-            cursor.EmitDelegate((int x) =>
+            cursor.EmitDelegate(() =>
             {
-                Main.NewText(x);
+                if (Main.LocalPlayer.talkNPC > 0)
+                {
+                    return Main.npc[Main.LocalPlayer.talkNPC].type == ModContent.NPCType<Thou>() ? 1 : 0;
+                }
+                return 0;
             });
-  
+            cursor.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[cursor.Index]);
+            cursor.EmitRet();
+
         }
+
     }
 }
