@@ -14,6 +14,9 @@ using Terraria.UI;
 
 namespace PotionCraft.Content.UI
 {
+    /// <summary>
+    /// 此类用于修改药水的提示栏
+    /// </summary>
     public class TooltipUI : AutoUIState
     {
         public override bool IsLoaded() =>Show;

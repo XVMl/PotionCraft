@@ -11,6 +11,11 @@ namespace PotionCraft.Content.System
 {
     public class LanguageHelper
     {
+        /// <summary>
+        /// 尝试从.hjson获取文本，没有则返回空
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static string TryGetLanguagValue(string path)
         {
             string lang = null;
