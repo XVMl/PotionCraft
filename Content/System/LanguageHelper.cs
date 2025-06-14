@@ -35,5 +35,28 @@ namespace PotionCraft.Content.System
 
         public static string ColorfulBuffName(int buffid) => TryGetLanguagValue("BuffColors.TModLoader." + Lang.GetBuffName(buffid));
 
+        public static List<object> GenerateRandomPostfix()
+        {
+            Random random = new Random();
+            int numOperands = random.Next(3, 5);
+            List<object> experssion = new() { random.Next(1,34) };
+
+            for (int i = 0; i < numOperands; i++)
+            {
+                experssion.Add(random.Next(1, 100).ToString());
+                experssion.Add("and");
+            }
+
+            int Operrands = random.Next(numOperands, 2 * numOperands);
+
+            for (int i = 0; i < Operrands; i++)
+            {
+                string oper = random.Next(0, 2) == 1 ? "purifying" : "boling";
+                experssion.Insert(random.Next(1, experssion.Count + 1), oper);
+            }
+            return experssion;
+        }
+
+
     }
 }
