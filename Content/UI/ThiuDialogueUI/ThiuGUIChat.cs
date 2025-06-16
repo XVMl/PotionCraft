@@ -14,7 +14,7 @@ using Terraria.UI;
 
 namespace PotionCraft.Content.UI.ThouDialogueUI
 {
-    public class ThouGUIChat : AutoUIState
+    public class ThiuGUIChat : AutoUIState
     {
         private bool Active;
         public override bool IsLoaded() => Active;
