@@ -101,6 +101,13 @@ namespace PotionCraft.Content.UI.CraftUI
             base.CraftClick(evt);
         }
 
+        //public override void LeftClick(UIMouseEvent evt)
+        //{
+        //    if (PotionCraftState.Material.IsAir) return;
+        //    TestPotion tes = AsPotion(PotionCraftState.Potion);
+        //    tes.BuffDictionary.TryAdd(34, 300);
+        //    tes.Purifying();
+        //}
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
