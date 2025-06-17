@@ -48,7 +48,7 @@ namespace PotionCraft.Content.System.ThiuDialogue
             {
                 if (Main.LocalPlayer.talkNPC > 0)
                 {
-                    return Main.npc[Main.LocalPlayer.talkNPC].type == ModContent.NPCType<Thou>() ? 1 : 0;
+                    return Main.npc[Main.LocalPlayer.talkNPC].type == ModContent.NPCType<Thiu>() ? 1 : 0;
                 }
                 return 0;
             });

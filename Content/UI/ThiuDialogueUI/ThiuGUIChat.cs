@@ -9,7 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
+using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace PotionCraft.Content.UI.ThouDialogueUI
@@ -21,28 +23,46 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
         public override string Layers_FindIndex => "Vanilla: Mouse Text";
 
         private UIElement Area;
+
+        private UIImageButton PuriyingButton;
+
+        private UIImageButton MashUpButton;
         public override void OnInitialize()
         {
-            Area = new UIElement() {
+            Area = new UIElement()
+            {
                 HAlign = 0.5f,
-                VAlign = 0.8f,
+                VAlign = 0.9f,
             };
-            Area.Width.Set(400f, 0);
+            Area.Width.Set(600f, 0);
             Area.Height.Set(300f, 0);
+            PuriyingButton = new(Assets.UI.UITexture("Button_Filtering"))
+            {
+                HAlign = 0.3f,
+                VAlign = 0.9f,
+            };
+            PuriyingButton.OnLeftClick += PurifyingButtonClick;
+            MashUpButton = new(Assets.UI.UITexture("Button_Filtering"))
+            {
+                HAlign = 0.3f,
+                VAlign = 0.9f,
+            };
+            MashUpButton.OnLeftClick += MashUpButtonClick;
             Append(Area);
+            Area.Append(PuriyingButton);
+            Area.Append(MashUpButton);
         }
 
         public override void Update(GameTime gameTime)
         {
-            //Active = Main.LocalPlayer.talkNPC == ModContent.NPCType<Thou>();
-            //Main.NewText(ModContent.NPCType<Thou>());
             if (Main.LocalPlayer.talkNPC > 0)
             {
-                Active = Main.npc[Main.LocalPlayer.talkNPC].type == ModContent.NPCType<Thou>();
+                Active = Main.npc[Main.LocalPlayer.talkNPC].type == ModContent.NPCType<Thiu>();
             }
             else
             {
-                Active= false;
+                Active = false;
+                CraftState = CraftUIState.defult;
             }
         }
 
@@ -50,5 +70,17 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
         {
             spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(), Color.White);
         }
+
+        private void PurifyingButtonClick(UIMouseEvent evt, UIElement listeningElement)
+        {
+            CraftState = CraftUIState.Purificating;
+        }
+
+        private void MashUpButtonClick(UIMouseEvent evt, UIElement listeningElement)
+        {
+            CraftState = CraftUIState.MashUp;
+        }
+
     }
+
 }

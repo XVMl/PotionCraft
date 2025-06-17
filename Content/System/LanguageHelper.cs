@@ -35,11 +35,11 @@ namespace PotionCraft.Content.System
 
         public static string ColorfulBuffName(int buffid) => TryGetLanguagValue("BuffColors.TModLoader." + Lang.GetBuffName(buffid));
 
-        public static List<object> GenerateRandomPostfix()
+        public static List<string> GenerateRandomPostfix()
         {
             Random random = new Random();
             int numOperands = random.Next(3, 5);
-            List<object> experssion = new() { random.Next(1,34) };
+            List<string> experssion = new() { "34" };
 
             for (int i = 0; i < numOperands; i++)
             {
@@ -47,7 +47,7 @@ namespace PotionCraft.Content.System
                 experssion.Add("and");
             }
 
-            int Operrands = random.Next(numOperands, 2 * numOperands);
+            int Operrands = random.Next(2 * numOperands, 3 * numOperands);
 
             for (int i = 0; i < Operrands; i++)
             {
@@ -55,6 +55,36 @@ namespace PotionCraft.Content.System
                 experssion.Insert(random.Next(1, experssion.Count + 1), oper);
             }
             return experssion;
+        }
+
+        public static string ConverToInfix(List<string> postlist)
+        {
+            Stack<string> stack = new();
+            foreach (string token in postlist)
+            {
+                if (token == "purifying" || token == "boling")
+                {
+                    string operand = stack.Pop();
+
+                    bool needParens = operand.Contains("and") || operand.Contains("purifying") || operand.Contains("boling");
+
+                    string expr = needParens ? $"({operand})" : operand;
+
+                    if (token == "purifying")
+                        stack.Push($"purifying({expr})");
+                    else
+                        stack.Push($"{expr}boling");
+                }
+                else if (token == "and")
+                {
+                    stack.Push($"{stack.Pop()} and {stack.Pop()}");
+                }
+                else
+                {
+                    stack.Push(token);
+                }
+            }
+            return stack.Pop();
         }
 
 

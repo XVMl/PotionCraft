@@ -175,6 +175,7 @@ namespace PotionCraft.Content.System
         /// </summary>
         public enum CraftUIState
         {
+            defult,
             Purificating,
             MashUp,
             Boling

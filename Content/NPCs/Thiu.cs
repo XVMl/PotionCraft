@@ -10,9 +10,9 @@ using Terraria.ModLoader;
 
 namespace PotionCraft.Content.NPCs
 {
-    public class Thou:ModNPC
+    public class Thiu:ModNPC
     {
-        public override string Texture => "PotionCraft/Assets/NPCs/Thou";
+        public override string Texture => "PotionCraft/Assets/NPCs/Thiu";
 
         public override void SetStaticDefaults()
         {
