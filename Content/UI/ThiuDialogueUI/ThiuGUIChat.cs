@@ -24,9 +24,11 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
 
         private UIElement Area;
 
-        private UIImageButton PuriyingButton;
+        public UIImageButton PurifyingButton;
 
         private UIImageButton MashUpButton;
+
+
         public override void OnInitialize()
         {
             Area = new UIElement()
@@ -36,21 +38,8 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
             };
             Area.Width.Set(600f, 0);
             Area.Height.Set(300f, 0);
-            PuriyingButton = new(Assets.UI.UITexture("Button_Filtering"))
-            {
-                HAlign = 0.3f,
-                VAlign = 0.9f,
-            };
-            PuriyingButton.OnLeftClick += PurifyingButtonClick;
-            MashUpButton = new(Assets.UI.UITexture("Button_Filtering"))
-            {
-                HAlign = 0.3f,
-                VAlign = 0.9f,
-            };
-            MashUpButton.OnLeftClick += MashUpButtonClick;
             Append(Area);
-            Area.Append(PuriyingButton);
-            Area.Append(MashUpButton);
+            //Area.Append(MashUpButton);
         }
 
         public override void Update(GameTime gameTime)
@@ -69,7 +58,7 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
         protected override void DrawChildren(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(), Color.White);
-        }
+         }
 
         private void PurifyingButtonClick(UIMouseEvent evt, UIElement listeningElement)
         {

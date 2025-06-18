@@ -191,10 +191,10 @@ namespace PotionCraft.Content.Projectiles.Thou
             Texture2D glow =Assets.NPCs.BloomCircleSmall;
             Texture2D flare = MiscTexturesRegistry.ShineFlareTexture.Value;
 
-            //for (int i = 0; i < 3; i++)
-            //    Main.spriteBatch.Draw(flare, drawPosition, null, Projectile.GetAlpha(LensFlareColor with { A = 0 }), 0f, flare.Size() * 0.5f, shineIntensity * 2f, 0, 0f);
-            //for (int i = 0; i < 2; i++)
-            //    Main.spriteBatch.Draw(glow, drawPosition, null, Projectile.GetAlpha(LensFlareColor with { A = 0 }), 0f, glow.Size() * 0.5f, shineIntensity * 2f, 0, 0f);
+            for (int i = 0; i < 3; i++)
+                Main.spriteBatch.Draw(flare, drawPosition, null, Projectile.GetAlpha(LensFlareColor with { A = 0 }), 0f, flare.Size() * 0.5f, shineIntensity * 2f, 0, 0f);
+            for (int i = 0; i < 2; i++)
+                Main.spriteBatch.Draw(glow, drawPosition, null, Projectile.GetAlpha(LensFlareColor with { A = 0 }), 0f, glow.Size() * 0.5f, shineIntensity * 2f, 0, 0f);
 
             return false;
         }
