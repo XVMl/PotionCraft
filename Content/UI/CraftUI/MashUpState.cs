@@ -16,7 +16,7 @@ namespace PotionCraft.Content.UI.CraftUI
 {
     public class MashUpState : AutoUIState
     {
-        public override bool IsLoaded() => ActiveState && CraftState == CraftUIState.MashUp;
+        public override bool IsLoaded() => ActiveState && CraftState == CraftUiState.MashUp;
 
         public override string Layers_FindIndex => "Vanilla: Mouse Text";
 

@@ -103,11 +103,7 @@ namespace PotionCraft.Content.System
             {
                 return true;
             }
-            if (item.type==ModContent.ItemType<MagicPanacea>())
-            {
-                return true;
-            }
-            return false;
+            return item.type==ModContent.ItemType<MagicPanacea>();
         }
 
         /// <summary>
@@ -163,7 +159,7 @@ namespace PotionCraft.Content.System
 
         public static bool ActiveState;
 
-        public static CraftUIState CraftState;
+        public static CraftUiState CraftState;
 
         public Item Potion = new();
 
@@ -173,9 +169,9 @@ namespace PotionCraft.Content.System
         /// <summary>
         /// 工艺界面的状态名称
         /// </summary>
-        public enum CraftUIState
+        public enum CraftUiState
         {
-            defult,
+            Defult,
             Purificating,
             MashUp,
             Boling

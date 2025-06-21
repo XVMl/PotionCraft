@@ -51,7 +51,7 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
             else
             {
                 Active = false;
-                CraftState = CraftUIState.defult;
+                CraftState = CraftUiState.Defult;
             }
         }
 
@@ -62,12 +62,12 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
 
         private void PurifyingButtonClick(UIMouseEvent evt, UIElement listeningElement)
         {
-            CraftState = CraftUIState.Purificating;
+            CraftState = CraftUiState.Purificating;
         }
 
         private void MashUpButtonClick(UIMouseEvent evt, UIElement listeningElement)
         {
-            CraftState = CraftUIState.MashUp;
+            CraftState = CraftUiState.MashUp;
         }
 
     }

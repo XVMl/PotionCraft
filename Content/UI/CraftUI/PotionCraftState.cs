@@ -22,7 +22,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override string Layers_FindIndex => "Vanilla: Interface Logic 3";
 
-        public UIElement area;
+        private UIElement area;
 
         public Item item = new();
 
@@ -56,35 +56,30 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            if (!Main.mouseItem.IsAir && PotionCraftState.Potion.IsAir)
+            switch (Main.mouseItem.IsAir)
             {
-                PotionCraftState.Potion = Main.mouseItem.Clone();
-                Main.LocalPlayer.HeldItem.TurnToAir();
-                Main.mouseItem.TurnToAir();
-                return;
-            }
-            if (Main.mouseItem.IsAir && !PotionCraftState.Potion.IsAir)
-            {
-                Main.mouseItem = PotionCraftState.Potion.Clone();
-                PotionCraftState.Potion.TurnToAir();
+                case false when PotionCraftState.Potion.IsAir:
+                    PotionCraftState.Potion = Main.mouseItem.Clone();
+                    Main.LocalPlayer.HeldItem.TurnToAir();
+                    Main.mouseItem.TurnToAir();
+                    return;
+                case true when !PotionCraftState.Potion.IsAir:
+                    Main.mouseItem = PotionCraftState.Potion.Clone();
+                    PotionCraftState.Potion.TurnToAir();
+                    break;
             }
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Assets.UI.Slot, GetDimensions().ToRectangle(), Color.White);
-            if (!PotionCraftState.Potion.IsAir)
-            {
-                Main.inventoryScale = 2.30f;
-                ItemSlot.Draw(spriteBatch, ref PotionCraftState.Potion, 21, GetDimensions().Position());
-                if (IsMouseHovering)
-                {
-                    Main.LocalPlayer.mouseInterface = true;
-                    Main.HoverItem = PotionCraftState.Potion.Clone();
-                    Main.hoverItemName = "a";
-                    return;
-                }
-            }
+            if (PotionCraftState.Potion.IsAir) return;
+            Main.inventoryScale = 2.30f;
+            ItemSlot.Draw(spriteBatch, ref PotionCraftState.Potion, 21, GetDimensions().Position());
+            if (!IsMouseHovering) return;
+            Main.LocalPlayer.mouseInterface = true;
+            Main.HoverItem = PotionCraftState.Potion.Clone();
+            Main.hoverItemName = "a";
         }
 
     }
@@ -101,39 +96,36 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            if (!Main.mouseItem.IsAir && PotionCraftState.Material.IsAir)
+            switch (Main.mouseItem.IsAir)
             {
-                if (!IsMaterial(Main.mouseItem))
+                case false when PotionCraftState.Material.IsAir:
                 {
+                    if (!IsMaterial(Main.mouseItem))
+                    {
+                        return;
+                    }
+                    PotionCraftState.Material = Main.mouseItem.Clone();
+                    Main.LocalPlayer.HeldItem.TurnToAir();
+                    Main.mouseItem.TurnToAir();
                     return;
                 }
-                PotionCraftState.Material = Main.mouseItem.Clone();
-                Main.LocalPlayer.HeldItem.TurnToAir();
-                Main.mouseItem.TurnToAir();
-                return;
-            }
-            if (Main.mouseItem.IsAir && !PotionCraftState.Material.IsAir)
-            {
-                Main.mouseItem = PotionCraftState.Material.Clone();
-                PotionCraftState.Material.TurnToAir();
+                case true when !PotionCraftState.Material.IsAir:
+                    Main.mouseItem = PotionCraftState.Material.Clone();
+                    PotionCraftState.Material.TurnToAir();
+                    break;
             }
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Assets.UI.Slot, GetDimensions().ToRectangle(), Color.White);
-            if (!PotionCraftState.Material.IsAir)
-            {
-                Main.inventoryScale = 2.3f;
-                ItemSlot.Draw(spriteBatch, ref PotionCraftState.Material, 21, GetDimensions().Position());
-                if (IsMouseHovering)
-                {
-                    Main.LocalPlayer.mouseInterface = true;
-                    Main.HoverItem = PotionCraftState.Material.Clone();
-                    Main.hoverItemName = "a";
-                    return;
-                }
-            }
+            if (PotionCraftState.Material.IsAir) return;
+            Main.inventoryScale = 2.3f;
+            ItemSlot.Draw(spriteBatch, ref PotionCraftState.Material, 21, GetDimensions().Position());
+            if (!IsMouseHovering) return;
+            Main.LocalPlayer.mouseInterface = true;
+            Main.HoverItem = PotionCraftState.Material.Clone();
+            Main.hoverItemName = "a";
         }
 
     }
@@ -160,19 +152,13 @@ namespace PotionCraft.Content.UI.CraftUI
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Assets.UI.Panel, GetDimensions().ToRectangle(), Color.White);
-            if (!PotionCraftState.CreatedPotion.IsAir)
-            {
-                Main.inventoryScale = 2.3f;
-                ItemSlot.Draw(spriteBatch, ref PotionCraftState.CreatedPotion, 21, GetDimensions().Position());
-                if (IsMouseHovering)
-                {
-
-                    Main.LocalPlayer.mouseInterface = true;
-                    Main.HoverItem = PotionCraftState.CreatedPotion.Clone();
-                    Main.hoverItemName = "a";
-                    return;
-                }
-            }
+            if (PotionCraftState.CreatedPotion.IsAir) return;
+            Main.inventoryScale = 2.3f;
+            ItemSlot.Draw(spriteBatch, ref PotionCraftState.CreatedPotion, 21, GetDimensions().Position());
+            if (!IsMouseHovering) return;
+            Main.LocalPlayer.mouseInterface = true;
+            Main.HoverItem = PotionCraftState.CreatedPotion.Clone();
+            Main.hoverItemName = "a";
         }
 
     }

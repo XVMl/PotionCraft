@@ -11,7 +11,7 @@ namespace PotionCraft.Content.System
     {
         public class TModLoader
         {
-            public readonly static Dictionary<int, Color> TerrariaColor = new() {
+            public static readonly Dictionary<int, Color> TerrariaColor = new() {
                     {1, new Color(30, 30, 30)},
                     {2, new Color(255, 140, 0)},
                     {3, new Color(144, 238, 144)},
