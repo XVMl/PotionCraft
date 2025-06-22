@@ -148,4 +148,5 @@ NPCs: {
 Projectiles: {
 	TestRay.DisplayName: Test Ray
 	Star.DisplayName: Star
+	Laser.DisplayName: Laser
 }

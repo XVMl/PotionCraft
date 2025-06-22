@@ -55,6 +55,9 @@ namespace PotionCraft
             public static Texture2D DendriticNoiseZoomedOut => NPCsTexture("DendriticNoiseZoomedOut").Value;
 
             public static Texture2D BloomCircleSmall => NPCsTexture("BloomCircleSmall").Value;
+            
+            public static Texture2D LaserChannel => NPCsTexture("LaserChannel").Value;
+
 
         }
     }
