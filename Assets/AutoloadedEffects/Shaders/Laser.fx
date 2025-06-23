@@ -19,7 +19,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     noiseColor.r = noiseIntensity * laserColor.r;
     noiseColor.g = noiseIntensity * laserColor.g;
     noiseColor.b = noiseIntensity * laserColor.b;
-    noiseColor.a = 0.7;
+    noiseColor.a = 0.6;
     float4 effectColor = noiseColor * intensity * 3;
     
     float centerIntensity = 20.0;

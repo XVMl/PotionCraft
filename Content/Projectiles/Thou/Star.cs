@@ -7,6 +7,7 @@ using static Microsoft.Xna.Framework.MathHelper;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Luminance.Core.Graphics;
 
 namespace PotionCraft.Content.Projectiles.Thou
 {
@@ -16,7 +17,7 @@ namespace PotionCraft.Content.Projectiles.Thou
 
         public static Color LensFlareColor => new(255, 174, 147);
 
-        private int Time;
+        private int TimeLeft=60;
 
         public override void SetStaticDefaults()
         {
@@ -31,30 +32,37 @@ namespace PotionCraft.Content.Projectiles.Thou
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.friendly = true;
-            Projectile.timeLeft = 300;
+            Projectile.timeLeft = TimeLeft*999;
             Projectile.localNPCHitCooldown = 1;
             Projectile.MaxUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.hide = true;
+            Projectile.hide = false;
             Projectile.DamageType = DamageClass.Generic;
         }
 
         public override void AI()
         {
-            Time++;
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
+            Texture2D laser = Assets.UI.BackGround;
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null);
 
-            float theMagicFactorThatMakesEveryElectricShineEffectSoMuchBetter = Cos01(Main.GlobalTimeWrappedHourly * 85f);
-            float shineIntensity = InverseLerp(0f, 12f, Time) * InverseLerp(0f, 7f, Projectile.timeLeft) * Lerp(1f, 1.2f, theMagicFactorThatMakesEveryElectricShineEffectSoMuchBetter) * 0.45f;
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            Texture2D glow = Assets.NPCs.BloomCircleSmall;
-            Texture2D flare = MiscTexturesRegistry.ShineFlareTexture.Value;
+            var starshader = ShaderManager.GetShader("PotionCraft.Star");
+            starshader.TrySetParameter("time", (float)(Projectile.timeLeft/TimeLeft));
+            starshader.SetTexture(Assets.NPCs.LaserChannel, 1, SamplerState.LinearWrap);
+            starshader.Apply();
 
-            for (int i = 0; i < 3; i++)
-                Main.spriteBatch.Draw(flare, drawPosition, null, Projectile.GetAlpha(LensFlareColor with { A = 0 }), 0f, flare.Size() * 0.5f, shineIntensity * 2f, 0, 0f);
+            Vector2 pos = Projectile.Center - Main.screenPosition;
+            Rectangle rectangle = new Rectangle((int)pos.X, (int)pos.Y, 180, 180);
+
+            //var shader = ShaderManager.GetShader("PotionCraft.Color");
+            //shader.Apply();
+
+            Main.spriteBatch.Draw(laser, rectangle, null, Color.White * 1, 3.14f/4, laser.Size() / 2, 0, 0);
+
             return false;
         }
     }
