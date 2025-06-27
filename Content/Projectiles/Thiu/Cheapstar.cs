@@ -1,31 +1,25 @@
 ﻿using Luminance.Assets;
+using Luminance.Core.Graphics;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Luminance.Common.Utilities.Utilities;
-using static Microsoft.Xna.Framework.MathHelper;
+using System.Text;
+using System.Threading.Tasks;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
-using Luminance.Core.Graphics;
 
-
-namespace PotionCraft.Content.Projectiles.Thou
+namespace PotionCraft.Content.Projectiles.Thiu
 {
-    public class Laser : ModProjectile
+    internal class Cheapstar:ModProjectile
     {
-        public override string Texture
-        {
-            get
-            {
-                return "Luminance/Assets/InvisiblePixel";
-            }
-        }
+        public override string Texture => MiscTexturesRegistry.InvisiblePixelPath;
+
         public static Color LensFlareColor => new(255, 174, 147);
 
-        private int Time;
+        private int TimeLeft = 60;
 
         public override void SetStaticDefaults()
         {
@@ -34,13 +28,13 @@ namespace PotionCraft.Content.Projectiles.Thou
 
         public override void SetDefaults()
         {
-            Projectile.width = 1000;
-            Projectile.height = 300;
+            Projectile.width = 96;
+            Projectile.height = 96;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.friendly = true;
-            Projectile.timeLeft = 99000;
+            Projectile.timeLeft = TimeLeft * 999;
             Projectile.localNPCHitCooldown = 1;
             Projectile.MaxUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
@@ -50,23 +44,26 @@ namespace PotionCraft.Content.Projectiles.Thou
 
         public override void AI()
         {
-            Time++;
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
-            //Texture2D laser = Assets.NPCs.LaserChannel;
             Texture2D laser = Assets.UI.BackGround;
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null);
 
-            var lasershader = ShaderManager.GetShader("PotionCraft.Laser");
-            lasershader.SetTexture(Assets.NPCs.LaserChannel, 1, SamplerState.LinearWrap);
-            lasershader.Apply();
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            Rectangle rectangle = new Rectangle((int)pos.X, (int)pos.Y, 1500, 500);
+            var starshader = ShaderManager.GetShader("PotionCraft.Cheapstar");
+            starshader.TrySetParameter("time", (float)(Projectile.timeLeft / TimeLeft));
+            starshader.SetTexture(Assets.NPCs.LaserChannel, 1, SamplerState.LinearWrap);
+            starshader.Apply();
 
-            Main.spriteBatch.Draw(laser, rectangle, null, Color.White * 1, 0, laser.Size() / 2, 0, 0);
+            Vector2 pos = Projectile.Center - Main.screenPosition;
+            Rectangle rectangle = new Rectangle((int)pos.X, (int)pos.Y, 180, 180);
+
+            //var shader = ShaderManager.GetShader("PotionCraft.Color");
+            //shader.Apply();
+
+            Main.spriteBatch.Draw(laser, rectangle, null, Color.White * 1, 3.14f / 4, laser.Size() / 2, 0, 0);
 
             return false;
         }

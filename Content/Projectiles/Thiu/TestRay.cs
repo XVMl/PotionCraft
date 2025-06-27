@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework;
 using static Luminance.Common.Utilities.Utilities;
 using static Microsoft.Xna.Framework.MathHelper;
 using static System.MathF;
-namespace PotionCraft.Content.Projectiles.Thou
+namespace PotionCraft.Content.Projectiles.Thiu
 {
     public class TestRay:ModProjectile
     {

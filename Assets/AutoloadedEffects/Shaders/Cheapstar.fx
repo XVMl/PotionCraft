@@ -12,7 +12,7 @@ float Cheapstar(float2 uv,float anim)
 }
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
-{
+{ 
     float time = 1.0;
     coords *= 2 * (cos(time*2.0) - 2.5);
     float anim = sin(time * 12) * 0.1 + 1;

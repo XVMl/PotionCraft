@@ -149,4 +149,6 @@ Projectiles: {
 	TestRay.DisplayName: Test Ray
 	Star.DisplayName: Star
 	Laser.DisplayName: Laser
+	Cheapstar.DisplayName: Cheapstar
+	Glowpotion.DisplayName: Glowpotion
 }
