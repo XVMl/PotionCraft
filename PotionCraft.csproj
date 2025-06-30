@@ -9,6 +9,7 @@
 	<ItemGroup>
 	  <None Remove="assets\autoloadedeffects\shaders\Cheapstar.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\Color.fx" />
+	  <None Remove="assets\autoloadedeffects\shaders\EnergyTrial.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\Glowpotion.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\Laser.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\Star.fx" />

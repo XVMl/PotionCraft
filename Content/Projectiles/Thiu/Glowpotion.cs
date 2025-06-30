@@ -34,7 +34,7 @@ namespace PotionCraft.Content.Projectiles.Thiu
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.friendly = true;
-            Projectile.timeLeft = TimeLeft * 999;
+            Projectile.timeLeft = TimeLeft;
             Projectile.localNPCHitCooldown = 1;
             Projectile.MaxUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
@@ -53,7 +53,7 @@ namespace PotionCraft.Content.Projectiles.Thiu
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null);
 
             var starshader = ShaderManager.GetShader("PotionCraft.Glowpotion");
-            starshader.TrySetParameter("time", (float)(Projectile.timeLeft / TimeLeft));
+            starshader.TrySetParameter("time", (float)(Projectile.timeLeft));
             starshader.SetTexture(Assets.NPCs.LaserChannel, 1, SamplerState.LinearWrap);
             starshader.Apply();
 

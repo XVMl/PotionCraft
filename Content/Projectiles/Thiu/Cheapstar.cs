@@ -63,7 +63,7 @@ namespace PotionCraft.Content.Projectiles.Thiu
             //var shader = ShaderManager.GetShader("PotionCraft.Color");
             //shader.Apply();
 
-            Main.spriteBatch.Draw(laser, rectangle, null, Color.White * 1, 3.14f / 4, laser.Size() / 2, 0, 0);
+            Main.spriteBatch.Draw(laser, rectangle, null, Color.White * 1, 0, laser.Size() / 2, 0, 0);
 
             return false;
         }
