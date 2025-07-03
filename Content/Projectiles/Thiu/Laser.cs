@@ -16,13 +16,7 @@ namespace PotionCraft.Content.Projectiles.Thiu
 {
     public class Laser : ModProjectile
     {
-        public override string Texture
-        {
-            get
-            {
-                return "Luminance/Assets/InvisiblePixel";
-            }
-        }
+        public override string Texture => "Luminance/Assets/InvisiblePixel";
         public static Color LensFlareColor => new(255, 174, 147);
 
         private int Time;

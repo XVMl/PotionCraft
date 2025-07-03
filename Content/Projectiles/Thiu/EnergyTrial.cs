@@ -41,13 +41,13 @@ namespace PotionCraft.Content.Projectiles.Thiu
             CooldownSlot = ImmunityCooldownID.Bosses;
         }
 
-        public float EnergyWidthFunction(float completionRatio)
+        private float EnergyWidthFunction(float completionRatio)
         {
             float baseWidth = Projectile.width;
             return baseWidth * Projectile.scale;
         }
 
-        public Color EnergyColorFunction(float completionRatio)
+        private Color EnergyColorFunction(float completionRatio)
         {
             Color energyColor = Color.Lerp(Color.PaleTurquoise, Color.Cyan, Projectile.identity / 10f % 1f);
             energyColor.A = 0;

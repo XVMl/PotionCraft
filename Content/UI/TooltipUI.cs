@@ -20,7 +20,7 @@ namespace PotionCraft.Content.UI
     public class TooltipUI : AutoUIState
     {
         public override bool IsLoaded() =>Show;
-        public override string Layers_FindIndex => "Vanilla: Mouse Text";
+        public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private bool Show;
         private UIElement Area;

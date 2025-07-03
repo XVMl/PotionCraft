@@ -20,7 +20,7 @@ namespace PotionCraft.Content.UI.CraftUI
     {
         public override bool IsLoaded() => ActiveState;
 
-        public override string Layers_FindIndex => "Vanilla: Interface Logic 3";
+        public override string LayersFindIndex => "Vanilla: Interface Logic 3";
 
         private UIElement area;
 
@@ -142,11 +142,9 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            if (Main.mouseItem.IsAir && !PotionCraftState.CreatedPotion.IsAir)
-            {
-                Main.mouseItem = PotionCraftState.CreatedPotion.Clone();
-                PotionCraftState.CreatedPotion.TurnToAir();
-            }
+            if (!Main.mouseItem.IsAir || PotionCraftState.CreatedPotion.IsAir) return;
+            Main.mouseItem = PotionCraftState.CreatedPotion.Clone();
+            PotionCraftState.CreatedPotion.TurnToAir();
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
