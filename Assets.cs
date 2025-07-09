@@ -58,6 +58,8 @@ namespace PotionCraft
             
             public static Texture2D LaserChannel => NPCsTexture("LaserChannel").Value;
 
+            public static Texture2D Energy => NPCsTexture("Energy").Value;
+
 
         }
     }

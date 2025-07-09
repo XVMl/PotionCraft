@@ -151,4 +151,5 @@ Projectiles: {
 	Laser.DisplayName: Laser
 	Cheapstar.DisplayName: Cheapstar
 	Glowpotion.DisplayName: Glowpotion
+	EnergyTrial.DisplayName: Energy Trial
 }

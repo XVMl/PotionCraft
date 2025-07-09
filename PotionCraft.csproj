@@ -12,6 +12,7 @@
 	  <None Remove="assets\autoloadedeffects\shaders\EnergyTrial.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\Glowpotion.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\Laser.fx" />
+	  <None Remove="assets\autoloadedeffects\shaders\Saturdaysmoke.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\Star.fx" />
 	</ItemGroup>
 	<ItemGroup>

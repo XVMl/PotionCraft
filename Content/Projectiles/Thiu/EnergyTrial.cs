@@ -28,13 +28,13 @@ namespace PotionCraft.Content.Projectiles.Thiu
 
         public override void SetDefaults()
         {
-            Projectile.width = Main.rand?.Next(36, 100) ?? 100;
+            Projectile.width = 36;
             Projectile.height = Projectile.width;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.hostile = true;
-            Projectile.hide = true;
+            Projectile.hide = false;
             Projectile.timeLeft = Lifetime;
             Projectile.Opacity = 0f;
 
@@ -50,7 +50,7 @@ namespace PotionCraft.Content.Projectiles.Thiu
         public Color EnergyColorFunction(float completionRatio)
         {
             Color energyColor = Color.Lerp(Color.PaleTurquoise, Color.Cyan, Projectile.identity / 10f % 1f);
-            energyColor.A = 0;
+            energyColor.A = 1;
 
             return energyColor * InverseLerpBump(0f, 0.4f, 0.6f, 0.9f, completionRatio) * Projectile.Opacity * Convert01To010(completionRatio);
         }
@@ -58,10 +58,10 @@ namespace PotionCraft.Content.Projectiles.Thiu
         public void RenderPixelatedPrimitives(SpriteBatch spriteBatch)
         {
             ManagedShader trailShader = ShaderManager.GetShader("PotionCraft.EnergyTrial");
-            //trailShader.SetTexture(PerlinNoise.Value, 1, SamplerState.LinearWrap);
+            trailShader.SetTexture(Assets.NPCs.Energy, 1, SamplerState.LinearWrap);
             trailShader.Apply();
 
-            PrimitiveSettings settings = new(EnergyWidthFunction, EnergyColorFunction, _ => Projectile.Size * 0.5f, Pixelate: true, Shader: trailShader);
+            PrimitiveSettings settings = new(_=>100f,_=>Color.White , _ => Projectile.Size * 0.5f, Pixelate: true, Shader: trailShader);
             PrimitiveRenderer.RenderTrail(Projectile.oldPos, settings,45);
         }
     }
