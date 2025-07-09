@@ -20,12 +20,14 @@ namespace PotionCraft
             
             public static readonly string Items = Assets + "Items/";
 
+            public static readonly string NPCs = Assets + "NPCs/";
+            
             public static readonly string Noise = Assets + "Noise/";
 
         }
         public class UI
         {
-            public static Asset<Texture2D> UITexture(string path)=> ModContent.Request<Texture2D>("PotionCraft/Assets/UI/" + path);
+            public static Asset<Texture2D> UITexture(string path)=> ModContent.Request<Texture2D>(Path.UI + path);
 
             public static Texture2D ItemSlotBackgroud => UITexture("Scoreboard").Value;
 
@@ -45,12 +47,12 @@ namespace PotionCraft
         }
         public class Items
         {
-            public static Asset<Texture2D> ItemsTexture(string path) => ModContent.Request<Texture2D>("PotionCraft/Assets/Items/" + path);
+            public static Asset<Texture2D> ItemsTexture(string path) => ModContent.Request<Texture2D>(Path.Items+ path);
 
         }
         public class NPCs
         {
-            public static Asset<Texture2D> NPCsTexture(string path) => ModContent.Request<Texture2D>("PotionCraft/Assets/NPCs/" + path);
+            public static Asset<Texture2D> NPCsTexture(string path) => ModContent.Request<Texture2D>(Path.NPCs + path);
 
             public static Texture2D DendriticNoiseZoomedOut => NPCsTexture("DendriticNoiseZoomedOut").Value;
 

@@ -18,13 +18,13 @@ namespace PotionCraft.Content.UI.CraftUI
     {
         public override bool IsLoaded() => ActiveState && CraftState == CraftUiState.MashUp;
 
-        public override string Layers_FindIndex => "Vanilla: Mouse Text";
+        public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private PotionSlot<MashUpState> PotionSlot;
 
         private MaterialSlot<MashUpState> MaterialSlot;
 
-        protected CreatedPotionSlot<MashUpState> CreatedPotionSlot;
+        private CreatedPotionSlot<MashUpState> CreatedPotionSlot;
 
         private MashUpButton mashupbutton;
 
@@ -72,7 +72,7 @@ namespace PotionCraft.Content.UI.CraftUI
             Height.Set(32f, 0);
         }
 
-        public void MashUp(Item Potion, TestPotion Material)
+        private void MashUp(Item Potion, TestPotion Material)
         {
             TestPotion CreatedPotion = AsPotion(Potion.Clone());
             foreach (var buff in Material.BuffDictionary.Keys.ToList())
@@ -96,7 +96,7 @@ namespace PotionCraft.Content.UI.CraftUI
             }
         }
 
-        public void MashUp(Item Potion, Item Material)
+        private void MashUp(Item Potion, Item Material)
         {
             PotionCraftState.CreatedPotion = Potion.Clone();
             TestPotion CreatedPotion = AsPotion(PotionCraftState.CreatedPotion);

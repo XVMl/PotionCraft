@@ -61,8 +61,8 @@ namespace PotionCraft.Content.System
                 {
                     continue;
                 }
-                int Index1 = layers.FindIndex(layer => layer.Name.Equals(item.Key.Layers_FindIndex));
-                layers.Insert(Index1, new LegacyGameInterfaceLayer(
+                var index1 = layers.FindIndex(layer => layer.Name.Equals(item.Key.LayersFindIndex));
+                layers.Insert(index1, new LegacyGameInterfaceLayer(
                    "PotionCraft:" + item.Key.ToString(),
                    delegate
                    {
@@ -90,11 +90,7 @@ namespace PotionCraft.Content.System
 
         public bool IsPotion(Item item)
         {
-            if (item.ModItem is TestPotion)
-            {
-                return true;
-            }
-            return false;
+            return item.ModItem is TestPotion;
         }
 
         public bool IsMaterial(Item item)
@@ -119,10 +115,6 @@ namespace PotionCraft.Content.System
             }
             Mod instance = ModContent.GetInstance<PotionCraft>();
             if (item.ModItem == null)
-            {
-                instance.Logger.Warn($"Item was erroneously casted to Potion");
-            }
-            else
             {
                 instance.Logger.Warn($"Item was erroneously casted to Potion");
             }
@@ -171,15 +163,15 @@ namespace PotionCraft.Content.System
         /// </summary>
         public enum CraftUiState
         {
-            Defult,
-            Purificating,
+            Default,
+            Purification,
             MashUp,
-            Boling
+            Bowling
         }
 
         public virtual bool IsLoaded() => true;
 
-        public abstract string Layers_FindIndex { get; }
+        public abstract string LayersFindIndex { get; }
 
     }
 }

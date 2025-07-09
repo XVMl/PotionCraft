@@ -20,7 +20,7 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
     {
         private bool Active;
         public override bool IsLoaded() => Active;
-        public override string Layers_FindIndex => "Vanilla: Mouse Text";
+        public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private UIElement Area;
 
@@ -51,7 +51,7 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
             else
             {
                 Active = false;
-                CraftState = CraftUiState.Defult;
+                CraftState = CraftUiState.Default;
             }
         }
 
@@ -62,7 +62,7 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
 
         private void PurifyingButtonClick(UIMouseEvent evt, UIElement listeningElement)
         {
-            CraftState = CraftUiState.Purificating;
+            CraftState = CraftUiState.Purification;
         }
 
         private void MashUpButtonClick(UIMouseEvent evt, UIElement listeningElement)
