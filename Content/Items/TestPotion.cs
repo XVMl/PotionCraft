@@ -123,11 +123,10 @@ namespace PotionCraft.Content.Items
             {
                 player.AddBuff(item.Key, item.Value);
             }
-            string s = LanguageHelper.ColorfulBuffName("Battle");
-            if (s!=null)
-            {
-                Main.NewText(s);
-            }
+            string s = Lang.GetBuffName(11);
+            Main.NewText(s);
+            Main.NewText("[c/7CBDB9:]".Insert(10,s));
+            
             return true;
         }
 

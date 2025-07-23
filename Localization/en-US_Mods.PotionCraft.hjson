@@ -152,4 +152,5 @@ Projectiles: {
 	Cheapstar.DisplayName: Cheapstar
 	Glowpotion.DisplayName: Glowpotion
 	EnergyTrial.DisplayName: Energy Trial
+	Smoke.DisplayName: Smoke
 }

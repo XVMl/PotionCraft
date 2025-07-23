@@ -1,9 +1,6 @@
 //https://www.shadertoy.com/view/3ftSz2
 sampler baseTexture : register(s0);
 
-float blurOffset;
-float4 colorMask;
-bool invert;
 float globalTime;
 
 float2 screenscalerevise;
@@ -23,7 +20,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
         {
             D = 2. / (j - 3.) + p.y / 3.;
             P = p;
-            P.xz *= float2x2(cos(j - T + p.y + 11. * U.xywx));
+            //P.xz *= float2x2(cos(j - T + p.y + 11. * U.xywx));
             P = abs(P);
             D = min(max(P.z, P.x - D) + 2E-2, length(P.xz - D * U.yx));
             P = 1.2 + sin(j + U.xyzy + z);
