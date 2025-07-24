@@ -90,7 +90,7 @@ namespace PotionCraft.Content.System
 
         public bool IsPotion(Item item)
         {
-            return item.ModItem is TestPotion;
+            return item.ModItem is BasePotion;
         }
 
         public bool IsMaterial(Item item)
@@ -107,9 +107,9 @@ namespace PotionCraft.Content.System
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public TestPotion AsPotion(Item item)
+        public BasePotion AsPotion(Item item)
         {
-            if (item.ModItem is TestPotion testPotion)
+            if (item.ModItem is BasePotion testPotion)
             {
                 return testPotion;
             }
@@ -118,7 +118,7 @@ namespace PotionCraft.Content.System
             {
                 instance.Logger.Warn($"Item was erroneously casted to Potion");
             }
-            return ModContent.GetInstance<TestPotion>();
+            return ModContent.GetInstance<BasePotion>();
         }
 
         public virtual void CraftClick(UIMouseEvent evt)

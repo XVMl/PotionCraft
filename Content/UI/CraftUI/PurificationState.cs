@@ -71,26 +71,27 @@ namespace PotionCraft.Content.UI.CraftUI
             Height.Set(32f, 0);
         }
 
-        private void Purifying(Item Potion, Item Material)
+        private void Purifying(Item potion, Item material)
         {
-            if (!AsPotion(Potion).PotionName.Equals(AsPotion(Material)) && Material.type != ModContent.ItemType<MagicPanacea>())
+            if (!AsPotion(potion).PotionName.Equals(AsPotion(material).PotionName) &&
+                material.type != ModContent.ItemType<MagicPanacea>())
             {
                 return;
             }
-            PotionCraftState.CreatedPotion = Potion.Clone();
-            TestPotion CreatedPotion = AsPotion(PotionCraftState.CreatedPotion);
-            foreach (var buff in CreatedPotion.BuffDictionary.Keys.ToList())
+            PotionCraftState.CreatedPotion = potion.Clone();
+            BasePotion createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+            foreach (var buff in createdPotion.BuffDictionary.Keys.ToList())
             {
-                CreatedPotion.BuffDictionary[buff] *= 2;
+                createdPotion.BuffDictionary[buff] *= 2;
             }
-            CreatedPotion.PurifyingCount++;
-            if (CreatedPotion.BuffDictionary.Count == 1)
+            createdPotion.PurifyingCount++;
+            if (createdPotion.BuffDictionary.Count == 1)
             {
-                CreatedPotion.PotionName = ColorfulFont("Purifying." + Math.Min(12, CreatedPotion.PurifyingCount).ToString()) + " " + CreatedPotion.PotionName;
+                createdPotion.PotionName = TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount)) + " " + createdPotion.PotionName;
             }
             else
             {
-                CreatedPotion.PotionName = ColorfulFont("Purifying." + Math.Min(12, CreatedPotion.PurifyingCount).ToString()) + "(" + CreatedPotion.PotionName + ")";
+                createdPotion.PotionName = TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount),true).Insert(10,createdPotion.PotionName) ;
             }
         }
 
@@ -104,7 +105,7 @@ namespace PotionCraft.Content.UI.CraftUI
         //public override void LeftClick(UIMouseEvent evt)
         //{
         //    if (PotionCraftState.Material.IsAir) return;
-        //    TestPotion tes = AsPotion(PotionCraftState.Potion);
+        //    BasePotion tes = AsPotion(PotionCraftState.Potion);
         //    tes.BuffDictionary.TryAdd(34, 300);
         //    tes.Purifying();
         //}

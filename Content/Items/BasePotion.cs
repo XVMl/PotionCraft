@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PotionCraft.Content.Items
 {
-    public class TestPotion : ModItem
+    public class BasePotion : ModItem
     {
         /// <summary>
         /// 将会显示的药剂名
@@ -51,7 +51,7 @@ namespace PotionCraft.Content.Items
             Item.rare = ItemRarityID.Master;
             Item.useAnimation = 45;
             Item.useTime = 45;
-            Item.useStyle = 2;
+            Item.useStyle = ItemUseStyleID.EatFood;
             Item.consumable = true;
             Item.UseSound = SoundID.Item3;
         }
@@ -61,16 +61,18 @@ namespace PotionCraft.Content.Items
             tag["BuffID"] = BuffDictionary.Keys.ToList();
             tag["BuffTime"] = BuffDictionary.Values.ToList();
             tag["PotionName"] = PotionName;
-            //tag["PurifyingCount"] = PurifyingCount;
-            //tag["MashUpCount"] = MashUpCount;
+            tag["PurifyingCount"] = PurifyingCount;
+            tag["MashUpCount"] = MashUpCount;
         }
 
         public override void LoadData(TagCompound tag)
         {
-            var BuffID = tag.Get<List<int>>("BuffID");
-            var BuffTime = tag.Get<List<int>>("BuffTime");
-            BuffDictionary = BuffID.Zip(BuffTime, (k, v) => new { Key = k, value = v }).ToDictionary(x => x.Key, x => x.value);
+            var buffId = tag.Get<List<int>>("BuffID");
+            var buffTime = tag.Get<List<int>>("BuffTime");
+            BuffDictionary = buffId.Zip(buffTime, (k, v) => new { Key = k, value = v }).ToDictionary(x => x.Key, x => x.value);
             PotionName = tag.GetString("PotionName");
+            PurifyingCount = tag.Get<int>("PurifyingCount");
+            MashUpCount = tag.Get<int>("MashUpCount");
         }
 
         public void Purifying()

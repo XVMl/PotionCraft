@@ -64,7 +64,6 @@ namespace PotionCraft.Content.UI.CraftUI
 
     public class MashUpButton : PotionElement<MashUpState>
     {
-        //private MashUpState MashUpState { get; set; }
         public MashUpButton(MashUpState mashUpState)
         {
             PotionCraftState = mashUpState;
@@ -72,50 +71,52 @@ namespace PotionCraft.Content.UI.CraftUI
             Height.Set(32f, 0);
         }
 
-        private void MashUp(Item Potion, TestPotion Material)
+        private void MashUp(Item potion, BasePotion material)
         {
-            TestPotion CreatedPotion = AsPotion(Potion.Clone());
-            foreach (var buff in Material.BuffDictionary.Keys.ToList())
+            BasePotion createdPotion = AsPotion(potion.Clone());
+            foreach (var buff in material.BuffDictionary.Keys.ToList())
             {
-                if (CreatedPotion.BuffDictionary.TryGetValue(buff, out int value))
+                if (createdPotion.BuffDictionary.TryGetValue(buff, out int value))
                 {
-                    CreatedPotion.BuffDictionary[buff] += value;
+                    createdPotion.BuffDictionary[buff] += value;
                 }
                 else
                 {
-                    CreatedPotion.BuffDictionary.Add(buff, value);
+                    createdPotion.BuffDictionary.Add(buff, value);
                 }
             }
-            if (CreatedPotion.BuffDictionary.Count == 0)
+            createdPotion.MashUpCount+=material.MashUpCount;
+            if (createdPotion.BuffDictionary.Count == 0)
             {
-                CreatedPotion.PotionName += Material.DisplayName.Value;
+                createdPotion.PotionName += material.DisplayName.Value;
             }
             else
             {
-                CreatedPotion.PotionName += " " + ColorfulFont("MashUp" + Math.Min(14, CreatedPotion.PurifyingCount).ToString()) + " " + Material.DisplayName.Value;
+                createdPotion.PotionName += " " + TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount)) + " " + material.DisplayName.Value;
             }
         }
 
-        private void MashUp(Item Potion, Item Material)
+        
+        private void MashUp(Item potion, Item material)
         {
-            PotionCraftState.CreatedPotion = Potion.Clone();
-            TestPotion CreatedPotion = AsPotion(PotionCraftState.CreatedPotion);
-            if (CreatedPotion.BuffDictionary.ContainsKey(Material.buffType))
+            PotionCraftState.CreatedPotion = potion.Clone();
+            BasePotion createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+            if (createdPotion.BuffDictionary.ContainsKey(material.buffType))
             {
-                CreatedPotion.BuffDictionary[Material.buffType] += Material.buffTime;
+                createdPotion.BuffDictionary[material.buffType] += material.buffTime;
             }
             else
             {
-                CreatedPotion.BuffDictionary.TryAdd(Material.buffType, Material.buffTime);
+                createdPotion.BuffDictionary.TryAdd(material.buffType, material.buffTime);
             }
-            if (CreatedPotion.BuffDictionary.Count == 1)
+            if (createdPotion.BuffDictionary.Count == 1)
             {
-                CreatedPotion.PotionName += ColorfulBuffName(Material.buffType);
+                createdPotion.PotionName += TryGetPotionText(material.buffType);
             }
             else
             {
-                CreatedPotion.MashUpCount++;
-                CreatedPotion.PotionName += " " + ColorfulFont("MashUp.And." + Math.Min(14, CreatedPotion.MashUpCount).ToString()) + " " + ColorfulBuffName(Material.buffType);
+                createdPotion.MashUpCount++;
+                createdPotion.PotionName += " " + TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount)) + " " + TryGetPotionText(material.buffType);
             }
         }
 
@@ -131,7 +132,7 @@ namespace PotionCraft.Content.UI.CraftUI
                 MashUp(PotionCraftState.Potion, AsPotion(PotionCraftState.Material));
             }
             //Item item = new();
-            //item.SetDefaults(ModContent.ItemType<TestPotion>());
+            //item.SetDefaults(ModContent.ItemType<BasePotion>());
             //AsPotion(item).PotionName += "Test";
             //MashUpState.Material = item.Clone();
             base.CraftClick(evt);

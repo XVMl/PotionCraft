@@ -24,13 +24,13 @@ namespace PotionCraft.Content.System
             Main.NewText(lang);
             return lang.Equals(key) ? null : lang;
         }
-
-        public static string ColorfulFont(string path) => TryGetLanguagValue("Craftfont." + path);
-
-        public static string ColorfulBuffName(string path)=>TryGetLanguagValue("BuffColors.TModLoader." + path);
-
-        public static string ColorfulBuffName(int buffid) => TryGetLanguagValue("BuffColors.TModLoader." + Lang.GetBuffName(buffid));
-
+        
+        public static string TryGetPurifyText(int count,bool bracket = false) =>ColorfulText.OperatorColorText.PurifyColor.GetValueOrDefault(count, "").Insert(10,"Purified"+ (bracket?"()":""));
+        
+        public static string TryGetMashUpText(int count,bool bracket = false) =>ColorfulText.OperatorColorText.PurifyColor.GetValueOrDefault(count, "").Insert(10,"MashUp"+ (bracket?"()":""));
+        
+        public static string TryGetPotionText(int buffid)=>ColorfulText.PotionColorText.TModLoader.PotionColor.GetValueOrDefault(buffid, "").Insert(10,Lang.GetBuffName(buffid));
+        
         public static List<string> GenerateRandomPostfix()
         {
             Random random = new Random();
@@ -47,7 +47,7 @@ namespace PotionCraft.Content.System
 
             for (int i = 0; i < operrands; i++)
             {
-                string oper = random.Next(0, 2) == 1 ? "purifying" : "boling";
+                string oper = random.Next(0, 2) == 1 ? "purified" : "boling";
                 experssion.Insert(random.Next(1, experssion.Count + 1), oper);
             }
             return experssion;
@@ -60,16 +60,16 @@ namespace PotionCraft.Content.System
             {
                 switch (token)
                 {
-                    case "purifying":
+                    case "purified":
                     case "bowling":
                     {
                         string operand = stack.Pop();
 
-                        bool needParens = operand.Contains("and") || operand.Contains("purifying") || operand.Contains("boling");
+                        bool needParens = operand.Contains("and") || operand.Contains("purified") || operand.Contains("boling");
 
                         string expr = needParens ? $"({operand})" : operand;
 
-                        stack.Push(token == "purifying" ? $"purifying({expr})" : $"{expr}bowling");
+                        stack.Push(token == "purified" ? $"purified({expr})" : $"{expr}bowling");
                         break;
                     }
                     case "and":

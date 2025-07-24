@@ -34,7 +34,7 @@ namespace PotionCraft.Content.UI
 
         public override void Update(GameTime gameTime)
         {
-            Show = Main.HoverItem.type == ModContent.ItemType<TestPotion>();
+            Show = Main.HoverItem.type == ModContent.ItemType<BasePotion>();
             Vector2 pos = Main.MouseScreen;
             Area.Left.Set(pos.X, 0);
             Area.Top.Set(pos.Y, 0);

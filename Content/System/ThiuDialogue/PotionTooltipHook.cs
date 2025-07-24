@@ -93,7 +93,7 @@ namespace PotionCraft.Content.System.ThiuDialogue
             }
             il.EmitLdsfld(HoverItem);
             il.EmitLdfld(type);
-            il.EmitLdcI4(ModContent.ItemType<TestPotion>());
+            il.EmitLdcI4(ModContent.ItemType<BasePotion>());
             il.EmitCeq();
             il.Emit(Mono.Cecil.Cil.OpCodes.Brtrue_S, context.Instrs[cursor.Index]);
 
@@ -118,7 +118,7 @@ namespace PotionCraft.Content.System.ThiuDialogue
 
         public static void DrawInvBG(SpriteBatch sb, Rectangle R, Color c = default)
         {
-            if (Main.HoverItem.type == ModContent.ItemType<TestPotion>())
+            if (Main.HoverItem.type == ModContent.ItemType<BasePotion>())
             {
                 DrawInvBG(sb, R.X, R.Y, R.Width, R.Height, Color.White);
             }
