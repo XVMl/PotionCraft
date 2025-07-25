@@ -44,10 +44,16 @@ namespace PotionCraft
             public static Texture2D BackGround1 => UITexture("Background1").Value;
 
             public static Texture2D Tooltip => UITexture("Tooltip").Value;
+
+            public static Texture2D PanelGrayscale => UITexture("PanelGrayscale").Value;
+            
         }
         public class Items
         {
             public static Asset<Texture2D> ItemsTexture(string path) => ModContent.Request<Texture2D>(Path.Items+ path);
+
+            public static Texture2D BasePotion => ItemsTexture("BasePotion").Value;
+
 
         }
         public class NPCs

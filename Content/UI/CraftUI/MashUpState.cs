@@ -134,7 +134,7 @@ namespace PotionCraft.Content.UI.CraftUI
             //Item item = new();
             //item.SetDefaults(ModContent.ItemType<BasePotion>());
             //AsPotion(item).PotionName += "Test";
-            //MashUpState.Material = item.Clone();
+            //MashUpState.Materialslot = item.Clone();
             base.CraftClick(evt);
         }
 

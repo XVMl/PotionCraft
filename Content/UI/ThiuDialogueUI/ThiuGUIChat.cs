@@ -42,18 +42,18 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
             //Area.Append(MashUpButton);
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            if (Main.LocalPlayer.talkNPC > 0)
-            {
-                Active = Main.npc[Main.LocalPlayer.talkNPC].type == ModContent.NPCType<Thiu>();
-            }
-            else
-            {
-                Active = false;
-                CraftState = CraftUiState.Default;
-            }
-        }
+        //public override void Update(GameTime gameTime)
+        //{
+        //    if (Main.LocalPlayer.talkNPC > 0)
+        //    {
+        //        Active = Main.npc[Main.LocalPlayer.talkNPC].type == ModContent.NPCType<Thiu>();
+        //    }
+        //    else
+        //    {
+        //        Active = false;
+        //        CraftState = CraftUiState.Default;
+        //    }
+        //}
 
         protected override void DrawChildren(SpriteBatch spriteBatch)
         {

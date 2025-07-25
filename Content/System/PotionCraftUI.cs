@@ -166,7 +166,7 @@ namespace PotionCraft.Content.System
             Default,
             Purification,
             MashUp,
-            Bowling
+            BaseFluid,
         }
 
         public virtual bool IsLoaded() => true;

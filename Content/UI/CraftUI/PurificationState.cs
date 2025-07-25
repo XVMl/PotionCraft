@@ -91,7 +91,7 @@ namespace PotionCraft.Content.UI.CraftUI
             }
             else
             {
-                createdPotion.PotionName = TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount),true).Insert(10,createdPotion.PotionName) ;
+                createdPotion.PotionName = TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))+GetBracketText(Math.Min(12, createdPotion.PurifyingCount)) + createdPotion.PotionName+ GetBracketText(Math.Min(12, createdPotion.PurifyingCount),right:true);
             }
         }
 
@@ -101,14 +101,6 @@ namespace PotionCraft.Content.UI.CraftUI
             Purifying(PotionCraftState.Potion, PotionCraftState.Material);
             base.CraftClick(evt);
         }
-
-        //public override void LeftClick(UIMouseEvent evt)
-        //{
-        //    if (PotionCraftState.Material.IsAir) return;
-        //    BasePotion tes = AsPotion(PotionCraftState.Potion);
-        //    tes.BuffDictionary.TryAdd(34, 300);
-        //    tes.Purifying();
-        //}
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {

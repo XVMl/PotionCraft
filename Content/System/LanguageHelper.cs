@@ -25,12 +25,25 @@ namespace PotionCraft.Content.System
             return lang.Equals(key) ? null : lang;
         }
         
-        public static string TryGetPurifyText(int count,bool bracket = false) =>ColorfulText.OperatorColorText.PurifyColor.GetValueOrDefault(count, "").Insert(10,"Purified"+ (bracket?"()":""));
+        public static string TryGetPurifyText(int count) =>ColorfulText.OperatorColorText.PurifyColor.GetValueOrDefault(count, "").Insert(10,"Purified");
         
-        public static string TryGetMashUpText(int count,bool bracket = false) =>ColorfulText.OperatorColorText.PurifyColor.GetValueOrDefault(count, "").Insert(10,"MashUp"+ (bracket?"()":""));
-        
-        public static string TryGetPotionText(int buffid)=>ColorfulText.PotionColorText.TModLoader.PotionColor.GetValueOrDefault(buffid, "").Insert(10,Lang.GetBuffName(buffid));
-        
+        public static string TryGetMashUpText(int count) =>ColorfulText.OperatorColorText.MashUpColor.GetValueOrDefault(count, "").Insert(10,"MashUp");
+
+        public static string GetBracketText(int count,bool mashup=false,bool right = false)
+        {
+            string bracket = right ? "(": ")";
+            if (!mashup)
+            {
+                return ColorfulText.OperatorColorText.PurifyColor.GetValueOrDefault(count, "").Insert(10, bracket);
+            }
+            return ColorfulText.OperatorColorText.MashUpColor.GetValueOrDefault(count, "").Insert(10, bracket);
+        }
+
+        public static string TryGetPotionText(int buffid)
+        {
+            string text = ColorfulText.PotionColorText.TModLoader.PotionColor.GetValueOrDefault(buffid, "");
+            return text != "" ? text.Insert(10, Lang.GetBuffName(buffid)) : "";
+        }
         public static List<string> GenerateRandomPostfix()
         {
             Random random = new Random();

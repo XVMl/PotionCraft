@@ -13,11 +13,14 @@ using Microsoft.Xna.Framework;
 using PotionCraft.Content.System;
 using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework.Graphics;
+using Luminance.Assets;
 
 namespace PotionCraft.Content.Items
 {
     public class BasePotion : ModItem
     {
+        public override string Texture =>Assets.Path.Items+"BasePotion";
+
         /// <summary>
         /// 将会显示的药剂名
         /// </summary>
@@ -75,21 +78,6 @@ namespace PotionCraft.Content.Items
             MashUpCount = tag.Get<int>("MashUpCount");
         }
 
-        public void Purifying()
-        {
-            foreach (var buff in BuffDictionary.Keys.ToList())
-            {
-                BuffDictionary[buff] *= 2;
-            }
-            if (BuffDictionary.Count == 1)
-            {
-                PotionName = "纯化" + PotionName;
-            }
-            else
-            {
-                PotionName = "纯化(" + PotionName + ")";
-            }
-        }
 
         public void UpdataName()
         {
@@ -125,9 +113,9 @@ namespace PotionCraft.Content.Items
             {
                 player.AddBuff(item.Key, item.Value);
             }
-            string s = Lang.GetBuffName(11);
+            string s = LanguageHelper.TryGetPotionText(13);
             Main.NewText(s);
-            Main.NewText("[c/7CBDB9:]".Insert(10,s));
+            Main.NewText("[c/7CBDB9:(]"+s+ "[c/7CBDB9:)]");
             
             return true;
         }
