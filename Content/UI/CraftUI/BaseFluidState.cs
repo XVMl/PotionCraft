@@ -12,11 +12,14 @@ using PotionCraft.Content.System;
 using Microsoft.Xna.Framework.Input;
 using Terraria.GameInput;
 using Microsoft.Xna.Framework.Graphics;
+using PotionCraft.Content.Items;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BaseFluidState: AutoUIState
     {
         public override bool IsLoaded() => ActiveState && CraftState == CraftUiState.BaseFluid;
+
+        public string currentvalue = "Test";
 
         public override string LayersFindIndex => "Vanilla: Mouse Text";
 
@@ -27,6 +30,12 @@ namespace PotionCraft.Content.UI.CraftUI
         private CreatedPotionSlot<BaseFluidState> CreatedPotionSlot;
 
         private BaseFuildInput baseFuildInput;
+
+        private BaseFuildButtun baseFuildButtun;
+
+        private BaseFuildRenaemButtun baseFuildRenaemButtun;
+
+        public bool inputting;
         public override void OnInitialize()
         {
             Potionslot = new(this)
@@ -57,6 +66,20 @@ namespace PotionCraft.Content.UI.CraftUI
             };
             Append(baseFuildInput);
 
+            baseFuildButtun = new(this)
+            {
+                HAlign = 0.5f,
+                VAlign = 0.75f,
+            };
+            Append(baseFuildButtun);
+
+            baseFuildRenaemButtun = new(this)
+            {
+                HAlign = 0.5f,
+                VAlign = 0.85f,
+            };
+            Append(baseFuildRenaemButtun);
+
         }
 
         public override void Update(GameTime gameTime)
@@ -66,19 +89,73 @@ namespace PotionCraft.Content.UI.CraftUI
 
     }
 
+    public class BaseFuildRenaemButtun : PotionElement<BaseFluidState>
+    {
+        public BaseFluidState baseFluidState;
+        public BaseFuildRenaemButtun(BaseFluidState baseFluidState)
+        {
+            this.baseFluidState = baseFluidState;
+            Width.Set(100f, 0);
+            Height.Set(32f, 0);
+        }
+
+        private void RenameFluid()
+        {
+            baseFluidState.inputting = false;
+        }
+
+        public override void CraftClick(UIMouseEvent evt)
+        {
+            RenameFluid();
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Assets.UI.Button, GetDimensions().ToRectangle(), Color.White);
+        }
+
+    }
+
+    public class BaseFuildButtun: PotionElement<BaseFluidState>
+    {
+
+        private BaseFluidState baseFluidState;
+        public BaseFuildButtun(BaseFluidState baseFluidState)
+        {
+            this.baseFluidState = baseFluidState;
+            PotionCraftState = baseFluidState;
+            Width.Set(100f, 0);
+            Height.Set(32f, 0);
+        }
+
+        private void ChangBaseFluid(Item potion)
+        {
+            PotionCraftState.Potion = potion.Clone();
+            BasePotion createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+            createdPotion.PotionName = baseFluidState.currentvalue;
+        }
+
+        public override void CraftClick(UIMouseEvent evt)
+        {
+            if (PotionCraftState.Potion.IsAir) return;
+            ChangBaseFluid(PotionCraftState.Potion);
+            base.CraftClick(evt);
+        }
+    }
+
     public class BaseFuildInput:PotionElement<BaseFluidState>
     {
-        private string currentvalue="Test";
 
-        private bool inputting;
+        private BaseFluidState baseFluidState;
         public BaseFuildInput(BaseFluidState baseFluidState)
         {   Width.Set(180f, 0f);
             Height.Set(50f, 0f);
+            this.baseFluidState = baseFluidState;
         }
 
         private void InputText()
         {
-            inputting = true;
+            baseFluidState.inputting = true;
             Main.blockInput= true;
         }
 
@@ -92,17 +169,17 @@ namespace PotionCraft.Content.UI.CraftUI
             PlayerInput.WritingText = true;
             Main.instance.HandleIME();
 
-            string value = Main.GetInputText(currentvalue);
-            if (value !=currentvalue)
+            string value = Main.GetInputText(baseFluidState.currentvalue);
+            if (value != baseFluidState.currentvalue)
             {
-                currentvalue = value;
+                baseFluidState.currentvalue = value;
             }
         }
 
         private void EndInputText()
         {
             Main.blockInput = false;
-            inputting = false;
+            baseFluidState.inputting = false;
         }
 
         public override void Update(GameTime gameTime)
@@ -111,7 +188,7 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 EndInputText();
             }
-            if (inputting)
+            if (baseFluidState.inputting)
             {
                 HandleInputText();
             }
@@ -124,13 +201,13 @@ namespace PotionCraft.Content.UI.CraftUI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            if (inputting)
+            if (baseFluidState.inputting)
             {
                 spriteBatch.Draw(Assets.UI.PanelGrayscale, GetDimensions().ToRectangle(), new Color(49, 84, 141));
                 HandleInputText();
                 Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
             }
-            Utils.DrawBorderString(spriteBatch, currentvalue, GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
+            Utils.DrawBorderString(spriteBatch, baseFluidState.currentvalue, GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
         }
 
     }
