@@ -12,14 +12,14 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace PotionCraft.Content.UI
+namespace PotionCraft.Content.UI.PotionTooltip
 {
     /// <summary>
     /// 此类用于修改药水的提示栏
     /// </summary>
     public class TooltipUI : AutoUIState
     {
-        public override bool IsLoaded() =>Show;
+        public override bool IsLoaded() => Show;
         public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private bool Show;
