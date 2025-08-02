@@ -107,7 +107,7 @@ namespace PotionCraft.Content.System
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public BasePotion AsPotion(Item item)
+        public static BasePotion AsPotion(Item item)
         {
             if (item.ModItem is BasePotion testPotion)
             {
@@ -123,8 +123,9 @@ namespace PotionCraft.Content.System
 
         public virtual void CraftClick(UIMouseEvent evt)
         {
-            PotionCraftState.Potion.stack -= 1;
-            PotionCraftState.Material.stack -= 1;
+            Main.NewText("!!!");
+            //PotionCraftState.Potion.stack -= 1;
+            //PotionCraftState.Material.stack -= 1;
         }
 
         public override void LeftClick(UIMouseEvent evt)

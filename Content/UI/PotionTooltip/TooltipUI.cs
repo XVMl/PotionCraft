@@ -24,25 +24,50 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         private bool Show;
         private UIElement Area;
+
+        private string currentpotionname = "";
+
+        private PotionIngredients PotionIngredients;
         public override void OnInitialize()
         {
             Area = new();
             Area.Width.Set(300f, 0f);
             Area.Height.Set(300f, 0f);
             Append(Area);
+            PotionIngredients = new(this) { 
+                HAlign= 0.5f,
+                VAlign = 1f,
+            };
+            Area.Append(PotionIngredients);
         }
 
         public override void Update(GameTime gameTime)
         {
-            Show = Main.HoverItem.type == ModContent.ItemType<BasePotion>();
             Vector2 pos = Main.MouseScreen;
             Area.Left.Set(pos.X, 0);
             Area.Top.Set(pos.Y, 0);
+            Show = Main.HoverItem.type == ModContent.ItemType<BasePotion>();
+            if (Show)
+            {
+                if (currentpotionname != PotionElement<TooltipUI>.AsPotion(Main.HoverItem).PotionName)
+                {
+                    PotionIngredients.UIgrid.Clear();
+                    currentpotionname = PotionElement<TooltipUI>.AsPotion(Main.HoverItem).PotionName;
+                    PotionIngredients.SetPotionCraftState(this, Main.HoverItem);
+                }
+            }
+            else
+            {
+                PotionIngredients.SetPotionCraftState(null);
+            }
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
+            if (!Show) return;
             spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(), Color.White);
+            //BasePotion basePotion = Main.HoverItem;
+            
         }
     }
 }
