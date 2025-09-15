@@ -32,7 +32,6 @@ namespace PotionCraft.Content.System
         public static string GetBracketText(int count,bool mashup=false,bool right = false)
         {
             string bracket = right ? "(": ")";
-            if (!mashup)
             {
                 return ColorfulText.OperatorColorText.PurifyColor.GetValueOrDefault(count, "").Insert(10, bracket);
             }

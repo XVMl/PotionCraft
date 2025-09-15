@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
-using PotionCraft.Content.System.PotionBuffEffectIntensity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
