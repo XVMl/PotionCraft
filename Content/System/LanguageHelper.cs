@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static PotionCraft.Content.System.ColorfulText.OperatorColorText;
+using static PotionCraft.Content.System.ColorfulText.PotionColorText;
 
 namespace PotionCraft.Content.System
 {
@@ -25,22 +27,22 @@ namespace PotionCraft.Content.System
             return lang.Equals(key) ? null : lang;
         }
         
-        public static string TryGetPurifyText(int count) =>ColorfulText.OperatorColorText.PurifyColor.GetValueOrDefault(count, "").Insert(10,"Purified");
+        public static string TryGetPurifyText(int count) =>PurifyColor.GetValueOrDefault(count, "").Insert(10,"Purified");
         
-        public static string TryGetMashUpText(int count) =>ColorfulText.OperatorColorText.MashUpColor.GetValueOrDefault(count, "").Insert(10,"MashUp");
+        public static string TryGetMashUpText(int count) =>MashUpColor.GetValueOrDefault(count, "").Insert(10,"MashUp");
 
         public static string GetBracketText(int count,bool mashup=false,bool right = false)
         {
             string bracket = right ? "(": ")";
             {
-                return ColorfulText.OperatorColorText.PurifyColor.GetValueOrDefault(count, "").Insert(10, bracket);
+                return PurifyColor.GetValueOrDefault(count, "").Insert(10, bracket);
             }
-            return ColorfulText.OperatorColorText.MashUpColor.GetValueOrDefault(count, "").Insert(10, bracket);
+            return MashUpColor.GetValueOrDefault(count, "").Insert(10, bracket);
         }
 
         public static string TryGetPotionText(int buffid)
         {
-            string text = ColorfulText.PotionColorText.TModLoader.PotionColor.GetValueOrDefault(buffid, "");
+            string text = TModLoader.PotionColor.GetValueOrDefault(buffid, "");
             return text != "" ? text.Insert(10, Lang.GetBuffName(buffid)) : "";
         }
         public static List<string> GenerateRandomPostfix()

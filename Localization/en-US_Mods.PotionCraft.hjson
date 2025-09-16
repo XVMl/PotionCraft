@@ -13,6 +13,21 @@ Items: {
 		DisplayName: Magic Panacea
 		Tooltip: ""
 	}
+
+	AA: {
+		DisplayName: A A
+		Tooltip: ""
+	}
+
+	Material1: {
+		DisplayName: Material1
+		Tooltip: ""
+	}
+
+	Material2: {
+		DisplayName: Material2
+		Tooltip: ""
+	}
 }
 
 Colorfulfont: {

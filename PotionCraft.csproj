@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- Import tModLoader mod properties -->
 	<Import Project="..\tModLoader.targets" />
@@ -6,6 +6,12 @@
 	<!-- General -->
 	<PropertyGroup>
 	</PropertyGroup>
+	<ItemGroup>
+	  <AdditionalFiles Remove="Content\System\PotionBuffEffectIntensity\**" />
+	  <Compile Remove="Content\System\PotionBuffEffectIntensity\**" />
+	  <EmbeddedResource Remove="Content\System\PotionBuffEffectIntensity\**" />
+	  <None Remove="Content\System\PotionBuffEffectIntensity\**" />
+	</ItemGroup>
 	<ItemGroup>
 	  <None Remove="assets\autoloadedeffects\shaders\Cheapstar.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\Color.fx" />
@@ -17,12 +23,30 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Assets\" />
-	  <Folder Include="Content\System\PotionBuffEffectIntensity\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Reference Include="Luminance">
 	    <HintPath>libs\Luminance.dll</HintPath>
 	  </Reference>
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="BuffColorfulText.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Content\System\ColorfulText\BuffColorfulText.xml">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Content\System\ColorfulText\OperationColorFulTest.xml">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Content\System\LoaderSystem\CustomMaterials.xml">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="CustomMaterials.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 	<!-- References -->
