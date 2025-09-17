@@ -19,7 +19,6 @@ public class LoaderItemsSystem:ModSystem
 
         foreach (var item in CustomMaterials)
         {
-            BaseCustomMaterials customMaterial = new BaseCustomMaterials(item.Key, item.Value);
             Mod.AddContent(new BaseCustomMaterials(item.Key, item.Value));
         }
     }

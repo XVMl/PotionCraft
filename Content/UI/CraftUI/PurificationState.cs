@@ -80,26 +80,21 @@ namespace PotionCraft.Content.UI.CraftUI
             }
             PotionCraftState.CreatedPotion = potion.Clone();
             BasePotion createdPotion = AsPotion(PotionCraftState.CreatedPotion);
-            foreach (var buff in createdPotion.BuffDictionary.Keys.ToList())
+            foreach (var buff in createdPotion.PotionDictionary)
             {
-                createdPotion.BuffDictionary[buff] *= 2;
+                createdPotion.PotionDictionary[buff.Key].BuffTime *= 2;
             }
             createdPotion.PurifyingCount++;
-            if (createdPotion.BuffDictionary.Count == 1)
-            {
-                createdPotion.PotionName = TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount)) + " " + createdPotion.PotionName;
-            }
-            else
-            {
-                createdPotion.PotionName = TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))+GetBracketText(Math.Min(12, createdPotion.PurifyingCount)) + createdPotion.PotionName+ GetBracketText(Math.Min(12, createdPotion.PurifyingCount),right:true);
-            }
+            createdPotion.PotionName = createdPotion.PotionDictionary.Count == 1
+                ? $"{TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))} {createdPotion.PotionName}"
+                : $"{TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))} {GetBracketText(Math.Min(12, createdPotion.PurifyingCount))}{createdPotion.PotionName}{GetBracketText(Math.Min(12, createdPotion.PurifyingCount), right: true)}";
         }
 
-        public override void CraftClick(UIMouseEvent evt)
+        public override void LeftClick(UIMouseEvent evt)
         {
+            base.LeftClick(evt);
             if (PotionCraftState.Potion.IsAir || PotionCraftState.Material.IsAir) return;
             Purifying(PotionCraftState.Potion, PotionCraftState.Material);
-            base.CraftClick(evt);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

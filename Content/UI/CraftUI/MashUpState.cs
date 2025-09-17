@@ -74,26 +74,21 @@ namespace PotionCraft.Content.UI.CraftUI
         private void MashUp(Item potion, BasePotion material)
         {
             BasePotion createdPotion = AsPotion(potion.Clone());
-            foreach (var buff in material.BuffDictionary.Keys.ToList())
+            foreach (var buff in material.PotionDictionary)
             {
-                if (createdPotion.BuffDictionary.TryGetValue(buff, out int value))
-                {
-                    createdPotion.BuffDictionary[buff] += value;
-                }
-                else
-                {
-                    createdPotion.BuffDictionary.Add(buff, value);
-                }
+                createdPotion.PotionDictionary.TryAdd(buff.Key, new PotionData(
+                    buff.Value.BuffId,
+                    buff.Value.ItemId,
+                    1,
+                    buff.Value.BuffTime
+                ));
+                createdPotion.PotionDictionary[buff.Key].BuffTime+= buff.Value.BuffTime;
+
             }
             createdPotion.MashUpCount+=material.MashUpCount;
-            if (createdPotion.BuffDictionary.Count == 0)
-            {
-                createdPotion.PotionName += material.DisplayName.Value;
-            }
-            else
-            {
-                createdPotion.PotionName += " " + TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount)) + " " + material.DisplayName.Value;
-            }
+            createdPotion.PotionName += createdPotion.PotionDictionary.Count == 0
+                ? material.DisplayName.Value
+                : $" {TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))} {material.DisplayName.Value}";
         }
 
         
@@ -101,27 +96,23 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             PotionCraftState.CreatedPotion = potion.Clone();
             BasePotion createdPotion = AsPotion(PotionCraftState.CreatedPotion);
-            if (createdPotion.BuffDictionary.ContainsKey(material.buffType))
-            {
-                createdPotion.BuffDictionary[material.buffType] += material.buffTime;
-            }
-            else
-            {
-                createdPotion.BuffDictionary.TryAdd(material.buffType, material.buffTime);
-            }
-            if (createdPotion.BuffDictionary.Count == 1)
-            {
-                createdPotion.PotionName += TryGetPotionText(material.buffType);
-            }
-            else
-            {
-                createdPotion.MashUpCount++;
-                createdPotion.PotionName += " " + TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount)) + " " + TryGetPotionText(material.buffType);
-            }
+            createdPotion.PotionDictionary.TryAdd(material.buffType, new PotionData(
+                material.buffType,
+                 material.type,
+                 1,
+                 material.buffType
+            ));
+            createdPotion.PotionDictionary[material.buffType].BuffTime+= material.buffTime;
+
+            createdPotion.PotionName += createdPotion.PotionDictionary.Count == 1
+                ? TryGetPotionText(material.buffType)
+                : $" {TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))} {TryGetPotionText(material.buffType)}";
+            createdPotion.MashUpCount++;
         }
 
-        public override void CraftClick(UIMouseEvent evt)
+        public override void LeftClick(UIMouseEvent evt)
         {
+            base.LeftClick(evt);
             if (PotionCraftState.Potion.IsAir || PotionCraftState.Material.IsAir) return;
             if (IsMaterial(PotionCraftState.Material))
             {
@@ -131,11 +122,7 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 MashUp(PotionCraftState.Potion, AsPotion(PotionCraftState.Material));
             }
-            //Item item = new();
-            //item.SetDefaults(ModContent.ItemType<BasePotion>());
-            //AsPotion(item).PotionName += "Test";
-            //MashUpState.Materialslot = item.Clone();
-            base.CraftClick(evt);
+
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

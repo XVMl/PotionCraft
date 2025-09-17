@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.Localization;
 using System.Reflection;
-using Microsoft.Xna.Framework;
 using PotionCraft.Content.System;
 using System.Collections.ObjectModel;
-using Microsoft.Xna.Framework.Graphics;
-using Luminance.Assets;
 
 namespace PotionCraft.Content.Items
 {
@@ -33,13 +27,24 @@ namespace PotionCraft.Content.Items
         /// 组合的次数，用于改变字体颜色
         /// </summary>
         public int MashUpCount;
+        /// <summary>
+        /// 是否为酒类
+        /// </summary>
+        public bool Wine;
+        /// <summary>
+        /// 是否为魔法
+        /// </summary>
+        public bool Magic;
         
-        public Dictionary<int, int> BuffDictionary = new();
-
-        static readonly ConstructorInfo Internal_TooltipLine = typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null,new Type[]{
-        typeof(string),
+        public string Signatures = "";
+        
+        public Dictionary<int, PotionData> PotionDictionary = new();
+        
+        static readonly ConstructorInfo Internal_TooltipLine = typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null,
+        [
+            typeof(string),
         typeof(string)
-        },null)!;
+        ],null)!;
         //static readonly MethodInfo SetName = typeof(LocalizedText).GetMethod("SetValue", BindingFlags.NonPublic | BindingFlags.Instance)!;
         public override void SetStaticDefaults()
         {
@@ -61,18 +66,30 @@ namespace PotionCraft.Content.Items
 
         public override void SaveData(TagCompound tag)
         {
-            tag["BuffID"] = BuffDictionary.Keys.ToList();
-            tag["BuffTime"] = BuffDictionary.Values.ToList();
+            var potiondatalist = PotionDictionary.Select(potiondata => new TagCompound()
+            {
+                { "BuffID", potiondata.Value.BuffId }, { "BuffTime", potiondata.Value.BuffTime },
+                { "Counts", potiondata.Value.Counts }, { "ItemId", potiondata.Value.ItemId }
+            }).ToList();
+            tag["PotionData"] = potiondatalist;
             tag["PotionName"] = PotionName;
+            tag["Signatures"] = Signatures;
             tag["PurifyingCount"] = PurifyingCount;
             tag["MashUpCount"] = MashUpCount;
         }
 
         public override void LoadData(TagCompound tag)
         {
-            var buffId = tag.Get<List<int>>("BuffID");
-            var buffTime = tag.Get<List<int>>("BuffTime");
-            BuffDictionary = buffId.Zip(buffTime, (k, v) => new { Key = k, value = v }).ToDictionary(x => x.Key, x => x.value);
+            var potiondatalist = tag.GetList<TagCompound>("PotionData");
+            foreach (var potion in potiondatalist)
+            {
+                PotionDictionary.Add(potion.Get<int>("BuffID"),
+                    new PotionData(potion.GetInt("BuffId"),
+                        potion.GetInt("ItemId"),
+                        potion.GetInt("Counts"),
+                        potion.GetInt("BuffTime")));
+            }
+            Signatures =  tag.GetString("Signatures");
             PotionName = tag.GetString("PotionName");
             PurifyingCount = tag.Get<int>("PurifyingCount");
             MashUpCount = tag.Get<int>("MashUpCount");
@@ -91,11 +108,6 @@ namespace PotionCraft.Content.Items
             //}
         }
 
-        public override bool PreDrawTooltip(ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y)
-        {
-             return base.PreDrawTooltip(lines, ref x, ref y);
-        }
-
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             if (Internal_TooltipLine==null)
@@ -109,14 +121,10 @@ namespace PotionCraft.Content.Items
 
         public override bool? UseItem(Player player)
         {
-            foreach (var item in BuffDictionary)
+            foreach (var item in PotionDictionary)
             {
-                player.AddBuff(item.Key, item.Value);
+                player.AddBuff(item.Key, item.Value.BuffTime);
             }
-            string s = LanguageHelper.TryGetPotionText(13);
-            Main.NewText(s);
-            Main.NewText("[c/7CBDB9:(]"+s+ "[c/7CBDB9:)]");
-            
             return true;
         }
 

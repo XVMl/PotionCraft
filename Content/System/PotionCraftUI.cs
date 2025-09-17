@@ -121,19 +121,6 @@ namespace PotionCraft.Content.System
             return ModContent.GetInstance<BasePotion>();
         }
 
-        public virtual void CraftClick(UIMouseEvent evt)
-        {
-            Main.NewText("!!!");
-            //PotionCraftState.Potion.stack -= 1;
-            //PotionCraftState.Material.stack -= 1;
-        }
-
-        public override void LeftClick(UIMouseEvent evt)
-        {
-            base.LeftClick(evt);
-            CraftClick(evt);
-        }
-
         public override void Update(GameTime gameTime)
         {
             if (IsMouseHovering)

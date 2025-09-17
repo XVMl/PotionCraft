@@ -43,10 +43,10 @@ namespace PotionCraft.Content.UI.PotionTooltip
             PotionCraftState = tooltipUI;
             if (PotionCraftState == null) return;
             BasePotion basePotion = AsPotion(item);
-            foreach (var ingredient in basePotion.BuffDictionary)
+            foreach (var ingredient in basePotion.PotionDictionary)
             {
-                Main.NewText(ingredient.Key);
-                IngredientElement ingredientElement = new(ingredient.Key);
+                Main.NewText(ingredient.Value.ItemId);
+                IngredientElement ingredientElement = new(ingredient.Value.ItemId);
                 UIgrid.Add(ingredientElement);
             }
 
