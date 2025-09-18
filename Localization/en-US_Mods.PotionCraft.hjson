@@ -28,6 +28,16 @@ Items: {
 		DisplayName: Material2
 		Tooltip: ""
 	}
+
+	Wine1: {
+		DisplayName: Wine1
+		Tooltip: ""
+	}
+
+	Wine2: {
+		DisplayName: Wine2
+		Tooltip: ""
+	}
 }
 
 Colorfulfont: {

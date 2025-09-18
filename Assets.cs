@@ -12,6 +12,8 @@ namespace PotionCraft
 {
     public class Assets
     {
+        public static Asset<Texture2D> UITexture(string path) => ModContent.Request<Texture2D>(Path.UI + path);
+
         public class Path
         {
             public static readonly string Assets = "PotionCraft/Assets/";
@@ -27,8 +29,7 @@ namespace PotionCraft
         }
         public class UI
         {
-            public static Asset<Texture2D> UITexture(string path)=> ModContent.Request<Texture2D>(Path.UI + path);
-
+            
             public static Texture2D ItemSlotBackgroud => UITexture("Scoreboard").Value;
 
             public static Texture2D ItemSlotUIStateBackGroud => UITexture("LisaoQuestion").Value;
@@ -46,7 +47,8 @@ namespace PotionCraft
             public static Texture2D Tooltip => UITexture("Tooltip").Value;
 
             public static Texture2D PanelGrayscale => UITexture("PanelGrayscale").Value;
-            
+
+            public static string PotionCraftBG => Path.UI + "PotionCraftBG";
         }
         public class Items
         {

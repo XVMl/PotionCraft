@@ -104,7 +104,7 @@ namespace PotionCraft.Content.UI.CraftUI
             baseFluidState.inputting = false;
         }
 
-        public override void CraftClick(UIMouseEvent evt)
+        public override void LeftClick(UIMouseEvent evt)
         {
             RenameFluid();
         }
@@ -135,11 +135,11 @@ namespace PotionCraft.Content.UI.CraftUI
             createdPotion.PotionName = baseFluidState.currentvalue;
         }
 
-        public override void CraftClick(UIMouseEvent evt)
+        public override void LeftClick(UIMouseEvent evt)
         {
+            base.LeftClick(evt);
             if (PotionCraftState.Potion.IsAir) return;
             ChangBaseFluid(PotionCraftState.Potion);
-            base.CraftClick(evt);
         }
     }
 
@@ -194,7 +194,7 @@ namespace PotionCraft.Content.UI.CraftUI
             }
         }
 
-        public override void CraftClick(UIMouseEvent evt)
+        public override void LeftClick(UIMouseEvent evt)
         {
             InputText();
         }

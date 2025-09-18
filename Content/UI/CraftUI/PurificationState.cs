@@ -82,7 +82,7 @@ namespace PotionCraft.Content.UI.CraftUI
             BasePotion createdPotion = AsPotion(PotionCraftState.CreatedPotion);
             foreach (var buff in createdPotion.PotionDictionary)
             {
-                createdPotion.PotionDictionary[buff.Key].BuffTime *= 2;
+                //createdPotion.PotionDictionary[buff.Key].BuffTime *= 2;
             }
             createdPotion.PurifyingCount++;
             createdPotion.PotionName = createdPotion.PotionDictionary.Count == 1

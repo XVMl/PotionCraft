@@ -6,6 +6,7 @@ namespace PotionCraft.Content.System.ColorfulText
     {
         public static readonly Dictionary<int, string> PurifyColor = new()
         {
+            { 0, "[c/FC14E2:]" },
             { 1, "[c/FC14E2:]" },
             { 2, "[c/FC14D8:]" },
             { 3, "[c/FC14CD:]" },
@@ -22,6 +23,7 @@ namespace PotionCraft.Content.System.ColorfulText
 
         public static readonly Dictionary<int, string> MashUpColor = new()
         {
+            { 0, "[c/7A1FE6:]" },
             { 1, "[c/7A1FE6:]" },
             { 2, "[c/6B19D1:]" },
             { 3, "[c/5C14BC:]" },

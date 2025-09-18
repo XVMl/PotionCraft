@@ -13,6 +13,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
+using static PotionCraft.Assets;
 
 namespace PotionCraft.Content.UI.CraftUI
 {
@@ -33,20 +34,21 @@ namespace PotionCraft.Content.UI.CraftUI
                 HAlign = 0.5f,
                 VAlign = 0.5f,
             };
-            area.Width.Set(400f, 0);
-            area.Height.Set(300f, 0);
+            area.Width.Set(820f, 0);
+            area.Height.Set(600f, 0);
             Append(area);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Assets.UI.BackGround1, area.GetDimensions().ToRectangle(), Color.White);
+            //spriteBatch.Draw(UITexture("PotionCraftBG").Value, area.GetDimensions().ToRectangle(), Color.White);
         }
 
     }
 
     public class PotionSlot<T> : PotionElement<T> where T : AutoUIState
     {
+        public string TexturePath= "Slot_Back";
         public PotionSlot(T potionCraftState)
         {
             PotionCraftState = potionCraftState;
@@ -72,7 +74,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Assets.UI.Slot, GetDimensions().ToRectangle(), Color.White);
+            spriteBatch.Draw(UITexture(TexturePath).Value, GetDimensions().ToRectangle(), Color.White);
             if (PotionCraftState.Potion.IsAir) return;
             Main.inventoryScale = 2.30f;
             ItemSlot.Draw(spriteBatch, ref PotionCraftState.Potion, 21, GetDimensions().Position());
@@ -86,6 +88,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
     public class MaterialSlot<T> : PotionElement<T> where T : AutoUIState
     {
+        public string TexturePath = "Slot_Back";
 
         public MaterialSlot(T potionCraftState)
         {
@@ -118,7 +121,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Assets.UI.Slot, GetDimensions().ToRectangle(), Color.White);
+            spriteBatch.Draw(UITexture(TexturePath).Value, GetDimensions().ToRectangle(), Color.White);
             if (PotionCraftState.Material.IsAir) return;
             Main.inventoryScale = 2.3f;
             ItemSlot.Draw(spriteBatch, ref PotionCraftState.Material, 21, GetDimensions().Position());

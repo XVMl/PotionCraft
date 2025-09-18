@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
+using PotionCraft.Content.UI.CraftUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
         private bool Show;
         private UIElement Area;
 
-        private string currentpotionname = "";
+        private BasePotion ShowBasePotion;
 
         private PotionIngredients PotionIngredients;
         public override void OnInitialize()
@@ -41,6 +42,19 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Area.Append(PotionIngredients);
         }
 
+        private bool CheckPotion(BasePotion oldPotion, BasePotion newPotion)
+        {
+            if (oldPotion.PotionName != newPotion.PotionName) return false;
+
+            if(oldPotion.PotionDictionary.Count!=newPotion.PotionDictionary.Count)return false;
+
+            foreach (var item in oldPotion.PotionDictionary)
+            {
+                return newPotion.PotionDictionary.Any(s => s.Value.BuffId == item.Value.BuffId && s.Value.BuffTime == item.Value.BuffTime);
+            }
+            return true;
+        }
+
         public override void Update(GameTime gameTime)
         {
             Vector2 pos = Main.MouseScreen;
@@ -49,10 +63,10 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Show = Main.HoverItem.type == ModContent.ItemType<BasePotion>();
             if (Show)
             {
-                if (currentpotionname != PotionElement<TooltipUI>.AsPotion(Main.HoverItem).PotionName)
+                if (CheckPotion(ShowBasePotion,PotionElement<MashUpState>.AsPotion(Main.HoverItem)))
                 {
                     PotionIngredients.UIgrid.Clear();
-                    currentpotionname = PotionElement<TooltipUI>.AsPotion(Main.HoverItem).PotionName;
+                    ShowBasePotion = PotionElement<TooltipUI>.AsPotion(Main.HoverItem);
                     PotionIngredients.SetPotionCraftState(this, Main.HoverItem);
                 }
             }

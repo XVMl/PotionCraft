@@ -12,6 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 using static PotionCraft.Content.System.LanguageHelper;
+using static PotionCraft.Assets;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class MashUpState : AutoUIState
@@ -28,37 +29,61 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private MashUpButton mashupbutton;
 
+        private UIElement area;
+
         public override void OnInitialize()
         {
+            Width.Set(920, 0);
+            Height.Set(640, 0);
+            HAlign = 0.5f;
+            VAlign = 0.5f;
+            area = new UIElement()
+            {
+                HAlign = 0.2f,
+                VAlign = 0.3f,
+            };
+            area.Width.Set(270f, 0);
+            area.Height.Set(270f, 0);
+            Append(area);
             PotionSlot = new(this)
             {
-                HAlign = 0.4f,
-                VAlign = 0.5f,
+                HAlign = 0.1f,
+                VAlign = 0.0f,
+                TexturePath = "ItemSlot"
             };
-            Append(PotionSlot);
+            area.Append(PotionSlot);
 
             CreatedPotionSlot = new(this)
             {
-                HAlign = 0.5f,
-                VAlign = 0.45f,
+                HAlign = 0.05f,
+                VAlign = 0.5f,
             };
-            Append(CreatedPotionSlot);
+            area.Append(CreatedPotionSlot);
 
             MaterialSlot = new(this)
             {
                 HAlign = 0.6f,
-                VAlign = 0.5f,
+                VAlign = 0.0f,
+                TexturePath = "MaterialSlot"
             };
-            Append(MaterialSlot);
+            area.Append(MaterialSlot);
 
             mashupbutton = new(this)
             {
-                VAlign = 0.65f,
-                HAlign = 0.5f,
+                VAlign = 0.0f,
+                HAlign = 0.0f,
             };
             Append(mashupbutton);
-
         }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(UITexture("PotionCraftBG").Value, GetDimensions().ToRectangle(), Color.White);
+            spriteBatch.Draw(UITexture("MashUpBG").Value, area.GetDimensions().ToRectangle(), Color.White);
+            base.Draw(spriteBatch);
+        }
+
+        
 
     }
 
@@ -70,7 +95,7 @@ namespace PotionCraft.Content.UI.CraftUI
             Width.Set(100f, 0);
             Height.Set(32f, 0);
         }
-
+        //TODO 解决Clone()的问题
         private void MashUp(Item potion, BasePotion material)
         {
             BasePotion createdPotion = AsPotion(potion.Clone());
@@ -100,7 +125,7 @@ namespace PotionCraft.Content.UI.CraftUI
                 material.buffType,
                  material.type,
                  1,
-                 material.buffType
+                 material.buffTime
             ));
             createdPotion.PotionDictionary[material.buffType].BuffTime+= material.buffTime;
 

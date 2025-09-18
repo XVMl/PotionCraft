@@ -38,7 +38,7 @@ namespace PotionCraft.Content.Items
         
         public string Signatures = "";
         
-        public Dictionary<int, PotionData> PotionDictionary = new();
+        public Dictionary<int, PotionData> PotionDictionary;
         
         static readonly ConstructorInfo Internal_TooltipLine = typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null,
         [
@@ -84,7 +84,7 @@ namespace PotionCraft.Content.Items
             foreach (var potion in potiondatalist)
             {
                 PotionDictionary.Add(potion.Get<int>("BuffID"),
-                    new PotionData(potion.GetInt("BuffId"),
+                    new PotionData(potion.GetInt("BuffID"),
                         potion.GetInt("ItemId"),
                         potion.GetInt("Counts"),
                         potion.GetInt("BuffTime")));
