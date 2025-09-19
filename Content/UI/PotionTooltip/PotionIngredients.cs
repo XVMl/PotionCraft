@@ -11,6 +11,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
@@ -43,10 +44,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
             PotionCraftState = tooltipUI;
             if (PotionCraftState == null) return;
             BasePotion basePotion = AsPotion(item);
-            foreach (var ingredient in basePotion.PotionDictionary)
+            foreach (var ingredientElement in basePotion.PotionDictionary.Select(ingredient => new IngredientElement(ingredient.Value.ItemId)))
             {
-                Main.NewText(ingredient.Value.ItemId);
-                IngredientElement ingredientElement = new(ingredient.Value.ItemId);
                 UIgrid.Add(ingredientElement);
             }
 
@@ -81,7 +80,6 @@ namespace PotionCraft.Content.UI.PotionTooltip
         protected override void DrawChildren(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(TextureAssets.Item[IngredientType].Value, GetDimensions().ToRectangle().TopLeft(), null, Color.White, 0, TextureAssets.Item[IngredientType].Value.Size() / 2, 1f, 0, 0);
-
         }
     }
 }

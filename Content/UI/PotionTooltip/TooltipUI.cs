@@ -42,7 +42,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Area.Append(PotionIngredients);
         }
 
-        private bool CheckPotion(BasePotion oldPotion, BasePotion newPotion)
+        public bool CheckPotion(BasePotion oldPotion, BasePotion newPotion)
         {
             if (oldPotion.PotionName != newPotion.PotionName) return false;
 
@@ -60,20 +60,13 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Vector2 pos = Main.MouseScreen;
             Area.Left.Set(pos.X, 0);
             Area.Top.Set(pos.Y, 0);
-            Show = Main.HoverItem.type == ModContent.ItemType<BasePotion>();
-            if (Show)
-            {
-                if (CheckPotion(ShowBasePotion,PotionElement<MashUpState>.AsPotion(Main.HoverItem)))
-                {
-                    PotionIngredients.UIgrid.Clear();
-                    ShowBasePotion = PotionElement<TooltipUI>.AsPotion(Main.HoverItem);
-                    PotionIngredients.SetPotionCraftState(this, Main.HoverItem);
-                }
-            }
-            else
-            {
-                PotionIngredients.SetPotionCraftState(null);
-            }
+            Show = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
+            if (!Show) return;
+            
+            if (!CheckPotion(ShowBasePotion, PotionElement<MashUpState>.AsPotion(Main.HoverItem))) return;
+            PotionIngredients.UIgrid.Clear();
+            ShowBasePotion = PotionElement<TooltipUI>.AsPotion(Main.HoverItem);
+            PotionIngredients.SetPotionCraftState(this, Main.HoverItem);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

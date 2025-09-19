@@ -94,7 +94,7 @@ namespace PotionCraft.Content.Items
             PurifyingCount = tag.Get<int>("PurifyingCount");
             MashUpCount = tag.Get<int>("MashUpCount");
         }
-
+        
 
         public void UpdataName()
         {
@@ -115,8 +115,7 @@ namespace PotionCraft.Content.Items
                 return;
             }
             tooltips.Clear();
-            //tooltips.Add((TooltipLine)Internal_TooltipLine.Invoke(["ItemName", PotionName + "药剂"]));
-            tooltips.Add(new TooltipLine(Mod, "s", PotionName));
+            //tooltips.Add(new TooltipLine(Mod, "", PotionName));
         }
 
         public override bool? UseItem(Player player)

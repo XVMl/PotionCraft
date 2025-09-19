@@ -106,11 +106,14 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
+            
+            base.LeftClick(evt);
             RenameFluid();
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
+            
             spriteBatch.Draw(Assets.UI.Button, GetDimensions().ToRectangle(), Color.White);
         }
 
@@ -196,6 +199,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
+            base.LeftClick(evt);
             InputText();
         }
 
