@@ -40,7 +40,7 @@ namespace PotionCraft.Content.System.ThiuDialogue
 
         static readonly FieldInfo H = typeof(Rectangle).GetField(nameof(Rectangle.Height))!;
 
-        static readonly FieldInfo SpriteBatch = typeof(Main).GetField(nameof(Main.spriteBatch))!;
+        public static readonly FieldInfo SpriteBatch = typeof(Main).GetField(nameof(Main.spriteBatch))!;
 
         static readonly MethodInfo Assetsbuttion = typeof(Assets).GetMethod(nameof(Assets.UI.Button))!;
 
@@ -55,12 +55,6 @@ namespace PotionCraft.Content.System.ThiuDialogue
             typeof(Color)
         ]);
 
-        //static readonly MethodInfo Draw = typeof(Main).GetMethod(nameof(Main.spriteBatch.Draw), BindingFlags.Public, new Type[] {
-        //    typeof(Texture2D),
-        //    typeof(Vector2),
-        //    typeof(Rectangle?),
-        //    typeof(Color),
-        //})!;
 
         private static void LoadPotionTooltipBG()
         {
@@ -115,37 +109,5 @@ namespace PotionCraft.Content.System.ThiuDialogue
             cursor.EmitCall(_DrawInvBG);
         }
 
-
-        public static void DrawInvBG(SpriteBatch sb, Rectangle R, Color c = default)
-        {
-            if (Main.HoverItem.type == ModContent.ItemType<BasePotion>())
-            {
-                DrawInvBG(sb, R.X, R.Y, R.Width, R.Height, Color.White);
-            }
-            DrawInvBG(sb, R.X, R.Y, R.Width, R.Height, c);
-        }
-        public static void DrawInvBG(SpriteBatch sb, int x, int y, int w, int h, Color c = default)
-        {
-            
-            if (c == default)
-                c = new Color(63, 65, 151, 255) * 0.785f;
-
-            Texture2D value = TextureAssets.InventoryBack13.Value;
-            if (w < 20)
-                w = 20;
-
-            if (h < 20)
-                h = 20;
-
-            sb.Draw(value, new Rectangle(x, y, 10, 10), new Rectangle(0, 0, 10, 10), c);
-            sb.Draw(value, new Rectangle(x + 10, y, w - 20, 10), new Rectangle(10, 0, 10, 10), c);
-            sb.Draw(value, new Rectangle(x + w - 10, y, 10, 10), new Rectangle(value.Width - 10, 0, 10, 10), c);
-            sb.Draw(value, new Rectangle(x, y + 10, 10, h - 20), new Rectangle(0, 10, 10, 10), c);
-            sb.Draw(value, new Rectangle(x + 10, y + 10, w - 20, h - 20), new Rectangle(10, 10, 10, 10), c);
-            sb.Draw(value, new Rectangle(x + w - 10, y + 10, 10, h - 20), new Rectangle(value.Width - 10, 10, 10, 10), c);
-            sb.Draw(value, new Rectangle(x, y + h - 10, 10, 10), new Rectangle(0, value.Height - 10, 10, 10), c);
-            sb.Draw(value, new Rectangle(x + 10, y + h - 10, w - 20, 10), new Rectangle(10, value.Height - 10, 10, 10), c);
-            sb.Draw(value, new Rectangle(x + w - 10, y + h - 10, 10, 10), new Rectangle(value.Width - 10, value.Height - 10, 10, 10), c);
-        }
     }
 }

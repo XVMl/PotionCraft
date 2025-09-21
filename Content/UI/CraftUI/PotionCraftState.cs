@@ -39,6 +39,20 @@ namespace PotionCraft.Content.UI.CraftUI
             Append(area);
         }
 
+        public static BasePotion AsPotion(Item item)
+        {
+            if (item.ModItem is BasePotion testPotion)
+            {
+                return testPotion;
+            }
+            Mod instance = ModContent.GetInstance<PotionCraft>();
+            if (item.ModItem == null)
+            {
+                instance.Logger.Warn($"Item was erroneously casted to Potion");
+            }
+            return ModContent.GetInstance<BasePotion>();
+        }
+
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             //spriteBatch.Draw(UITexture("PotionCraftBG").Value, area.GetDimensions().ToRectangle(), Color.White);

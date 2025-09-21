@@ -26,7 +26,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
         private bool Show;
         private UIElement Area;
 
-        private BasePotion ShowBasePotion;
+        private static BasePotion ShowBasePotion= ModContent.GetInstance<BasePotion>();
 
         private PotionIngredients PotionIngredients;
         public override void OnInitialize()
@@ -41,12 +41,17 @@ namespace PotionCraft.Content.UI.PotionTooltip
             };
             Area.Append(PotionIngredients);
         }
-
-        public bool CheckPotion(BasePotion oldPotion, BasePotion newPotion)
+        /// <summary>
+        /// 检查两瓶药水是否完全相同，是则返回true
+        /// </summary>
+        /// <param name="oldPotion"></param>
+        /// <param name="newPotion"></param>
+        /// <returns></returns>
+        public static bool CheckPotion(BasePotion oldPotion, BasePotion newPotion)
         {
             if (oldPotion.PotionName != newPotion.PotionName) return false;
-
-            if(oldPotion.PotionDictionary.Count!=newPotion.PotionDictionary.Count)return false;
+           
+            if(oldPotion.PotionDictionary.Count!=newPotion.PotionDictionary.Count) return false;
 
             foreach (var item in oldPotion.PotionDictionary)
             {
@@ -62,8 +67,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Area.Top.Set(pos.Y, 0);
             Show = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
             if (!Show) return;
-            
-            if (!CheckPotion(ShowBasePotion, PotionElement<MashUpState>.AsPotion(Main.HoverItem))) return;
+            //ShowBasePotion ??= PotionElement<MashUpState>.AsPotion(Main.HoverItem);
+            if (CheckPotion(ShowBasePotion, PotionElement<MashUpState>.AsPotion(Main.HoverItem))) return;
             PotionIngredients.UIgrid.Clear();
             ShowBasePotion = PotionElement<TooltipUI>.AsPotion(Main.HoverItem);
             PotionIngredients.SetPotionCraftState(this, Main.HoverItem);
@@ -73,7 +78,6 @@ namespace PotionCraft.Content.UI.PotionTooltip
         {
             if (!Show) return;
             spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(), Color.White);
-            //BasePotion basePotion = Main.HoverItem;
             
         }
     }

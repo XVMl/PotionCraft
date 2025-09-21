@@ -2,6 +2,7 @@ using System.Reflection;
 using Luminance.Core.Hooking;
 using MonoMod.Cil;
 using PotionCraft.Content.Items;
+using PotionCraft.Content.System.ThiuDialogue;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -18,6 +19,8 @@ public class DrawCursorHook:ModSystem
         
     static readonly FieldInfo myplayer = typeof(Main).GetField(nameof(Main.myPlayer))!;
 
+    public static readonly MethodInfo End = typeof(Main).GetMethod(nameof(Main.spriteBatch.End))!;
+
     private static void LoadDrawCursor()
     {
         new ManagedILEdit("Hide Chat Hook ERROR!", ModContent.GetInstance<PotionCraft>(), edit =>
@@ -33,15 +36,16 @@ public class DrawCursorHook:ModSystem
     {
         ILCursor cursor = new ILCursor(context);
         if (!cursor.TryGotoNext(MoveType.AfterLabel,
-                i => i.MatchLdsfld(player),
-                i => i.MatchLdsfld(myplayer)))
+                i => i.MatchLdsfld(PotionTooltipHook.SpriteBatch)
+                //i => i.MatchCallvirt(End)
+                ))
         {
             edit.LogFailure("Find ERROR!");
             return;
         }
 
         cursor.EmitDelegate(() => Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>()));
-        
+
         cursor.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[cursor.Index]);
         cursor.EmitRet();
         

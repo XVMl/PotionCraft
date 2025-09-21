@@ -38,7 +38,7 @@ namespace PotionCraft.Content.Items
         
         public string Signatures = "";
         
-        public Dictionary<int, PotionData> PotionDictionary;
+        public Dictionary<int, PotionData> PotionDictionary=new();
         
         static readonly ConstructorInfo Internal_TooltipLine = typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null,
         [
@@ -115,7 +115,7 @@ namespace PotionCraft.Content.Items
                 return;
             }
             tooltips.Clear();
-            //tooltips.Add(new TooltipLine(Mod, "", PotionName));
+            tooltips.Add(new TooltipLine(Mod, "", PotionName));
         }
 
         public override bool? UseItem(Player player)

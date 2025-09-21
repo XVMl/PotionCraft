@@ -11,7 +11,7 @@ namespace PotionCraft.Content.System.PotionILHook;
 
 public class CanStackHook:ModSystem
 {
-    public static MethodInfo AsPotion = typeof(PotionElement<>).GetMethod(nameof(PotionElement<MashUpState>.AsPotion));
+    public static MethodInfo AsPotion = typeof(PotionCraftState).GetMethod(nameof(PotionCraftState.AsPotion));
    
     public static MethodInfo IL_CanStack = typeof(ItemLoader).GetMethod(nameof(ItemLoader.CanStack));
     
@@ -27,6 +27,8 @@ public class CanStackHook:ModSystem
         try
         {
             MonoModHooks.Modify(IL_CanStack,CanStack);
+            Mod.Logger.Error("Load CanStackHool Successs .");
+
         }
         catch (Exception e)
         {
@@ -51,10 +53,13 @@ public class CanStackHook:ModSystem
         il.EmitLdarg1();
         il.EmitCall(AsPotion);
         il.EmitCall(CheckPotion);
-        il.EmitStloc0();
-        il.EmitLdloc0();
-        il.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[il.Index]);
-        il.EmitLdcI4(1);
+        //il.EmitDelegate((int e) => { Main.NewText(e); });
+        //il.EmitStloc0();
+        //il.EmitLdloc0();
+        il.Emit(Mono.Cecil.Cil.OpCodes.Brtrue_S, context.Instrs[il.Index]);
+        //il.EmitLdcI4(0);
+        //il.EmitNop();
+        il.EmitLdcI4(0);
         il.EmitRet();
 
     }

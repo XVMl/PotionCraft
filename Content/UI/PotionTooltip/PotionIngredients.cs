@@ -20,6 +20,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
     public class PotionIngredients:PotionElement<TooltipUI>
     {
         public UIGrid UIgrid;
+
         public PotionIngredients(TooltipUI tooltipUI)
         {
             PotionCraftState = null;
@@ -53,7 +54,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            if (PotionCraftState == null) return;
+            base.DrawSelf(spriteBatch);
+            //if (PotionCraftState == null) return;
             //spriteBatch.Draw(Assets.UI.Button, UIgrid.GetDimensions().ToRectangle(), Color.White);
             //spriteBatch.Draw(TextureAssets.Item[ItemID.BattlePotion].Value, GetDimensions().ToRectangle().TopLeft(),null, Color.White,0, TextureAssets.Item[ItemID.BattlePotion].Value.Size()/2,1f,0,0);
         }
@@ -64,22 +66,36 @@ namespace PotionCraft.Content.UI.PotionTooltip
         private int IngredientType;
 
         private UIText IngredientTime;
+
+        private UIImage IngredientImage;
         public IngredientElement(int ingredientType)
         {
-            Width.Set(40, 0);
-            Height.Set(40, 0);
+            Width.Set(150, 0);
+            Height.Set(50, 0);
             IngredientType = ingredientType;
-            IngredientTime = new(Lang.GetBuffName(ingredientType));
-            IngredientTime.HAlign= 0.5f;
-            IngredientTime.VAlign = 0.5f;
-            IngredientTime.Width.Set(30, 0);
-            IngredientTime.Height.Set(20, 0);
+            IngredientTime = new("111")
+            {
+                //HAlign = 0.05f,
+                //VAlign = 0.05f
+            };
+            //Main.NewText(Lang.GetBuffName(ingredientType));
+            IngredientTime.Width.Set(100, 0);
+            IngredientTime.Height.Set(30, 0);
+            Main.instance.LoadItem(IngredientType);
+            IngredientImage = new(TextureAssets.Item[IngredientType].Value)
+            {
+                HAlign = 0.05f,
+                VAlign = 0.05f
+            };
             Append(IngredientTime);
+            Append(IngredientImage);
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(TextureAssets.Item[IngredientType].Value, GetDimensions().ToRectangle().TopLeft(), null, Color.White, 0, TextureAssets.Item[IngredientType].Value.Size() / 2, 1f, 0, 0);
+            //spriteBatch.Draw(Assets.UI.Button, GetDimensions().ToRectangle(), Color.White);
+            Utils.DrawBorderString(spriteBatch, Lang.GetItemName(IngredientType).Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(10, 0), Color.White);
+            spriteBatch.Draw(TextureAssets.Item[IngredientType].Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(10, 0), null, Color.White, 0, TextureAssets.Item[IngredientType].Value.Size() / 2, 1f, 0, 0);
         }
     }
 }
