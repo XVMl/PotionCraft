@@ -111,9 +111,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
             }
             createdPotion.MashUpCount+=material.MashUpCount;
-            createdPotion.PotionName += createdPotion.PotionDictionary.Count == 0
-                ? material.DisplayName.Value
-                : $" {TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))} {material.DisplayName.Value}";
+            createdPotion.PotionName += $"{TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))} {material.DisplayName.Value} ";
         }
 
         
@@ -129,9 +127,7 @@ namespace PotionCraft.Content.UI.CraftUI
             ));
             createdPotion.PotionDictionary[material.buffType].BuffTime+= material.buffTime;
 
-            createdPotion.PotionName += createdPotion.PotionDictionary.Count == 1
-                ? TryGetPotionText(material.buffType)
-                : $" {TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))} {TryGetPotionText(material.buffType)}";
+            createdPotion.PotionName += $"{TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))} {TryGetPotionText(material.buffType)} ";
             createdPotion.MashUpCount++;
         }
 

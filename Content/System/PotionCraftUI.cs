@@ -17,11 +17,11 @@ namespace PotionCraft.Content.System
 {
     public class PotionCraftUI:ModSystem
     {
-        public static Type[] _UIstate = [];
+        private static Type[] _UIstate = [];
 
-        public static Dictionary<AutoUIState, UserInterface> keyValuePairs = new();
+        private static Dictionary<AutoUIState, UserInterface> keyValuePairs = new();
 
-        public List<UserInterface> _UserInterface = new();
+        private List<UserInterface> _UserInterface = new();
 
         public override void Load()
         {
@@ -63,7 +63,7 @@ namespace PotionCraft.Content.System
                 }
                 var index1 = layers.FindIndex(layer => layer.Name.Equals(item.Key.LayersFindIndex));
                 layers.Insert(index1, new LegacyGameInterfaceLayer(
-                   "PotionCraft:" + item.Key.ToString(),
+                   "PotionCraft:" + item.Key,
                    delegate
                    {
                        item.Value.Draw(Main.spriteBatch, new GameTime());

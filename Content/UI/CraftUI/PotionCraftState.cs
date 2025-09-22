@@ -17,6 +17,7 @@ using static PotionCraft.Assets;
 
 namespace PotionCraft.Content.UI.CraftUI
 {
+    public delegate void ItemSlotChange();
     public class PotionCraftState : AutoUIState
     {
         public override bool IsLoaded() => ActiveState;
@@ -24,8 +25,6 @@ namespace PotionCraft.Content.UI.CraftUI
         public override string LayersFindIndex => "Vanilla: Interface Logic 3";
 
         private UIElement area;
-
-        public Item item = new();
 
         public override void OnInitialize()
         {
@@ -63,11 +62,21 @@ namespace PotionCraft.Content.UI.CraftUI
     public class PotionSlot<T> : PotionElement<T> where T : AutoUIState
     {
         public string TexturePath= "Slot_Back";
+
+        public ItemSlotChange ItemslotChange;
         public PotionSlot(T potionCraftState)
         {
             PotionCraftState = potionCraftState;
             Width.Set(80f, 0f);
             Height.Set(80f, 0f);
+        }
+
+        public PotionSlot(T potionCraftState,ItemSlotChange change)
+        {
+            PotionCraftState = potionCraftState;
+            Width.Set(80f, 0f);
+            Height.Set(80f, 0f);
+            ItemslotChange = change;
         }
 
         public override void LeftClick(UIMouseEvent evt)
@@ -84,6 +93,8 @@ namespace PotionCraft.Content.UI.CraftUI
                     PotionCraftState.Potion.TurnToAir();
                     break;
             }
+
+            ItemslotChange();
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

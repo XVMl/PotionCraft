@@ -34,16 +34,13 @@ namespace PotionCraft.Content.System
         public static string GetBracketText(int count,bool mashup=false,bool right = false)
         {
             string bracket = right ? "(": ")";
-            {
-                return PurifyColor.GetValueOrDefault(count, "").Insert(10, bracket);
-            }
-            return MashUpColor.GetValueOrDefault(count, "").Insert(10, bracket);
+            return mashup ? PurifyColor.GetValueOrDefault(count, "").Insert(10, bracket) : MashUpColor.GetValueOrDefault(count, "").Insert(10, bracket);
         }
 
         public static string TryGetPotionText(int buffid)
         {
-            string text = TModLoader.PotionColor.GetValueOrDefault(buffid, "");
-            return text != "" ? text.Insert(10, Lang.GetBuffName(buffid)) : "";
+            var text = TModLoader.PotionColor.GetValueOrDefault(buffid, null);
+            return text?.Insert(10, Lang.GetBuffName(buffid));
         }
         public static List<string> GenerateRandomPostfix()
         {
