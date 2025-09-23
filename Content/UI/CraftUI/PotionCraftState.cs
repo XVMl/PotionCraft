@@ -94,7 +94,7 @@ namespace PotionCraft.Content.UI.CraftUI
                     break;
             }
 
-            ItemslotChange();
+            //ItemslotChange();
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

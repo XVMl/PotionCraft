@@ -80,14 +80,13 @@ namespace PotionCraft.Content.UI.CraftUI
             }
             PotionCraftState.CreatedPotion = potion.Clone();
             BasePotion createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+            createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
             foreach (var buff in createdPotion.PotionDictionary)
             {
-                //createdPotion.PotionDictionary[buff.Key].BuffTime *= 2;
+                createdPotion.PotionDictionary[buff.Key].BuffTime *= 2;
             }
+            createdPotion.PotionName = $"{TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))} {GetBracketText(Math.Min(12, createdPotion.PurifyingCount))}{createdPotion.PotionName}{GetBracketText(Math.Min(12, createdPotion.PurifyingCount), right: true)}";
             createdPotion.PurifyingCount++;
-            createdPotion.PotionName = createdPotion.PotionDictionary.Count == 1
-                ? $"{TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))} {createdPotion.PotionName}"
-                : $"{TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))} {GetBracketText(Math.Min(12, createdPotion.PurifyingCount))}{createdPotion.PotionName}{GetBracketText(Math.Min(12, createdPotion.PurifyingCount), right: true)}";
         }
 
         public override void LeftClick(UIMouseEvent evt)

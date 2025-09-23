@@ -39,6 +39,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 HAlign= 0.5f,
                 VAlign = 1f,
             };
+            PotionIngredients.Width.Set(300, 0);
+            PotionIngredients.Height.Set(500, 0);
             Area.Append(PotionIngredients);
         }
         /// <summary>
@@ -55,7 +57,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
             foreach (var item in oldPotion.PotionDictionary)
             {
-                return newPotion.PotionDictionary.Any(s => s.Value.BuffId == item.Value.BuffId && s.Value.BuffTime == item.Value.BuffTime);
+                if (newPotion.PotionDictionary.Any(s => s.Value.BuffId == item.Value.BuffId && s.Value.BuffTime == item.Value.BuffTime))
+                    return false;
             }
             return true;
         }
@@ -67,7 +70,6 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Area.Top.Set(pos.Y, 0);
             Show = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
             if (!Show) return;
-            //ShowBasePotion ??= PotionElement<MashUpState>.AsPotion(Main.HoverItem);
             if (CheckPotion(ShowBasePotion, PotionElement<MashUpState>.AsPotion(Main.HoverItem))) return;
             PotionIngredients.UIgrid.Clear();
             ShowBasePotion = PotionElement<TooltipUI>.AsPotion(Main.HoverItem);

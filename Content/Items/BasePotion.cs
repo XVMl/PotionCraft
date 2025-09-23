@@ -39,13 +39,13 @@ namespace PotionCraft.Content.Items
         public string Signatures = "";
         
         public Dictionary<int, PotionData> PotionDictionary=new();
-        
+
         static readonly ConstructorInfo Internal_TooltipLine = typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null,
         [
             typeof(string),
         typeof(string)
         ],null)!;
-        //static readonly MethodInfo SetName = typeof(LocalizedText).GetMethod("SetValue", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        
         public override void SetStaticDefaults()
         {
 

@@ -27,14 +27,14 @@ namespace PotionCraft.Content.System
             return lang.Equals(key) ? null : lang;
         }
         
-        public static string TryGetPurifyText(int count) =>PurifyColor.GetValueOrDefault(count, "")?.Insert(10,"Purified");
+        public static string TryGetPurifyText(int count) =>PurifyColor.GetValueOrDefault(count, null)?.Insert(10,"Purified ");
         
-        public static string TryGetMashUpText(int count) =>MashUpColor.GetValueOrDefault(count, "")?.Insert(10,"MashUp");
+        public static string TryGetMashUpText(int count) =>MashUpColor.GetValueOrDefault(count, null)?.Insert(10,"MashUp ");
 
         public static string GetBracketText(int count,bool mashup=false,bool right = false)
         {
             string bracket = right ? "(": ")";
-            return mashup ? PurifyColor.GetValueOrDefault(count, "").Insert(10, bracket) : MashUpColor.GetValueOrDefault(count, "").Insert(10, bracket);
+            return mashup ? PurifyColor.GetValueOrDefault(count, null)?.Insert(10, bracket) : MashUpColor.GetValueOrDefault(count, null)?.Insert(10, bracket);
         }
 
         public static string TryGetPotionText(int buffid)

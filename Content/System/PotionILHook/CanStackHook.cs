@@ -6,17 +6,13 @@ using MonoMod.Cil;
 using PotionCraft.Content.UI.CraftUI;
 using PotionCraft.Content.UI.PotionTooltip;
 using Terraria;
+using PotionCraft.Content.Items;
 
 namespace PotionCraft.Content.System.PotionILHook;
 
-public class CanStackHook:ModSystem
+public class CanStackHook : ModSystem
 {
-    public static MethodInfo AsPotion = typeof(PotionCraftState).GetMethod(nameof(PotionCraftState.AsPotion));
-   
-    public static MethodInfo IL_CanStack = typeof(ItemLoader).GetMethod(nameof(ItemLoader.CanStack));
-    
-    public static MethodInfo CheckPotion = typeof(TooltipUI).GetMethod(nameof(TooltipUI.CheckPotion));
-    
+
     public override void PostSetupContent()
     {
         LoadCanStack();
@@ -24,9 +20,11 @@ public class CanStackHook:ModSystem
 
     private void LoadCanStack()
     {
+        MethodInfo IL_CanStack = typeof(ItemLoader).GetMethod(nameof(ItemLoader.CanStack));
+
         try
         {
-            MonoModHooks.Modify(IL_CanStack,CanStack);
+            MonoModHooks.Modify(IL_CanStack, CanStack);
             Mod.Logger.Error("Load CanStackHool Successs .");
 
         }
@@ -38,7 +36,16 @@ public class CanStackHook:ModSystem
 
     private void CanStack(ILContext context)
     {
-        ILCursor il= new ILCursor(context);
+
+        MethodInfo AsPotion = typeof(PotionCraftState).GetMethod(nameof(PotionCraftState.AsPotion));
+
+        MethodInfo CheckPotion = typeof(TooltipUI).GetMethod(nameof(TooltipUI.CheckPotion));
+
+        MethodInfo ModItem = typeof(Item).GetMethod("get_ModItem")!;
+
+        TypeInfo BasePotion = typeof(BasePotion).GetTypeInfo();
+
+        ILCursor il = new ILCursor(context);
 
         if (!il.TryGotoNext(MoveType.AfterLabel,
                 i => i.MatchLdarg0()
@@ -47,18 +54,18 @@ public class CanStackHook:ModSystem
             Mod.Logger.Error("Could not find.");
             return;
         }
-
+        il.EmitLdarg0();
+        il.EmitCallvirt(ModItem);
+        il.EmitIsinst(BasePotion);
+        il.EmitLdnull();
+        il.EmitCgtUn();
+        il.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[il.Index]);
         il.EmitLdarg0();
         il.EmitCall(AsPotion);
         il.EmitLdarg1();
         il.EmitCall(AsPotion);
         il.EmitCall(CheckPotion);
-        //il.EmitDelegate((int e) => { Main.NewText(e); });
-        //il.EmitStloc0();
-        //il.EmitLdloc0();
         il.Emit(Mono.Cecil.Cil.OpCodes.Brtrue_S, context.Instrs[il.Index]);
-        //il.EmitLdcI4(0);
-        //il.EmitNop();
         il.EmitLdcI4(0);
         il.EmitRet();
 

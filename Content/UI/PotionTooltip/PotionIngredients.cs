@@ -48,6 +48,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             foreach (var ingredientElement in basePotion.PotionDictionary.Select(ingredient => new IngredientElement(ingredient.Value.ItemId,ingredient.Value.Counts)))
             {
                 UIgrid.Add(ingredientElement);
+                UIgrid.RecalculateChildren();
             }
 
         }
@@ -65,7 +66,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
         private UIImage IngredientImage;
         public IngredientElement(int ingredientType,int count)
         {
-            Width.Set(150, 0);
+            Width.Set(200, 0);
             Height.Set(50, 0);
             IngredientType = ingredientType;
             Count = count;
