@@ -78,12 +78,31 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 return;
             }
-            PotionCraftState.CreatedPotion = potion.Clone();
-            BasePotion createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+            BasePotion createdPotion;
+            if (IsMaterial(potion) && Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().CanNOBasePotion)
+            {
+                Item item = new();
+                item.SetDefaults(ModContent.GetInstance<BasePotion>().Type);
+                PotionCraftState.CreatedPotion = item.Clone();
+                createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+                createdPotion.PotionDictionary.TryAdd(potion.buffType, new PotionData(
+                    potion.buffType,
+                    potion.type,
+                    0,
+                    potion.buffTime
+                ));
+            }
+            else
+            {
+                PotionCraftState.CreatedPotion = potion.Clone();
+                createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+                createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
+            }
             createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
             foreach (var buff in createdPotion.PotionDictionary)
             {
                 createdPotion.PotionDictionary[buff.Key].BuffTime *= 2;
+                createdPotion.PotionDictionary[buff.Key].Counts *= 2;
             }
             createdPotion.PotionName = $"{TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))} {GetBracketText(Math.Min(12, createdPotion.PurifyingCount))}{createdPotion.PotionName}{GetBracketText(Math.Min(12, createdPotion.PurifyingCount), right: true)}";
             createdPotion.PurifyingCount++;

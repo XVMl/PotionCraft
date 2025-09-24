@@ -18,10 +18,8 @@ namespace PotionCraft.Content.UI.CraftUI
         public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private PotionSlot<BrewPotionState> PotionSlot;
-
-        private CreatedPotionSlot<BrewPotionState> CreatedPotionSlot;
-
-        private int PotionCount = 1;
+        
+        public int PotionCount = 1;
 
         public override void OnInitialize()
         {
@@ -31,19 +29,13 @@ namespace PotionCraft.Content.UI.CraftUI
                 VAlign = 0.5f,
             };
             Append(PotionSlot);
-
-            CreatedPotionSlot = new(this)
-            { 
-                VAlign = 0.65f,
-                HAlign = 0.5f,
-            };
-            Append(CreatedPotionSlot);
+            
         }
 
         public static BasePotion GetPotionInstance(Item potion)
         {
             BasePotion basePotion = ModContent.GetInstance<BasePotion>();
-            BasePotion oldpotion =PotionCraftState.AsPotion(potion);
+            BasePotion oldpotion =AsPotion(potion);
             basePotion.PotionName = oldpotion.PotionName;
             basePotion.PotionDictionary = oldpotion.PotionDictionary;
             basePotion.MashUpCount = oldpotion.MashUpCount;
@@ -56,26 +48,26 @@ namespace PotionCraft.Content.UI.CraftUI
 
     }
 
-    public class BrewPotionButton : PotionElement<PurificationState>
+    public class BrewPotionButton : PotionElement<BrewPotionState>
     {
 
-        public BrewPotionButton(PurificationState purificatingState)
+        public BrewPotionButton(BrewPotionState brewPotionState)
         {
-            PotionCraftState = purificatingState;
+            PotionCraftState = brewPotionState;
             Width.Set(100f, 0);
             Height.Set(32f, 0);
         }
 
-        private void BrewPotion(Item potion, Item material)
+        private void BrewPotion(Item potion)
         {
-            
+            if (!IsPotion(potion)) return;
+            PotionCraftState.Potion.stack = PotionCraftState.PotionCount;
         }
 
         public override void LeftClick(UIMouseEvent evt)
         {
             base.LeftClick(evt);
             if (PotionCraftState.Potion.IsAir) return;
-            
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

@@ -37,26 +37,6 @@ namespace PotionCraft.Content.UI.CraftUI
             area.Height.Set(600f, 0);
             Append(area);
         }
-
-        public static BasePotion AsPotion(Item item)
-        {
-            if (item.ModItem is BasePotion testPotion)
-            {
-                return testPotion;
-            }
-            Mod instance = ModContent.GetInstance<PotionCraft>();
-            if (item.ModItem == null)
-            {
-                instance.Logger.Warn($"Item was erroneously casted to Potion");
-            }
-            return ModContent.GetInstance<BasePotion>();
-        }
-
-        protected override void DrawSelf(SpriteBatch spriteBatch)
-        {
-            //spriteBatch.Draw(UITexture("PotionCraftBG").Value, area.GetDimensions().ToRectangle(), Color.White);
-        }
-
     }
 
     public class PotionSlot<T> : PotionElement<T> where T : AutoUIState
@@ -128,7 +108,7 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 case false when PotionCraftState.Material.IsAir:
                 {
-                    if (!IsMaterial(Main.mouseItem))
+                    if (!IsMaterial(Main.mouseItem)||!IsMaterial(Main.mouseItem))
                     {
                         return;
                     }

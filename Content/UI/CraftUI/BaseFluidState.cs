@@ -34,14 +34,14 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void OnInitialize()
         {
-            baseFuildInput = new(PotionCraftState.AsPotion(CreatedPotion).PotionName)
+            baseFuildInput = new(AsPotion(CreatedPotion).PotionName)
             {
                 HAlign = 0.5f,
                 VAlign = 0.65f,
             };
             Append(baseFuildInput);
 
-            SignaturesInput = new(PotionCraftState.AsPotion(CreatedPotion).Signatures)
+            SignaturesInput = new(AsPotion(CreatedPotion).Signatures)
             {
                 HAlign = 1f,
                 VAlign = 0.65f,
@@ -80,8 +80,8 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private void UpdateText()
         {
-            baseFuildInput.UpdateText(PotionCraftState.AsPotion(CreatedPotion).PotionName);
-            SignaturesInput.UpdateText(PotionCraftState.AsPotion(CreatedPotion).Signatures);
+            baseFuildInput.UpdateText(AsPotion(CreatedPotion).PotionName);
+            SignaturesInput.UpdateText(AsPotion(CreatedPotion).Signatures);
         }
 
         public override void Update(GameTime gameTime)

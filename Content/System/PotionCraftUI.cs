@@ -30,7 +30,7 @@ namespace PotionCraft.Content.System
                 return;
             }
             _UIstate = Mod.Code.GetTypes()
-                .Where(x => x.BaseType == typeof(AutoUIState))
+                .Where(x => typeof(AutoUIState).IsAssignableFrom(x))
                 .ToArray();
 
             foreach (var type in _UIstate)
@@ -160,6 +160,20 @@ namespace PotionCraft.Content.System
         public virtual bool IsLoaded() => true;
 
         public abstract string LayersFindIndex { get; }
+
+        public static BasePotion AsPotion(Item item)
+        {
+            if (item.ModItem is BasePotion testPotion)
+            {
+                return testPotion;
+            }
+            Mod instance = ModContent.GetInstance<PotionCraft>();
+            if (item.ModItem == null)
+            {
+                instance.Logger.Warn($"Item was erroneously casted to Potion");
+            }
+            return ModContent.GetInstance<BasePotion>();
+        }
 
     }
 }

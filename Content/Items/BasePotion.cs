@@ -8,6 +8,9 @@ using Terraria.ModLoader.IO;
 using System.Reflection;
 using PotionCraft.Content.System;
 using System.Collections.ObjectModel;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria.GameContent;
 
 namespace PotionCraft.Content.Items
 {
@@ -94,7 +97,21 @@ namespace PotionCraft.Content.Items
             PurifyingCount = tag.Get<int>("PurifyingCount");
             MashUpCount = tag.Get<int>("MashUpCount");
         }
-        
+
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor,
+            Vector2 origin, float scale)
+        {
+            if (PotionDictionary.Count==0)
+                return base.PreDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
+            for (var i = 0; i < PotionDictionary.Count; i++)
+            {
+                for (var j = 0; j < PotionDictionary[i].Counts; j++)
+                {
+                    spriteBatch.Draw(TextureAssets.Item[PotionDictionary[i].ItemId].Value,position+new  Vector2(i*10,j*10),Color.White);
+                }
+            }
+            return false;
+        }
 
         public void UpdataName()
         {
@@ -126,6 +143,8 @@ namespace PotionCraft.Content.Items
             }
             return true;
         }
+        
+        
 
     }
 }

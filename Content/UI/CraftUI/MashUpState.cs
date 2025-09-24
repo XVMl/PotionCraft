@@ -97,8 +97,26 @@ namespace PotionCraft.Content.UI.CraftUI
         }
         private void MashUp(Item potion, BasePotion material)
         {
-            PotionCraftState.CreatedPotion = potion.Clone();
-            BasePotion createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+            BasePotion createdPotion;
+            if (IsMaterial(potion) && Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().CanNOBasePotion)
+            {
+                Item item = new();
+                item.SetDefaults(ModContent.GetInstance<BasePotion>().Type);
+                PotionCraftState.CreatedPotion = item.Clone();
+                createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+                createdPotion.PotionDictionary.TryAdd(potion.buffType, new PotionData(
+                    potion.buffType,
+                    potion.type,
+                    0,
+                    potion.buffTime
+                ));
+            }
+            else
+            {
+                PotionCraftState.CreatedPotion = potion.Clone();
+                createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+                createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
+            }
             createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
             foreach (var buff in material.PotionDictionary)
             {
@@ -117,9 +135,26 @@ namespace PotionCraft.Content.UI.CraftUI
         
         private void MashUp(Item potion, Item material)
         {
-            PotionCraftState.CreatedPotion = potion.Clone();
-            BasePotion createdPotion = AsPotion(PotionCraftState.CreatedPotion);
-            createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
+            BasePotion createdPotion;
+            if (IsMaterial(potion) && Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().CanNOBasePotion)
+            {
+                Item item = new();
+                item.SetDefaults(ModContent.GetInstance<BasePotion>().Type);
+                PotionCraftState.CreatedPotion = item.Clone();
+                createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+                createdPotion.PotionDictionary.TryAdd(potion.buffType, new PotionData(
+                    potion.buffType,
+                    potion.type,
+                    0,
+                    potion.buffTime
+                ));
+            }
+            else
+            {
+                PotionCraftState.CreatedPotion = potion.Clone();
+                createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+                createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
+            }
             createdPotion.PotionDictionary.TryAdd(material.buffType, new PotionData(
                 material.buffType,
                  material.type,

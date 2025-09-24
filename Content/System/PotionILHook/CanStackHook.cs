@@ -37,7 +37,7 @@ public class CanStackHook : ModSystem
     private void CanStack(ILContext context)
     {
 
-        MethodInfo AsPotion = typeof(PotionCraftState).GetMethod(nameof(PotionCraftState.AsPotion));
+        MethodInfo AsPotion = typeof(AutoUIState).GetMethod(nameof(AutoUIState.AsPotion));
 
         MethodInfo CheckPotion = typeof(TooltipUI).GetMethod(nameof(TooltipUI.CheckPotion));
 
