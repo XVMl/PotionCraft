@@ -5,7 +5,7 @@ namespace PotionCraft.Content.System;
 
 public class PotionCraftModPlayer:ModPlayer
 {
-    public bool CanNOBasePotion;
+    public bool CanNOBasePotion = true;
 
 
     public override void SaveData(TagCompound tag)

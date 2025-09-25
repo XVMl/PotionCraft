@@ -30,7 +30,7 @@ namespace PotionCraft.Content.System
                 return;
             }
             _UIstate = Mod.Code.GetTypes()
-                .Where(x => typeof(AutoUIState).IsAssignableFrom(x))
+                .Where(x => x.BaseType == typeof(AutoUIState))
                 .ToArray();
 
             foreach (var type in _UIstate)

@@ -7,7 +7,9 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace PotionCraft.Content.System.PotionILHook;
-
+/// <summary>
+/// 此Hook用于修改光标的绘制
+/// </summary>
 public class DrawCursorHook:ModSystem
 {
     public override void PostSetupContent()

@@ -100,10 +100,13 @@ namespace PotionCraft.Content.UI.CraftUI
             BasePotion createdPotion;
             if (IsMaterial(potion) && Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().CanNOBasePotion)
             {
+
                 Item item = new();
                 item.SetDefaults(ModContent.GetInstance<BasePotion>().Type);
                 PotionCraftState.CreatedPotion = item.Clone();
                 createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+                createdPotion.DrawPotionList.Add(potion.type);
+                createdPotion.DrawCountList.Add(1);
                 createdPotion.PotionDictionary.TryAdd(potion.buffType, new PotionData(
                     potion.buffType,
                     potion.type,
@@ -116,6 +119,8 @@ namespace PotionCraft.Content.UI.CraftUI
                 PotionCraftState.CreatedPotion = potion.Clone();
                 createdPotion = AsPotion(PotionCraftState.CreatedPotion);
                 createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
+                createdPotion.DrawPotionList = [.. createdPotion.DrawPotionList];
+                createdPotion.DrawCountList = [.. createdPotion.DrawCountList];
             }
             createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
             foreach (var buff in material.PotionDictionary)
@@ -128,11 +133,13 @@ namespace PotionCraft.Content.UI.CraftUI
                 ));
                 createdPotion.PotionDictionary[buff.Key].BuffTime+= buff.Value.BuffTime;
                 createdPotion.PotionDictionary[buff.Key].Counts+= buff.Value.Counts;
+                createdPotion.DrawPotionList.Add(buff.Key);
+                createdPotion.DrawCountList.Add(buff.Value.Counts);
             }
             createdPotion.MashUpCount+=material.MashUpCount;
             createdPotion.PotionName += $"{TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))} {material.DisplayName.Value} ";
         }
-        
+
         private void MashUp(Item potion, Item material)
         {
             BasePotion createdPotion;
@@ -142,6 +149,8 @@ namespace PotionCraft.Content.UI.CraftUI
                 item.SetDefaults(ModContent.GetInstance<BasePotion>().Type);
                 PotionCraftState.CreatedPotion = item.Clone();
                 createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+                createdPotion.DrawPotionList.Add(potion.type);
+                createdPotion.DrawCountList.Add(1);
                 createdPotion.PotionDictionary.TryAdd(potion.buffType, new PotionData(
                     potion.buffType,
                     potion.type,
@@ -154,6 +163,9 @@ namespace PotionCraft.Content.UI.CraftUI
                 PotionCraftState.CreatedPotion = potion.Clone();
                 createdPotion = AsPotion(PotionCraftState.CreatedPotion);
                 createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
+                createdPotion.DrawPotionList = [.. createdPotion.DrawPotionList];
+                createdPotion.DrawCountList = [.. createdPotion.DrawCountList];
+
             }
             createdPotion.PotionDictionary.TryAdd(material.buffType, new PotionData(
                 material.buffType,
@@ -163,6 +175,8 @@ namespace PotionCraft.Content.UI.CraftUI
             ));
             createdPotion.PotionDictionary[material.buffType].BuffTime+= material.buffTime;
             createdPotion.PotionDictionary[material.buffType].Counts++;
+            createdPotion.DrawPotionList.Add(material.type);
+            createdPotion.DrawCountList.Add(1);
             createdPotion.PotionName += $"{TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))}{TryGetPotionText(material.buffType)} ";
             createdPotion.MashUpCount++;
         }

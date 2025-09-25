@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
+using static PotionCraft.Assets;
 
 namespace PotionCraft.Content.Items
 {
@@ -38,10 +39,28 @@ namespace PotionCraft.Content.Items
         /// 是否为魔法
         /// </summary>
         public bool Magic;
-        
+        /// <summary>
+        /// 备注的文本
+        /// </summary>
         public string Signatures = "";
-        
+        /// <summary>
+        /// 用于记录药剂的药水数据
+        /// </summary>
         public Dictionary<int, PotionData> PotionDictionary=new();
+        /// <summary>
+        /// 用于记录药剂的绘制列表
+        /// </summary>
+        public List<int> DrawPotionList = new();
+        /// <summary>
+        /// 用于记录药剂的绘制列表
+        /// </summary>
+        public List<int> DrawCountList = new();
+        //TODO 添加文本的记录
+        /// <summary>
+        /// 用于记录展示于物品栏上方药剂的名称文本
+        /// </summary>
+        public string HotbarPotionName= "";
+
 
         static readonly ConstructorInfo Internal_TooltipLine = typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null,
         [
@@ -75,7 +94,10 @@ namespace PotionCraft.Content.Items
                 { "Counts", potiondata.Value.Counts }, { "ItemId", potiondata.Value.ItemId }
             }).ToList();
             tag["PotionData"] = potiondatalist;
+            tag["DrawPotionList"] = DrawPotionList;
+            tag["DrawCountList"] = DrawCountList;
             tag["PotionName"] = PotionName;
+            tag["HotbarPotionName"] = HotbarPotionName;
             tag["Signatures"] = Signatures;
             tag["PurifyingCount"] = PurifyingCount;
             tag["MashUpCount"] = MashUpCount;
@@ -92,8 +114,11 @@ namespace PotionCraft.Content.Items
                         potion.GetInt("Counts"),
                         potion.GetInt("BuffTime")));
             }
+             DrawPotionList= tag.GetList<int>("DrawPotionList").ToList();
+            DrawCountList=tag.GetList<int>("DrawCountList").ToList() ;
             Signatures =  tag.GetString("Signatures");
             PotionName = tag.GetString("PotionName");
+            HotbarPotionName = tag.GetString("HotbarPotionName");
             PurifyingCount = tag.Get<int>("PurifyingCount");
             MashUpCount = tag.Get<int>("MashUpCount");
         }
@@ -101,28 +126,32 @@ namespace PotionCraft.Content.Items
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor,
             Vector2 origin, float scale)
         {
-            if (PotionDictionary.Count==0)
+            if (DrawPotionList.Count == 0)
                 return base.PreDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
-            for (var i = 0; i < PotionDictionary.Count; i++)
+            for (int i = 0; i < DrawPotionList.Count; i++)
             {
-                for (var j = 0; j < PotionDictionary[i].Counts; j++)
+                for (int j = 0; j < DrawCountList[i]; j++)
                 {
-                    spriteBatch.Draw(TextureAssets.Item[PotionDictionary[i].ItemId].Value,position+new  Vector2(i*10,j*10),Color.White);
+                    Texture2D draw = TextureAssets.Item[DrawPotionList[i]].Value;
+                    spriteBatch.Draw(draw, position + new Vector2(i * 10, j * 10), null, Color.White, 0, draw.Size() / 2, scale, SpriteEffects.None, 0);
                 }
             }
             return false;
         }
 
-        public void UpdataName()
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            //try
-            //{
-            //    SetName.Invoke(DisplayName, [PotionName]);
-            //}
-            //catch (Exception)
-            //{
-            //    throw;
-            //}
+            if (DrawPotionList.Count == 0)
+                return base.PreDrawInWorld(spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
+            for (int i = 0; i < DrawPotionList.Count; i++)
+            {
+                for (int j = 0; j < DrawCountList[i]; j++)
+                {
+                    Texture2D draw = TextureAssets.Item[DrawPotionList[i]].Value;
+                    spriteBatch.Draw(draw, Item.position-Main.screenPosition + new Vector2(i * 10, j * 10), null, Color.White, 0, draw.Size() / 2, scale, SpriteEffects.None, 0);
+                }
+            }
+            return false;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)

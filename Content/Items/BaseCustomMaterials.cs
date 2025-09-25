@@ -36,7 +36,7 @@ public class BaseCustomMaterials : ModItem
     public override void ModifyTooltips(List<TooltipLine> tooltips)
     {
         base.ModifyTooltips(tooltips);
-        tooltips.Add(new TooltipLine(Mod, "", Materialdata.Tooltips));
+        //tooltips.Add(new TooltipLine(Mod, "", Materialdata.Tooltips));
 
     }
 

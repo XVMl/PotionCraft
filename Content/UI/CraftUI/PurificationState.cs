@@ -81,10 +81,13 @@ namespace PotionCraft.Content.UI.CraftUI
             BasePotion createdPotion;
             if (IsMaterial(potion) && Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().CanNOBasePotion)
             {
+
                 Item item = new();
                 item.SetDefaults(ModContent.GetInstance<BasePotion>().Type);
                 PotionCraftState.CreatedPotion = item.Clone();
                 createdPotion = AsPotion(PotionCraftState.CreatedPotion);
+                createdPotion.DrawPotionList.Add(potion.type);
+                createdPotion.DrawCountList.Add(1);
                 createdPotion.PotionDictionary.TryAdd(potion.buffType, new PotionData(
                     potion.buffType,
                     potion.type,
@@ -97,12 +100,18 @@ namespace PotionCraft.Content.UI.CraftUI
                 PotionCraftState.CreatedPotion = potion.Clone();
                 createdPotion = AsPotion(PotionCraftState.CreatedPotion);
                 createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
+                createdPotion.DrawPotionList = [.. createdPotion.DrawPotionList];
+                createdPotion.DrawCountList = [.. createdPotion.DrawCountList];
             }
             createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
             foreach (var buff in createdPotion.PotionDictionary)
             {
                 createdPotion.PotionDictionary[buff.Key].BuffTime *= 2;
                 createdPotion.PotionDictionary[buff.Key].Counts *= 2;
+            }
+            for (int i = 0; i < createdPotion.DrawPotionList.Count; i++)
+            {
+                createdPotion.DrawPotionList[i] *= 2;
             }
             createdPotion.PotionName = $"{TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))} {GetBracketText(Math.Min(12, createdPotion.PurifyingCount))}{createdPotion.PotionName}{GetBracketText(Math.Min(12, createdPotion.PurifyingCount), right: true)}";
             createdPotion.PurifyingCount++;

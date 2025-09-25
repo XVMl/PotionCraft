@@ -38,6 +38,16 @@ Items: {
 		DisplayName: Wine2
 		Tooltip: ""
 	}
+
+	Pudding: {
+		DisplayName: Pudding
+		Tooltip: ""
+	}
+
+	Jelly: {
+		DisplayName: Jelly
+		Tooltip: ""
+	}
 }
 
 Colorfulfont: {
