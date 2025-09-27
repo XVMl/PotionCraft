@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using static PotionCraft.Assets;
+using Terraria.Localization;
 
 namespace PotionCraft.Content.Items
 {
@@ -61,7 +62,6 @@ namespace PotionCraft.Content.Items
         /// </summary>
         public string HotbarPotionName= "";
 
-
         static readonly ConstructorInfo Internal_TooltipLine = typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null,
         [
             typeof(string),
@@ -78,7 +78,7 @@ namespace PotionCraft.Content.Items
             Item.width = 20;
             Item.height = 20;
             Item.maxStack = 9999;
-            Item.rare = ItemRarityID.Master;
+            Item.rare = ItemRarityID.White;
             Item.useAnimation = 45;
             Item.useTime = 45;
             Item.useStyle = ItemUseStyleID.EatFood;

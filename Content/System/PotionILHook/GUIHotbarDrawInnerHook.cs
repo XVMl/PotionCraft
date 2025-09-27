@@ -18,7 +18,7 @@ namespace PotionCraft.Content.System.PotionILHook;
 /// <summary>
 /// 这个钩子用于修改物品栏上方的当前选择物品的名称文本
 /// </summary>
-public class GUIHotbarDrawInnerHook : ModSystem
+public partial class GUIHotbarDrawInnerHook : ModSystem
 {
     public override void PostSetupContent()
     {
@@ -34,7 +34,17 @@ public class GUIHotbarDrawInnerHook : ModSystem
         {
             IL_Main.GUIHotbarDrawInner -= edit.SubscriptionWrapper;
         }, GUIHotbarDrawInner).Apply();
+
+        new ManagedILEdit("HoverItemName Hook ERROR!", ModContent.GetInstance<PotionCraft>(), edit =>
+        {
+            IL_Main.GUIHotbarDrawInner += edit.SubscriptionWrapper;
+        }, edit =>
+        {
+            IL_Main.GUIHotbarDrawInner -= edit.SubscriptionWrapper;
+        }, GUIHoverItemName).Apply();
     }
+
+    private static partial void GUIHoverItemName(ILContext context, ManagedILEdit edit);
 
     private static void GUIHotbarDrawInner(ILContext context, ManagedILEdit edit)
     {
