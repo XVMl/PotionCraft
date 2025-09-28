@@ -13,6 +13,7 @@ namespace PotionCraft
     public class Assets
     {
         public static Asset<Texture2D> UITexture(string path) => ModContent.Request<Texture2D>(Path.UI + path);
+        public static Asset<Texture2D> ItemsTexture(string path) => ModContent.Request<Texture2D>(Path.Items + path);
 
         public class Path
         {
@@ -52,10 +53,8 @@ namespace PotionCraft
         }
         public class Items
         {
-            public static Asset<Texture2D> ItemsTexture(string path) => ModContent.Request<Texture2D>(Path.Items+ path);
-
+            
             public static Texture2D BasePotion => ItemsTexture("BasePotion").Value;
-
 
         }
         public class NPCs

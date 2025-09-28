@@ -5,6 +5,8 @@ public struct MaterialData
     public string Tooltips;
     public Base BaseType;
     public string NameColor;
+    public float ScaleSize = 1f;
+    public int UseStyle = 5;
 
     public MaterialData(string name, string tooltips, Base baseType)
     {
@@ -13,11 +15,19 @@ public struct MaterialData
         BaseType = baseType;
     }
 
-    public MaterialData(string name, string tooltips, Base baseType, string nameColor)
+    public MaterialData(string name, string tooltips, Base baseType, float scaleSize) : this(name, tooltips, baseType)
+    {
+        ScaleSize = scaleSize;
+    }
+
+
+
+    public MaterialData(string name, string tooltips, Base baseType, string nameColor,float scalesize)
     {
         Name = name;
         Tooltips = tooltips;
         BaseType = baseType;
         NameColor = nameColor;
+        ScaleSize = scalesize;
     }
 }

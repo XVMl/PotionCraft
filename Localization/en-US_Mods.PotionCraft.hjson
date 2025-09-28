@@ -48,6 +48,16 @@ Items: {
 		DisplayName: Jelly
 		Tooltip: ""
 	}
+
+	Violet: {
+		DisplayName: Violet
+		Tooltip: ""
+	}
+
+	Lily: {
+		DisplayName: Lily
+		Tooltip: ""
+	}
 }
 
 Colorfulfont: {

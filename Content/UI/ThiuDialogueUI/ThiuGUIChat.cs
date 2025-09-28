@@ -1,7 +1,6 @@
 ﻿using Humanizer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PotionCraft.Content.NPCs;
 using PotionCraft.Content.System;
 using System;
 using System.Collections.Generic;

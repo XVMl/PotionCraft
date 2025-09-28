@@ -155,6 +155,7 @@ namespace PotionCraft.Content.System
             Purification,
             MashUp,
             BaseFluid,
+            BrewPotion,
         }
 
         public virtual bool IsLoaded() => true;

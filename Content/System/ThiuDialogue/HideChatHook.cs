@@ -9,14 +9,13 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
 using System.Reflection;
-using PotionCraft.Content.NPCs;
 namespace PotionCraft.Content.System.ThiuDialogue
 {
     public class HideChatHook:ModSystem
     {
         public override void PostSetupContent()
         {
-            LoadHideChatUI();
+            
         }
 
         static readonly FieldInfo player = typeof(Main).GetField(nameof(Main.player))!;
@@ -44,16 +43,16 @@ namespace PotionCraft.Content.System.ThiuDialogue
                 edit.LogFailure("Find ERROR!");
                 return;
             }
-            cursor.EmitDelegate(() =>
-            {
-                if (Main.LocalPlayer.talkNPC > 0)
-                {
-                    return Main.npc[Main.LocalPlayer.talkNPC].type == ModContent.NPCType<Thiu>() ? 1 : 0;
-                }
-                return 0;
-            });
-            cursor.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[cursor.Index]);
-            cursor.EmitRet();
+            //cursor.EmitDelegate(() =>
+            //{
+            //    if (Main.LocalPlayer.talkNPC > 0)
+            //    {
+            //        return Main.npc[Main.LocalPlayer.talkNPC].type == ModContent.NPCType<Thiu>() ? 1 : 0;
+            //    }
+            //    return 0;
+            //});
+            //cursor.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[cursor.Index]);
+            //cursor.EmitRet();
 
         }
 

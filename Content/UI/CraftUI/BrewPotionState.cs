@@ -15,6 +15,8 @@ namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
     {
+        public override bool IsLoaded() => ActiveState && CraftState == CraftUiState.BrewPotion;
+
         public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private PotionSlot<BrewPotionState> PotionSlot;

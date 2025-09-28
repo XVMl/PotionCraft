@@ -13,12 +13,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using static PotionCraft.Assets;
 using Terraria.Localization;
+using Terraria.Audio;
 
 namespace PotionCraft.Content.Items
 {
     public class BasePotion : ModItem
     {
-        public override string Texture =>Assets.Path.Items+"BasePotion";
+        public override string Texture => Assets.Path.Items + "BasePotion";
 
         /// <summary>
         /// 将会显示的药剂名
@@ -47,7 +48,7 @@ namespace PotionCraft.Content.Items
         /// <summary>
         /// 用于记录药剂的药水数据
         /// </summary>
-        public Dictionary<int, PotionData> PotionDictionary=new();
+        public Dictionary<int, PotionData> PotionDictionary = new();
         /// <summary>
         /// 用于记录药剂的绘制列表
         /// </summary>
@@ -60,14 +61,25 @@ namespace PotionCraft.Content.Items
         /// <summary>
         /// 用于记录展示于物品栏上方药剂的名称文本
         /// </summary>
-        public string HotbarPotionName= "";
+        public string HotbarPotionName = "";
+        /// <summary>
+        /// 用于记录药剂的使用方式
+        /// </summary>
+        public int PotionUseStyle = ItemUseStyleID.DrinkLiquid;
+        /// <summary>
+        /// 用于记录药剂的使用声音
+        /// </summary>
+        public PotionUseSound PotionUseSound = PotionUseSound.Item2;
 
-        static readonly ConstructorInfo Internal_TooltipLine = typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null,
+        public static readonly ConstructorInfo Internal_TooltipLine = typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null,
         [
             typeof(string),
-        typeof(string)
-        ],null)!;
-        
+            typeof(string)
+        ], null)!;
+
+        public static readonly MethodInfo ItemSound = typeof(SoundID).GetMethod("ItemSound", BindingFlags.NonPublic | BindingFlags.Static, [typeof(int)]);
+
+
         public override void SetStaticDefaults()
         {
 
@@ -81,9 +93,9 @@ namespace PotionCraft.Content.Items
             Item.rare = ItemRarityID.White;
             Item.useAnimation = 45;
             Item.useTime = 45;
-            Item.useStyle = ItemUseStyleID.EatFood;
+            Item.useStyle = ItemUseStyleID.HoldUp;
             Item.consumable = true;
-            Item.UseSound = SoundID.Item3;
+            Item.UseSound = SoundID.Item1;
         }
 
         public override void SaveData(TagCompound tag)
@@ -101,6 +113,7 @@ namespace PotionCraft.Content.Items
             tag["Signatures"] = Signatures;
             tag["PurifyingCount"] = PurifyingCount;
             tag["MashUpCount"] = MashUpCount;
+            tag["PotionUseStyle"] = PotionUseStyle;
         }
 
         public override void LoadData(TagCompound tag)
@@ -114,13 +127,14 @@ namespace PotionCraft.Content.Items
                         potion.GetInt("Counts"),
                         potion.GetInt("BuffTime")));
             }
-             DrawPotionList= tag.GetList<int>("DrawPotionList").ToList();
-            DrawCountList=tag.GetList<int>("DrawCountList").ToList() ;
-            Signatures =  tag.GetString("Signatures");
+            DrawPotionList = tag.GetList<int>("DrawPotionList").ToList();
+            DrawCountList = tag.GetList<int>("DrawCountList").ToList();
+            Signatures = tag.GetString("Signatures");
             PotionName = tag.GetString("PotionName");
             HotbarPotionName = tag.GetString("HotbarPotionName");
             PurifyingCount = tag.Get<int>("PurifyingCount");
             MashUpCount = tag.Get<int>("MashUpCount");
+            PotionUseStyle = tag.Get<int>("PotionUseStyle");
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor,
@@ -148,7 +162,7 @@ namespace PotionCraft.Content.Items
                 for (int j = 0; j < DrawCountList[i]; j++)
                 {
                     Texture2D draw = TextureAssets.Item[DrawPotionList[i]].Value;
-                    spriteBatch.Draw(draw, Item.position-Main.screenPosition + new Vector2(i * 10, j * 10), null, Color.White, 0, draw.Size() / 2, scale, SpriteEffects.None, 0);
+                    spriteBatch.Draw(draw, Item.position - Main.screenPosition + new Vector2(i * 10, j * 10), null, Color.White, 0, draw.Size() / 2, scale, SpriteEffects.None, 0);
                 }
             }
             return false;
@@ -156,7 +170,7 @@ namespace PotionCraft.Content.Items
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            if (Internal_TooltipLine==null)
+            if (Internal_TooltipLine == null)
             {
                 return;
             }
@@ -166,14 +180,15 @@ namespace PotionCraft.Content.Items
 
         public override bool? UseItem(Player player)
         {
+            Item.useStyle = PotionUseStyle;
+            Item.UseSound = (SoundStyle)ItemSound.Invoke(null, [23]);
+
             foreach (var item in PotionDictionary)
             {
                 player.AddBuff(item.Key, item.Value.BuffTime);
             }
             return true;
         }
-        
-        
 
     }
 }

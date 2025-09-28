@@ -15,6 +15,12 @@ namespace PotionCraft
 		Wine,
 		Magic
 	}
+	public enum PotionUseSound
+	{
+		Item2=2,
+		Item3=3,
+        Item30 = 30
+    }
 	public class PotionCraft : Mod
 	{
 

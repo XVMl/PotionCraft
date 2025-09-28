@@ -8,8 +8,9 @@ public class LoaderItemsSystem:ModSystem
 {
     
     private readonly List<MaterialData> Materials = [
-        new("Pudding","",Base.Water),
-        new("Jelly","",Base.Water),
+        new("Pudding","",Base.Water,1.7f),
+        new("Jelly","",Base.Water,1.5f),
+        new("Lily","",Base.Magic,1.65f)
     ];
     
     public override void Load()
