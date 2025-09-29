@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Localization;
@@ -37,6 +38,18 @@ namespace PotionCraft.Content.System
             return mashup ? PurifyColor.GetValueOrDefault(count, null)?.Insert(10, bracket) : MashUpColor.GetValueOrDefault(count, null)?.Insert(10, bracket);
         }
 
+        public static string DeleteTextColor(string msg)
+        {
+            string pattern = @"\[c/[^:]+:([^]]+)\]";
+            MatchCollection matches = Regex.Matches(msg, pattern);
+            string result = "";
+            foreach (Match match in matches)
+            {
+                result += match.Groups[1].Value + " ";
+            }
+            return result;
+        }
+        
         public static string TryGetPotionText(int buffid)
         {
             var text = TModLoader.PotionColor.GetValueOrDefault(buffid, null);

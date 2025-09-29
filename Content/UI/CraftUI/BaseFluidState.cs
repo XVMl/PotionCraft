@@ -26,20 +26,20 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private CreatedPotionSlot<BaseFluidState> CreatedPotionSlot;
 
-        public BaseFuildInput baseFuildInput;
+        public BaseFuildInput BaseFuildInput;
 
         public BaseFuildInput SignaturesInput;
 
-        private BaseFuildButtun baseFuildButtun;
+        private BaseFuildButtun BaseFuildButtun;
 
         public override void OnInitialize()
         {
-            baseFuildInput = new(AsPotion(CreatedPotion).PotionName)
+            BaseFuildInput = new(AsPotion(CreatedPotion).PotionName)
             {
                 HAlign = 0.5f,
                 VAlign = 0.65f,
             };
-            Append(baseFuildInput);
+            Append(BaseFuildInput);
 
             SignaturesInput = new(AsPotion(CreatedPotion).Signatures)
             {
@@ -48,14 +48,23 @@ namespace PotionCraft.Content.UI.CraftUI
             };
             Append(SignaturesInput);
             
-            Potionslot = new(this,UpdateText)
+            Potionslot = new(this,
+                () =>
+                {
+                    BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName + AsPotion(Potion).BaseName;
+                    SignaturesInput.Currentvalue = AsPotion(Potion).Signatures;
+                })
             {
                 HAlign = 0.45f,
                 VAlign = 0.5f,
             };
             Append(Potionslot);
 
-            Materialslot = new(this)
+            Materialslot = new(this,
+                () =>
+                {
+                    BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName + AsPotion(Potion).BaseName;
+                })
             {
                 HAlign = 0.55f,
                 VAlign = 0.5f,
@@ -69,34 +78,28 @@ namespace PotionCraft.Content.UI.CraftUI
             };
             Append(CreatedPotionSlot);
             
-            baseFuildButtun = new(this)
+            BaseFuildButtun = new(this)
             {
                 HAlign = 0.5f,
                 VAlign = 0.75f,
             };
-            Append(baseFuildButtun);
+            Append(BaseFuildButtun);
             
-        }
-
-        private void UpdateText()
-        {
-            baseFuildInput.UpdateText(AsPotion(CreatedPotion).PotionName);
-            SignaturesInput.UpdateText(AsPotion(CreatedPotion).Signatures);
         }
 
         public override void Update(GameTime gameTime)
         {
-            baseFuildInput.Update(gameTime);
+            BaseFuildInput.Update(gameTime);
         }
 
     }
 
     public class BaseFuildButtun: PotionElement<BaseFluidState>
     {
-        private BaseFluidState baseFluidState;
+        private BaseFluidState BaseFluidState;
         public BaseFuildButtun(BaseFluidState baseFluidState)
         {
-            this.baseFluidState = baseFluidState;
+            this.BaseFluidState = baseFluidState;
             PotionCraftState = baseFluidState;
             Width.Set(100f, 0);
             Height.Set(32f, 0);
@@ -105,9 +108,14 @@ namespace PotionCraft.Content.UI.CraftUI
         private void ChangBaseFluid(Item potion)
         {
             PotionCraftState.Potion = potion.Clone();
-            BasePotion createdPotion = AsPotion(PotionCraftState.CreatedPotion);
-            createdPotion.PotionName = baseFluidState.baseFuildInput.Currentvalue;
-            createdPotion.Signatures =  baseFluidState.SignaturesInput.Currentvalue;
+            BasePotion createdPotion = AsPotion(PotionCraftState.Potion);
+            createdPotion.PotionName = BaseFluidState.BaseFuildInput.Currentvalue;
+            createdPotion.Signatures =  BaseFluidState.SignaturesInput.Currentvalue;
+            if (PotionCraftState.Material.IsAir) return;
+            createdPotion.DrawPotionList.Clear();
+            createdPotion.DrawPotionList.Add(PotionCraftState.Material.type);
+            createdPotion.DrawCountList.Clear();
+            createdPotion.DrawCountList.Add(1);
         }
 
         public override void LeftClick(UIMouseEvent evt)
@@ -128,11 +136,6 @@ namespace PotionCraft.Content.UI.CraftUI
         {   
             Width.Set(180f, 0f);
             Height.Set(50f, 0f);
-            Currentvalue = currentValue;
-        }
-
-        public void UpdateText(string currentValue)
-        {
             Currentvalue = currentValue;
         }
 

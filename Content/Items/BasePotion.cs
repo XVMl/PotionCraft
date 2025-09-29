@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using static PotionCraft.Assets;
+using static PotionCraft.Content.System.LanguageHelper;
 using Terraria.Localization;
 using Terraria.Audio;
 
@@ -19,7 +20,7 @@ namespace PotionCraft.Content.Items
 {
     public class BasePotion : ModItem
     {
-        public override string Texture => Assets.Path.Items + "BasePotion";
+        public override string Texture => Path.Items + "BasePotion";
 
         /// <summary>
         /// 将会显示的药剂名
@@ -61,7 +62,11 @@ namespace PotionCraft.Content.Items
         /// <summary>
         /// 用于记录展示于物品栏上方药剂的名称文本
         /// </summary>
-        public string HotbarPotionName = "";
+        public string HotbarPotionName =>DeleteTextColor(PotionName);
+        /// <summary>
+        /// 
+        /// </summary>
+        public string BaseName;
         /// <summary>
         /// 用于记录药剂的使用方式
         /// </summary>
@@ -109,7 +114,6 @@ namespace PotionCraft.Content.Items
             tag["DrawPotionList"] = DrawPotionList;
             tag["DrawCountList"] = DrawCountList;
             tag["PotionName"] = PotionName;
-            tag["HotbarPotionName"] = HotbarPotionName;
             tag["Signatures"] = Signatures;
             tag["PurifyingCount"] = PurifyingCount;
             tag["MashUpCount"] = MashUpCount;
@@ -131,7 +135,6 @@ namespace PotionCraft.Content.Items
             DrawCountList = tag.GetList<int>("DrawCountList").ToList();
             Signatures = tag.GetString("Signatures");
             PotionName = tag.GetString("PotionName");
-            HotbarPotionName = tag.GetString("HotbarPotionName");
             PurifyingCount = tag.Get<int>("PurifyingCount");
             MashUpCount = tag.Get<int>("MashUpCount");
             PotionUseStyle = tag.Get<int>("PotionUseStyle");

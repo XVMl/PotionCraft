@@ -93,7 +93,7 @@ namespace PotionCraft.Content.System
             return item.ModItem is BasePotion;
         }
 
-        public bool IsMaterial(Item item)
+        public static bool IsMaterial(Item item)
         {
             if (item.consumable&&item.buffType!=0)
             {
@@ -121,6 +121,35 @@ namespace PotionCraft.Content.System
             return ModContent.GetInstance<BasePotion>();
         }
 
+        public static BasePotion CloneOrCreatPotion<TE>(TE crafetstate,Item soure) where TE : AutoUIState
+        {
+            BasePotion createdPotion;
+            if (IsMaterial(soure) && Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().CanNOBasePotion)
+            {
+                Item item = new();
+                item.SetDefaults(ModContent.GetInstance<BasePotion>().Type);
+                crafetstate.CreatedPotion = item.Clone();
+                createdPotion = AsPotion(crafetstate.CreatedPotion);
+                createdPotion.DrawPotionList.Add(soure.type);
+                createdPotion.DrawCountList.Add(1);
+                createdPotion.PotionDictionary.TryAdd(soure.buffType, new PotionData(
+                    soure.buffType,
+                    soure.type,
+                    0,
+                    soure.buffTime
+                ));
+            }
+            else
+            {
+                crafetstate.CreatedPotion = soure.Clone();
+                createdPotion = AsPotion(crafetstate.CreatedPotion);
+                createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
+                createdPotion.DrawPotionList = [.. createdPotion.DrawPotionList];
+                createdPotion.DrawCountList = [.. createdPotion.DrawCountList];
+            }
+            return createdPotion;
+        }
+        
         public override void Update(GameTime gameTime)
         {
             if (IsMouseHovering)
@@ -175,6 +204,8 @@ namespace PotionCraft.Content.System
             }
             return ModContent.GetInstance<BasePotion>();
         }
+
+        
 
     }
 }

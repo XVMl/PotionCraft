@@ -97,31 +97,7 @@ namespace PotionCraft.Content.UI.CraftUI
         }
         private void MashUp(Item potion, BasePotion material)
         {
-            BasePotion createdPotion;
-            if (IsMaterial(potion) && Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().CanNOBasePotion)
-            {
-
-                Item item = new();
-                item.SetDefaults(ModContent.GetInstance<BasePotion>().Type);
-                PotionCraftState.CreatedPotion = item.Clone();
-                createdPotion = AsPotion(PotionCraftState.CreatedPotion);
-                createdPotion.DrawPotionList.Add(potion.type);
-                createdPotion.DrawCountList.Add(1);
-                createdPotion.PotionDictionary.TryAdd(potion.buffType, new PotionData(
-                    potion.buffType,
-                    potion.type,
-                    0,
-                    potion.buffTime
-                ));
-            }
-            else
-            {
-                PotionCraftState.CreatedPotion = potion.Clone();
-                createdPotion = AsPotion(PotionCraftState.CreatedPotion);
-                createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
-                createdPotion.DrawPotionList = [.. createdPotion.DrawPotionList];
-                createdPotion.DrawCountList = [.. createdPotion.DrawCountList];
-            }
+            BasePotion createdPotion = CloneOrCreatPotion(PotionCraftState,potion);
             createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
             foreach (var buff in material.PotionDictionary)
             {
@@ -137,36 +113,13 @@ namespace PotionCraft.Content.UI.CraftUI
                 createdPotion.DrawCountList.Add(buff.Value.Counts);
             }
             createdPotion.MashUpCount+=material.MashUpCount;
-            createdPotion.PotionName += $"{TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))} {material.DisplayName.Value} ";
+            createdPotion.PotionName =
+                $"{GetBracketText(Math.Min(12, createdPotion.PurifyingCount))}{createdPotion.PotionName}{TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))} {material.DisplayName.Value} {GetBracketText(Math.Min(12, createdPotion.PurifyingCount), right: true)} {createdPotion.BaseName}";
         }
 
         private void MashUp(Item potion, Item material)
         {
-            BasePotion createdPotion;
-            if (IsMaterial(potion) && Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().CanNOBasePotion)
-            {
-                Item item = new();
-                item.SetDefaults(ModContent.GetInstance<BasePotion>().Type);
-                PotionCraftState.CreatedPotion = item.Clone();
-                createdPotion = AsPotion(PotionCraftState.CreatedPotion);
-                createdPotion.DrawPotionList.Add(potion.type);
-                createdPotion.DrawCountList.Add(1);
-                createdPotion.PotionDictionary.TryAdd(potion.buffType, new PotionData(
-                    potion.buffType,
-                    potion.type,
-                    0,
-                    potion.buffTime
-                ));
-            }
-            else
-            {
-                PotionCraftState.CreatedPotion = potion.Clone();
-                createdPotion = AsPotion(PotionCraftState.CreatedPotion);
-                createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
-                createdPotion.DrawPotionList = [.. createdPotion.DrawPotionList];
-                createdPotion.DrawCountList = [.. createdPotion.DrawCountList];
-
-            }
+            BasePotion createdPotion = CloneOrCreatPotion(PotionCraftState,potion);
             createdPotion.PotionDictionary.TryAdd(material.buffType, new PotionData(
                 material.buffType,
                  material.type,

@@ -17,7 +17,7 @@ using static PotionCraft.Assets;
 
 namespace PotionCraft.Content.UI.CraftUI
 {
-    public delegate void ItemSlotChange();
+    public delegate void SlotChange();
     public class PotionCraftState : AutoUIState
     {
         public override bool IsLoaded() => ActiveState;
@@ -42,8 +42,8 @@ namespace PotionCraft.Content.UI.CraftUI
     public class PotionSlot<T> : PotionElement<T> where T : AutoUIState
     {
         public string TexturePath= "Slot_Back";
-
-        public ItemSlotChange ItemslotChange;
+        
+        private Action _onChange;
         public PotionSlot(T potionCraftState)
         {
             PotionCraftState = potionCraftState;
@@ -51,12 +51,12 @@ namespace PotionCraft.Content.UI.CraftUI
             Height.Set(80f, 0f);
         }
 
-        public PotionSlot(T potionCraftState,ItemSlotChange change)
+        public PotionSlot(T potionCraftState,Action change)
         {
             PotionCraftState = potionCraftState;
             Width.Set(80f, 0f);
             Height.Set(80f, 0f);
-            ItemslotChange = change;
+            _onChange = change;
         }
 
         public override void LeftClick(UIMouseEvent evt)
@@ -74,7 +74,7 @@ namespace PotionCraft.Content.UI.CraftUI
                     break;
             }
 
-            //ItemslotChange();
+            _onChange?.Invoke();
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -86,7 +86,6 @@ namespace PotionCraft.Content.UI.CraftUI
             if (!IsMouseHovering) return;
             Main.LocalPlayer.mouseInterface = true;
             Main.HoverItem = PotionCraftState.Potion.Clone();
-            Main.hoverItemName = "a";
         }
 
     }
@@ -95,8 +94,17 @@ namespace PotionCraft.Content.UI.CraftUI
     {
         public string TexturePath = "Slot_Back";
 
+        private Action _onChange;
         public MaterialSlot(T potionCraftState)
         {
+            PotionCraftState = potionCraftState;
+            Width.Set(80f, 0f);
+            Height.Set(80f, 0f);
+        }
+
+        public MaterialSlot(T potionCraftState,Action onChange)
+        {
+            _onChange = onChange;
             PotionCraftState = potionCraftState;
             Width.Set(80f, 0f);
             Height.Set(80f, 0f);
@@ -122,6 +130,8 @@ namespace PotionCraft.Content.UI.CraftUI
                     PotionCraftState.Material.TurnToAir();
                     break;
             }
+            
+            _onChange?.Invoke();
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -133,7 +143,6 @@ namespace PotionCraft.Content.UI.CraftUI
             if (!IsMouseHovering) return;
             Main.LocalPlayer.mouseInterface = true;
             Main.HoverItem = PotionCraftState.Material.Clone();
-            Main.hoverItemName = "a";
         }
 
     }
@@ -164,7 +173,6 @@ namespace PotionCraft.Content.UI.CraftUI
             if (!IsMouseHovering) return;
             Main.LocalPlayer.mouseInterface = true;
             Main.HoverItem = PotionCraftState.CreatedPotion.Clone();
-            Main.hoverItemName = "a";
         }
 
     }
