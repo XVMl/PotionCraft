@@ -49,7 +49,7 @@ public class DrawCursorHook:ModSystem
         cursor.EmitDelegate(() => Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>()));
 
         cursor.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[cursor.Index]);
-        cursor.EmitRet();
+        //cursor.EmitRet();
         
     }
     

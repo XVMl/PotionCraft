@@ -21,7 +21,6 @@ namespace PotionCraft.Content.Items
     public class BasePotion : ModItem
     {
         public override string Texture => Path.Items + "BasePotion";
-
         /// <summary>
         /// 将会显示的药剂名
         /// </summary>
@@ -64,7 +63,7 @@ namespace PotionCraft.Content.Items
         /// </summary>
         public string HotbarPotionName =>DeleteTextColor(PotionName);
         /// <summary>
-        /// 
+        /// 用于记录药剂的基液名称
         /// </summary>
         public string BaseName;
         /// <summary>
@@ -84,7 +83,6 @@ namespace PotionCraft.Content.Items
 
         public static readonly MethodInfo ItemSound = typeof(SoundID).GetMethod("ItemSound", BindingFlags.NonPublic | BindingFlags.Static, [typeof(int)]);
 
-
         public override void SetStaticDefaults()
         {
 
@@ -95,7 +93,7 @@ namespace PotionCraft.Content.Items
             Item.width = 20;
             Item.height = 20;
             Item.maxStack = 9999;
-            Item.rare = ItemRarityID.White;
+            Item.rare = ItemRarityID.Pink;
             Item.useAnimation = 45;
             Item.useTime = 45;
             Item.useStyle = ItemUseStyleID.HoldUp;

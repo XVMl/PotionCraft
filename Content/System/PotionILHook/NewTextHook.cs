@@ -1,4 +1,5 @@
-﻿using Luminance.Core.Hooking;
+﻿using FullSerializer.Internal;
+using Luminance.Core.Hooking;
 using MonoMod.Cil;
 using PotionCraft.Content.Items;
 using ReLogic.Graphics;
@@ -34,10 +35,7 @@ public class NewTextHook:ModSystem
 
     private static void NewText(ILContext context, ManagedILEdit edit)
     {
-        FieldInfo MouseText = typeof(FontAssets).GetField(nameof(FontAssets.MouseText))!;
-
-        MethodInfo get_Value = typeof(ReLogic.Content.Asset<>).MakeGenericType(typeof(DynamicSpriteFont)).GetProperty("Value").GetGetMethod();
-
+       
         FieldInfo stack = typeof(PopupText).GetField(nameof(PopupText.stack));
 
         FieldInfo name = typeof(PopupText).GetField(nameof(PopupText.name));
@@ -46,45 +44,37 @@ public class NewTextHook:ModSystem
 
         TypeInfo BasePotion = typeof(BasePotion).GetTypeInfo();
 
+        MethodInfo AsPotion = typeof(AutoUIState).GetMethod(nameof(AutoUIState.AsPotion));
+
+        FieldInfo PotionName = typeof(BasePotion).GetField(nameof(Items.BasePotion.PotionName));
+
+        MethodInfo DeleteTextColor = typeof(LanguageHelper).GetMethod(nameof(LanguageHelper.DeleteTextColor));
+
         ILCursor cursor = new ILCursor(context);
         if (!cursor.TryGotoNext(MoveType.AfterLabel,
-                i =>i.MatchLdloc(11),
-                i =>i.MatchLdarg2(),
-                i =>i.MatchConvI8(),
-                i => i.MatchStfld(stack)
-                //i => i.MatchLdsfld(MouseText),
-                //i => i.MatchCallvirt(get_Value),
-                //i => i.MatchLdloc2()
+                i => i.MatchLdloc(11),
+                i => i.MatchLdarg2(),
+                i => i.MatchConvI8(),
+                i => i.MatchStfld(stack),
+                i => i.MatchLdloc(11)
                 ))
         {
             edit.LogFailure("Find NewText ERROR!");
             return;
         }
-        //cursor.EmitLdarg1();
-        //cursor.EmitCallvirt(ModItem);
-        //cursor.EmitIsinst(BasePotion);
-        //cursor.EmitLdnull();
-        //cursor.EmitCgtUn();
-        //cursor.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[cursor.Index]);
-        //cursor.EmitDelegate(() =>
-        //{
-        //    return Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].type == ModContent.ItemType<BasePotion>();
-        //});
-        //cursor.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[cursor.Index]);
-        //cursor.EmitDelegate(() =>
-        //{
-        //    return AutoUIState.AsPotion(Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem]).HotbarPotionName;
-        //});
-        cursor.EmitDelegate(() =>
-        {
-            return "AAA";
-        });
+
+        cursor.EmitLdarg1();
+        cursor.EmitCallvirt(ModItem);
+        cursor.EmitIsinst(BasePotion);
+        cursor.EmitLdnull();
+        cursor.EmitCgtUn();
+        cursor.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[cursor.Index]);
         cursor.EmitLdloc(11);
+        cursor.EmitLdarg1();
+        cursor.EmitCall(AsPotion);
+        cursor.EmitLdfld(PotionName);
+        cursor.EmitCall(DeleteTextColor);
         cursor.EmitStfld(name);
-        cursor.EmitDelegate(() =>
-        {
-            Main.NewText("!!!");
-        });
 
     }
 

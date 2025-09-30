@@ -55,12 +55,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
            
             if(oldPotion.PotionDictionary.Count!=newPotion.PotionDictionary.Count) return false;
 
-            foreach (var item in oldPotion.PotionDictionary)
-            {
-                if (newPotion.PotionDictionary.Any(s => s.Value.BuffId == item.Value.BuffId && s.Value.BuffTime == item.Value.BuffTime))
-                    return false;
-            }
-            return true;
+            return oldPotion.PotionDictionary.All(item => newPotion.PotionDictionary.Any( s => s.Value.BuffId == item.Value.BuffId && s.Value.BuffTime == item.Value.BuffTime));            
         }
 
         public override void Update(GameTime gameTime)

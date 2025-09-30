@@ -32,8 +32,23 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private BaseFuildButtun BaseFuildButtun;
 
+        private UIElement Area;
+
         public override void OnInitialize()
         {
+            Width.Set(920, 0);
+            Height.Set(640, 0);
+            HAlign = 0.5f;
+            VAlign = 0.5f;
+            Area = new UIElement()
+            {
+                HAlign = 0.2f,
+                VAlign = 0.3f,
+            };
+            Area.Width.Set(400f, 0);
+            Area.Height.Set(400f, 0);
+            Append(Area);
+
             BaseFuildInput = new(AsPotion(CreatedPotion).PotionName)
             {
                 HAlign = 0.5f,
@@ -58,7 +73,7 @@ namespace PotionCraft.Content.UI.CraftUI
                 HAlign = 0.45f,
                 VAlign = 0.5f,
             };
-            Append(Potionslot);
+            Area.Append(Potionslot);
 
             Materialslot = new(this,
                 () =>
@@ -69,14 +84,14 @@ namespace PotionCraft.Content.UI.CraftUI
                 HAlign = 0.55f,
                 VAlign = 0.5f,
             };
-            Append(Materialslot);
+            Area.Append(Materialslot);
 
             CreatedPotionSlot = new(this)
             {
                 HAlign = 0.5f,
                 VAlign = 0.3f,
             };
-            Append(CreatedPotionSlot);
+            Area.Append(CreatedPotionSlot);
             
             BaseFuildButtun = new(this)
             {

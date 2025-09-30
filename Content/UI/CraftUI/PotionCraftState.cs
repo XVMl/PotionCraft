@@ -61,16 +61,22 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
+            Main.NewText("click");
             switch (Main.mouseItem.IsAir)
             {
                 case false when PotionCraftState.Potion.IsAir:
                     PotionCraftState.Potion = Main.mouseItem.Clone();
+                    Main.NewText("p1");
                     Main.LocalPlayer.HeldItem.TurnToAir();
+                    Main.NewText("p2");
                     Main.mouseItem.TurnToAir();
+                    Main.NewText("p3");
                     return;
                 case true when !PotionCraftState.Potion.IsAir:
                     Main.mouseItem = PotionCraftState.Potion.Clone();
+                    Main.NewText("p4");
                     PotionCraftState.Potion.TurnToAir();
+                    Main.NewText("p5");
                     break;
             }
 
@@ -116,7 +122,7 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 case false when PotionCraftState.Material.IsAir:
                 {
-                    if (!IsMaterial(Main.mouseItem)||!IsMaterial(Main.mouseItem))
+                    if (!IsMaterial(Main.mouseItem)&&Main.mouseItem.ModItem is not BasePotion)
                     {
                         return;
                     }

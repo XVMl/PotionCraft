@@ -143,7 +143,13 @@ namespace PotionCraft.Content.System
             {
                 crafetstate.CreatedPotion = soure.Clone();
                 createdPotion = AsPotion(crafetstate.CreatedPotion);
-                createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
+                createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key,
+                    v => new PotionData(
+                        v.Value.BuffId,
+                        v.Value.ItemId,
+                        v.Value.Counts,
+                        v.Value.BuffTime
+                ));
                 createdPotion.DrawPotionList = [.. createdPotion.DrawPotionList];
                 createdPotion.DrawCountList = [.. createdPotion.DrawCountList];
             }
@@ -204,8 +210,6 @@ namespace PotionCraft.Content.System
             }
             return ModContent.GetInstance<BasePotion>();
         }
-
-        
 
     }
 }

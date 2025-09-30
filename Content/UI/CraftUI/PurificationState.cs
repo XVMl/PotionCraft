@@ -11,7 +11,8 @@ using Terraria.UI;
 using Terraria;
 using static PotionCraft.Content.System.LanguageHelper;
 using Microsoft.Xna.Framework;
-
+using static PotionCraft.Assets;
+using PotionCraft.Content.UI.PotionTooltip;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class PurificationState : AutoUIState
@@ -19,44 +20,66 @@ namespace PotionCraft.Content.UI.CraftUI
         public override bool IsLoaded() => ActiveState && CraftState == CraftUiState.Purification;
         public override string LayersFindIndex => "Vanilla: Mouse Text";
 
-        private PotionSlot<PurificationState> potionslot;
+        private PotionSlot<PurificationState> PotionSlot;
 
-        private MaterialSlot<PurificationState> material;
+        private MaterialSlot<PurificationState> MaterialSlot;
 
         private CreatedPotionSlot<PurificationState> CreatedPotionSlot;
 
         private PurifyingButton purifyingbutton;
 
+        private UIElement Area;
+
         public override void OnInitialize()
         {
-            potionslot = new(this)
+            Width.Set(920, 0);
+            Height.Set(640, 0);
+            HAlign = 0.5f;
+            VAlign = 0.5f;
+            Area = new UIElement()
             {
-                HAlign = 0.45f,
-                VAlign = 0.5f,
+                HAlign = 0.2f,
+                VAlign = 0.3f,
             };
-            Append(potionslot);
+            Area.Width.Set(570f, 0);
+            Area.Height.Set(570f, 0);
+            Append(Area);
 
-            material = new(this)
+            PotionSlot = new(this)
             {
-                HAlign = 0.55f,
+                HAlign = 0.1f,
                 VAlign = 0.5f,
+                TexturePath = "ItemSlot"
             };
-            Append(material);
-
-            purifyingbutton = new(this)
-            {
-                VAlign = 0.65f,
-                HAlign = 0.5f,
-            };
-            Append(purifyingbutton);
+            Area.Append(PotionSlot);
 
             CreatedPotionSlot = new(this)
             {
                 HAlign = 0.5f,
                 VAlign = 0.45f,
             };
-            Append(CreatedPotionSlot);
+            Area.Append(CreatedPotionSlot);
+            
+            MaterialSlot = new(this)
+            {
+                HAlign = 1f,
+                VAlign = 0.5f,
+            };
+            Area.Append(MaterialSlot);
 
+            purifyingbutton = new(this)
+            {
+                VAlign = 0.5f,
+                HAlign = 0.0f,
+            };
+            Append(purifyingbutton);
+
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(UITexture("PotionCraftBG").Value, Area.GetDimensions().ToRectangle(), Color.White);
+            base.Draw(spriteBatch);
         }
 
     }
@@ -71,26 +94,22 @@ namespace PotionCraft.Content.UI.CraftUI
             Height.Set(32f, 0);
         }
 
-        private void Purifying(Item potion, Item material)
+        private void Purifying(Item potion, Item MaterialSlot)
         {
-            if (!AsPotion(potion).PotionName.Equals(AsPotion(material).PotionName) &&
-                material.type != ModContent.ItemType<MagicPanacea>())
-            {
-                return;
-            }
-            BasePotion createdPotion = CloneOrCreatPotion(PotionCraftState,potion);
-            createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
+            if (!TooltipUI.CheckPotion(AsPotion(potion), AsPotion(MaterialSlot)) && MaterialSlot.type != ModContent.ItemType<MagicPanacea>()) return;
+            BasePotion createdPotion = CloneOrCreatPotion(PotionCraftState, potion);
+
             foreach (var buff in createdPotion.PotionDictionary)
             {
-                createdPotion.PotionDictionary[buff.Key].BuffTime *= 2;
-                createdPotion.PotionDictionary[buff.Key].Counts *= 2;
+                buff.Value.BuffTime *= 2;
+                buff.Value.Counts *= 2;
             }
             for (int i = 0; i < createdPotion.DrawPotionList.Count; i++)
             {
-                createdPotion.DrawPotionList[i] *= 2;
+                createdPotion.DrawCountList[i] *= 2;
             }
-            createdPotion.PotionName = $"{TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))} {createdPotion.PotionName} ";
             createdPotion.PurifyingCount++;
+            createdPotion.PotionName = $"{TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))} {createdPotion.PotionName} {createdPotion.BaseName}";
         }
 
         public override void LeftClick(UIMouseEvent evt)
@@ -98,6 +117,8 @@ namespace PotionCraft.Content.UI.CraftUI
             base.LeftClick(evt);
             if (PotionCraftState.Potion.IsAir || PotionCraftState.Material.IsAir) return;
             Purifying(PotionCraftState.Potion, PotionCraftState.Material);
+            PotionCraftState.Potion.stack--;
+            PotionCraftState.Material.stack--;
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

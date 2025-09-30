@@ -11,6 +11,7 @@ using Terraria.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
 
+using static PotionCraft.Assets;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
@@ -20,32 +21,48 @@ namespace PotionCraft.Content.UI.CraftUI
         public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private PotionSlot<BrewPotionState> PotionSlot;
-        
-        public int PotionCount = 1;
 
+        private BrewPotionButton BrewPotionButton;
+
+        public int PotionCount = 20;
+
+        private UIElement Area;
         public override void OnInitialize()
         {
+
+            Width.Set(920, 0);
+            Height.Set(640, 0);
+            HAlign = 0.5f;
+            VAlign = 0.5f;
+            Area = new UIElement()
+            {
+                HAlign = 0.2f,
+                VAlign = 0.3f,
+            };
+            Area.Width.Set(270f, 0);
+            Area.Height.Set(270f, 0);
+            Append(Area);
+
             PotionSlot = new(this)
             {
-                HAlign = 0.45f,
+                HAlign = 0.5f,
                 VAlign = 0.5f,
             };
-            Append(PotionSlot);
-            
+            Area.Append(PotionSlot);
+
+            BrewPotionButton = new BrewPotionButton(this)
+            {
+                HAlign = 0.5f,
+                VAlign = 1f,
+            };
+            Append(BrewPotionButton);
+
         }
 
-        public static BasePotion GetPotionInstance(Item potion)
+        protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            BasePotion basePotion = ModContent.GetInstance<BasePotion>();
-            BasePotion oldpotion =AsPotion(potion);
-            basePotion.PotionName = oldpotion.PotionName;
-            basePotion.PotionDictionary = oldpotion.PotionDictionary;
-            basePotion.MashUpCount = oldpotion.MashUpCount;
-            basePotion.PurifyingCount = oldpotion.PurifyingCount;
-            basePotion.Wine = oldpotion.Wine;
-            basePotion.Signatures = oldpotion.Signatures;
-            basePotion.Magic = oldpotion.Magic;
-            return basePotion;
+            base.DrawSelf(spriteBatch);
+            spriteBatch.Draw(UITexture("PotionCraftBG").Value, GetDimensions().ToRectangle(), Color.White);
         }
 
     }
@@ -70,6 +87,7 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             base.LeftClick(evt);
             if (PotionCraftState.Potion.IsAir) return;
+            BrewPotion((PotionCraftState.Potion));
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

@@ -98,23 +98,20 @@ namespace PotionCraft.Content.UI.CraftUI
         private void MashUp(Item potion, BasePotion material)
         {
             BasePotion createdPotion = CloneOrCreatPotion(PotionCraftState,potion);
-            createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key, v => v.Value);
             foreach (var buff in material.PotionDictionary)
             {
-                createdPotion.PotionDictionary.TryAdd(buff.Key, new PotionData(
-                    buff.Value.BuffId,
-                    buff.Value.ItemId,
-                    1,
-                    buff.Value.BuffTime
-                ));
+                createdPotion.PotionDictionary.TryAdd(buff.Key,buff.Value);
                 createdPotion.PotionDictionary[buff.Key].BuffTime+= buff.Value.BuffTime;
                 createdPotion.PotionDictionary[buff.Key].Counts+= buff.Value.Counts;
-                createdPotion.DrawPotionList.Add(buff.Key);
-                createdPotion.DrawCountList.Add(buff.Value.Counts);
+            }
+            for (int i = 0; i < material.DrawCountList.Count; i++)
+            {
+                createdPotion.DrawPotionList.Add(material.DrawPotionList[i]);
+                createdPotion.DrawCountList.Add(material.DrawCountList[i]);
             }
             createdPotion.MashUpCount+=material.MashUpCount;
             createdPotion.PotionName =
-                $"{GetBracketText(Math.Min(12, createdPotion.PurifyingCount))}{createdPotion.PotionName}{TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))} {material.DisplayName.Value} {GetBracketText(Math.Min(12, createdPotion.PurifyingCount), right: true)} {createdPotion.BaseName}";
+                $"{GetBracketText(Math.Min(12, createdPotion.MashUpCount), right: true)} {createdPotion.PotionName} {TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))} {material.PotionName} {GetBracketText(Math.Min(12, createdPotion.MashUpCount))} {createdPotion.BaseName}";
         }
 
         private void MashUp(Item potion, Item material)
@@ -124,7 +121,7 @@ namespace PotionCraft.Content.UI.CraftUI
                 material.buffType,
                  material.type,
                  0,
-                 material.buffTime
+                 0
             ));
             createdPotion.PotionDictionary[material.buffType].BuffTime+= material.buffTime;
             createdPotion.PotionDictionary[material.buffType].Counts++;
@@ -146,7 +143,8 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 MashUp(PotionCraftState.Potion, AsPotion(PotionCraftState.Material));
             }
-
+            PotionCraftState.Potion.stack--;
+            PotionCraftState.Material.stack--;
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

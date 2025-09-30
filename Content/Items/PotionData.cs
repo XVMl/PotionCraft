@@ -1,4 +1,3 @@
-using NotImplementedException = System.NotImplementedException;
 
 namespace PotionCraft.Content.Items;
 
