@@ -6,6 +6,7 @@ using PotionCraft.Content.System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
@@ -61,25 +62,20 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            Main.NewText("click");
+            if (!PotionCraftState.IsLoaded())   return;
             switch (Main.mouseItem.IsAir)
             {
                 case false when PotionCraftState.Potion.IsAir:
                     PotionCraftState.Potion = Main.mouseItem.Clone();
-                    Main.NewText("p1");
                     Main.LocalPlayer.HeldItem.TurnToAir();
-                    Main.NewText("p2");
                     Main.mouseItem.TurnToAir();
-                    Main.NewText("p3");
                     return;
                 case true when !PotionCraftState.Potion.IsAir:
                     Main.mouseItem = PotionCraftState.Potion.Clone();
-                    Main.NewText("p4");
                     PotionCraftState.Potion.TurnToAir();
-                    Main.NewText("p5");
                     break;
             }
-
+            
             _onChange?.Invoke();
         }
 
@@ -118,6 +114,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
+            if (!PotionCraftState.IsLoaded()) return;
             switch (Main.mouseItem.IsAir)
             {
                 case false when PotionCraftState.Material.IsAir:
@@ -165,6 +162,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
+            if (!PotionCraftState.IsLoaded()) return;
             if (!Main.mouseItem.IsAir || PotionCraftState.CreatedPotion.IsAir) return;
             Main.mouseItem = PotionCraftState.CreatedPotion.Clone();
             PotionCraftState.CreatedPotion.TurnToAir();

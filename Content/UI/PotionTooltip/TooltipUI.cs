@@ -10,8 +10,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent.ItemDropRules;
+using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
+
+using static PotionCraft.Content.System.LanguageHelper;
 
 namespace PotionCraft.Content.UI.PotionTooltip
 {
@@ -29,11 +32,13 @@ namespace PotionCraft.Content.UI.PotionTooltip
         private static BasePotion ShowBasePotion= ModContent.GetInstance<BasePotion>();
 
         private PotionIngredients PotionIngredients;
+
+        private UIText PotionName;
         public override void OnInitialize()
         {
             Area = new();
-            Area.Width.Set(300f, 0f);
-            Area.Height.Set(300f, 0f);
+            Area.Width.Set(363f, 0f);
+            Area.Height.Set(510f, 0f);
             Append(Area);
             PotionIngredients = new(this) { 
                 HAlign= 0.5f,
@@ -42,6 +47,12 @@ namespace PotionCraft.Content.UI.PotionTooltip
             PotionIngredients.Width.Set(300, 0);
             PotionIngredients.Height.Set(500, 0);
             Area.Append(PotionIngredients);
+            PotionName = new("")
+            {
+                HAlign = 0.2f,
+                VAlign = 0.2f,
+            };
+            Area.Append(PotionName);
         }
         /// <summary>
         /// 检查两瓶药水是否完全相同，是则返回true
@@ -69,13 +80,14 @@ namespace PotionCraft.Content.UI.PotionTooltip
             PotionIngredients.UIgrid.Clear();
             ShowBasePotion = PotionElement<TooltipUI>.AsPotion(Main.HoverItem);
             PotionIngredients.SetPotionCraftState(this, Main.HoverItem);
+            PotionName.SetText(WrapTextWithColors(ShowBasePotion.PotionName,50));
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             if (!Show) return;
             spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(), Color.White);
-            
+            //Utils.DrawBorderString(spriteBatch, "AAAAAAA", GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
         }
     }
 }

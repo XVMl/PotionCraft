@@ -32,10 +32,61 @@ namespace PotionCraft.Content.System
         
         public static string TryGetMashUpText(int count) =>MashUpColor.GetValueOrDefault(count, null)?.Insert(10,"MashUp ");
 
+        public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count, null)?.Insert(10, "MashUp ");
+
         public static string GetBracketText(int count,bool mashup=false,bool right = false)
         {
             string bracket = right ? "(": ")";
             return mashup ? PurifyColor.GetValueOrDefault(count, null)?.Insert(10, bracket) : MashUpColor.GetValueOrDefault(count, null)?.Insert(10, bracket);
+        }
+
+        // 判断是否为中文字符
+        private static bool IsChineseCharacter(char c)
+        {
+            return c >= 0x4E00 && c <= 0x9FA5;
+        }
+        // 解析字符串并计算每个部分的宽度
+        private static List<(string colorCode, string text)> ParseText(string text)
+        {
+            var parts = new List<(string colorCode, string text)>();
+            var regex = new Regex(@"\[c/(\w{6}):([^]]+)\]");
+            var matches = regex.Matches(text);
+            foreach (Match match in matches)
+            {
+                string colorCode = match.Groups[1].Value;
+                string partText = match.Groups[2].Value;
+                parts.Add((colorCode, partText));
+            }
+            return parts;
+        }
+        // 智能换行
+        public static string WrapTextWithColors(string text, int length)
+        {
+            var parsedParts = ParseText(text);
+            var lines = new List<string>();
+            var currentLine = new StringBuilder();
+            int currentWidth = 0;
+            foreach (var (colorCode, partText) in parsedParts)
+            {
+                int partWidth = 0;
+                foreach (var c in partText)
+                {
+                    partWidth += IsChineseCharacter(c) ? 2 : 1;
+                }
+                if (currentWidth + partWidth > length)
+                {
+                    lines.Add(currentLine.ToString());
+                    currentLine.Clear();
+                    currentWidth = 0;
+                }
+                currentLine.Append($"[c/{colorCode}:{partText}] ");
+                currentWidth += partWidth;
+            }
+            if (currentLine.Length > 0)
+            {
+                lines.Add(currentLine.ToString().Trim());
+            }
+            return string.Join("\n", lines);
         }
 
         public static string DeleteTextColor(string msg)

@@ -171,19 +171,13 @@ namespace PotionCraft.Content.Items
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            if (Internal_TooltipLine == null)
-            {
-                return;
-            }
             tooltips.Clear();
-            tooltips.Add(new TooltipLine(Mod, "", PotionName));
         }
 
         public override bool? UseItem(Player player)
         {
             Item.useStyle = PotionUseStyle;
             Item.UseSound = (SoundStyle)ItemSound.Invoke(null, [23]);
-
             foreach (var item in PotionDictionary)
             {
                 player.AddBuff(item.Key, item.Value.BuffTime);

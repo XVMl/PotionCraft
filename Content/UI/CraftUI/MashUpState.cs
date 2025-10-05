@@ -127,7 +127,8 @@ namespace PotionCraft.Content.UI.CraftUI
             createdPotion.PotionDictionary[material.buffType].Counts++;
             createdPotion.DrawPotionList.Add(material.type);
             createdPotion.DrawCountList.Add(1);
-            createdPotion.PotionName += $"{TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))}{TryGetPotionText(material.buffType)} ";
+            createdPotion.PotionName =
+                $"{GetBracketText(Math.Min(12, createdPotion.MashUpCount), right: true)} {createdPotion.PotionName} {TryGetAndText(Math.Min(14, createdPotion.MashUpCount))} {TryGetPotionText(material.buffType)} {GetBracketText(Math.Min(12, createdPotion.MashUpCount))} {TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))}";
             createdPotion.MashUpCount++;
         }
 
