@@ -59,13 +59,19 @@ namespace PotionCraft.Content.System
             }
             return parts;
         }
-        // 智能换行
-        public static string WrapTextWithColors(string text, int length)
+        /// <summary>
+        /// 智能换行
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="length"></param>
+        /// <returns>Item1:包含颜色的字符串；Item2：总行数</returns>
+        public static (string,int) WrapTextWithColors(string text, int length)
         {
             var parsedParts = ParseText(text);
             var lines = new List<string>();
             var currentLine = new StringBuilder();
             int currentWidth = 0;
+            int linecount = 1;
             foreach (var (colorCode, partText) in parsedParts)
             {
                 int partWidth = 0;
@@ -78,6 +84,7 @@ namespace PotionCraft.Content.System
                     lines.Add(currentLine.ToString());
                     currentLine.Clear();
                     currentWidth = 0;
+                    linecount++;
                 }
                 currentLine.Append($"[c/{colorCode}:{partText}] ");
                 currentWidth += partWidth;
@@ -86,7 +93,7 @@ namespace PotionCraft.Content.System
             {
                 lines.Add(currentLine.ToString().Trim());
             }
-            return string.Join("\n", lines);
+            return (string.Join("\n", lines),linecount);
         }
 
         public static string DeleteTextColor(string msg)

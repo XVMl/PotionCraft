@@ -27,7 +27,10 @@ namespace PotionCraft.Content.UI.PotionTooltip
         public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private bool Show;
+        
         private UIElement Area;
+
+        private UIElement NameArea;
 
         private static BasePotion ShowBasePotion= ModContent.GetInstance<BasePotion>();
 
@@ -37,22 +40,24 @@ namespace PotionCraft.Content.UI.PotionTooltip
         public override void OnInitialize()
         {
             Area = new();
+            NameArea = new();
+            NameArea.Width.Set(363f, 0f);
+            NameArea.Height.Set(123f, 0f);
+            Append(NameArea);
             Area.Width.Set(363f, 0f);
             Area.Height.Set(510f, 0f);
+            Area.Top.Set(140f, 0f);
             Append(Area);
-            PotionIngredients = new(this) { 
-                HAlign= 0.5f,
-                VAlign = 1f,
-            };
-            PotionIngredients.Width.Set(300, 0);
+            PotionIngredients = new(this);
+            PotionIngredients.Top.Set(60, 0);
+            PotionIngredients.Left.Set(20, 0);
+            PotionIngredients.Width.Set(350, 0);
             PotionIngredients.Height.Set(500, 0);
             Area.Append(PotionIngredients);
-            PotionName = new("")
-            {
-                HAlign = 0.2f,
-                VAlign = 0.2f,
-            };
-            Area.Append(PotionName);
+            PotionName = new("");
+            PotionName.Left.Set(35, 0);
+            PotionName.Top.Set(40, 0);
+            NameArea.Append(PotionName);
         }
         /// <summary>
         /// 检查两瓶药水是否完全相同，是则返回true
@@ -71,23 +76,35 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         public override void Update(GameTime gameTime)
         {
-            Vector2 pos = Main.MouseScreen;
+            Vector2 pos = Main.MouseScreen+new Vector2(20,20);
+            NameArea.Left.Set(pos.X, 0);
+            NameArea.Top.Set(pos.Y, 0);
             Area.Left.Set(pos.X, 0);
-            Area.Top.Set(pos.Y, 0);
+            Area.Top.Set(pos.Y + NameArea.Height.Pixels+20, 0);
             Show = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
             if (!Show) return;
             if (CheckPotion(ShowBasePotion, PotionElement<MashUpState>.AsPotion(Main.HoverItem))) return;
             PotionIngredients.UIgrid.Clear();
             ShowBasePotion = PotionElement<TooltipUI>.AsPotion(Main.HoverItem);
             PotionIngredients.SetPotionCraftState(this, Main.HoverItem);
-            PotionName.SetText(WrapTextWithColors(ShowBasePotion.PotionName,50));
+            CalculateHeight();
+        }
+
+        private void CalculateHeight( )
+        {
+            var data = WrapTextWithColors(ShowBasePotion.PotionName, 40);
+            PotionName.SetText(data.Item1);
+            //PotionIngredients.Top.Set(50+data.Item2*21, 0);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             if (!Show) return;
-            spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(), Color.White);
-            //Utils.DrawBorderString(spriteBatch, "AAAAAAA", GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
+            spriteBatch.Draw(Assets.UITexture("ToolName").Value, NameArea.GetDimensions().ToRectangle(), Color.White);
+            spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(),  Color.White);
+            //spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(),new(0,0,363,40) , Color.White);
+            //spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(), new(0, 40, 363, (int)Area.Height.Pixels) ,Color.White);
+            //spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(), new(0, 483, 363, 510), Color.White);
         }
     }
 }

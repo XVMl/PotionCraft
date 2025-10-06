@@ -24,19 +24,15 @@ namespace PotionCraft.Content.UI.PotionTooltip
         public PotionIngredients(TooltipUI tooltipUI)
         {
             PotionCraftState = null;
-            Width.Set(200, 0);
-            Height.Set(200, 0);
+            //Width.Set(200, 0);
+            //Height.Set(200, 0);
             UIgrid = new UIGrid()
             {
-                //Width = { Percent = 50f },
-                //Height = { Percent = 50f },
-                ListPadding = 5f,
-                HAlign = 0.5f,
-                VAlign = 0.5f
             };
-            UIgrid.Width.Set(200, 0);
-            UIgrid.Height.Set(200, 0);
-
+            UIgrid.Width.Set(350, 0);
+            UIgrid.Height.Set(320, 0);
+            UIgrid.PaddingLeft = 20;
+            UIgrid.PaddingTop = 10;
             Append(UIgrid);
         }
 
@@ -66,11 +62,11 @@ namespace PotionCraft.Content.UI.PotionTooltip
         private UIImage IngredientImage;
         public IngredientElement(int ingredientType,int count)
         {
-            Width.Set(200, 0);
+            Width.Set(150, 0);
             Height.Set(50, 0);
             IngredientType = ingredientType;
             Count = count;
-            IngredientTime = new("111")
+            IngredientTime = new("")
             {
                 HAlign = 0.05f,
                 VAlign = 0.05f
@@ -79,14 +75,14 @@ namespace PotionCraft.Content.UI.PotionTooltip
             IngredientTime.Width.Set(100, 0);
             IngredientTime.Height.Set(30, 0);
             Append(IngredientTime);
-            
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch)
         {
-            Utils.DrawBorderString(spriteBatch, Count.ToString(), GetDimensions().ToRectangle().TopLeft() + new Vector2(10, 10), Color.White);
-            Utils.DrawBorderString(spriteBatch, Lang.GetItemName(IngredientType).Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(10, 0), Color.White);
-            spriteBatch.Draw(TextureAssets.Item[IngredientType].Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(10, 0), null, Color.White, 0, TextureAssets.Item[IngredientType].Value.Size() / 2, 1f, 0, 0);
+            Utils.DrawBorderString(spriteBatch, Count.ToString(), GetDimensions().ToRectangle().TopLeft() + new Vector2(30, 25), Color.White);
+            Utils.DrawBorderString(spriteBatch, Lang.GetItemName(IngredientType).Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(55, 15), Color.White);
+            spriteBatch.Draw(TextureAssets.Item[IngredientType].Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(20, 25), null, Color.White, 0, TextureAssets.Item[IngredientType].Value.Size() / 2, 1f, 0, 0);
+
         }
     }
 }
