@@ -121,6 +121,15 @@ namespace PotionCraft.Content.System
             return ModContent.GetInstance<BasePotion>();
         }
 
+        public static BaseCustomMaterials AsMaterial(Item item)
+        {
+            if (item.ModItem is BaseCustomMaterials material)
+            {
+                return material;
+            }
+            return ModContent.GetInstance<BaseCustomMaterials>();
+        }
+        
         public static BasePotion CloneOrCreatPotion<TE>(TE crafetstate,Item soure) where TE : AutoUIState
         {
             BasePotion createdPotion;
@@ -155,6 +164,7 @@ namespace PotionCraft.Content.System
             }
             return createdPotion;
         }
+
         
         public override void Update(GameTime gameTime)
         {

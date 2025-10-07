@@ -73,13 +73,7 @@ namespace PotionCraft.Content.Items
         /// <summary>
         /// 用于记录药剂的使用声音
         /// </summary>
-        public PotionUseSound PotionUseSound = PotionUseSound.Item2;
-
-        public static readonly ConstructorInfo Internal_TooltipLine = typeof(TooltipLine).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null,
-        [
-            typeof(string),
-            typeof(string)
-        ], null)!;
+        public int PotionUseSounds = (int)PotionUseSound.Item2;
 
         public static readonly MethodInfo ItemSound = typeof(SoundID).GetMethod("ItemSound", BindingFlags.NonPublic | BindingFlags.Static, [typeof(int)]);
 
@@ -116,6 +110,7 @@ namespace PotionCraft.Content.Items
             tag["PurifyingCount"] = PurifyingCount;
             tag["MashUpCount"] = MashUpCount;
             tag["PotionUseStyle"] = PotionUseStyle;
+            tag["PotionUseSound"] = PotionUseSounds;
         }
 
         public override void LoadData(TagCompound tag)
@@ -136,8 +131,12 @@ namespace PotionCraft.Content.Items
             PurifyingCount = tag.Get<int>("PurifyingCount");
             MashUpCount = tag.Get<int>("MashUpCount");
             PotionUseStyle = tag.Get<int>("PotionUseStyle");
+            PotionUseSounds = tag.Get<int>("PotionUseSound");
+            if (PotionUseSounds == 0) PotionUseSounds = 1;
+            Item.UseSound = (SoundStyle)ItemSound.Invoke(null, [PotionUseSounds]);
+            Item.useStyle = PotionUseStyle;
         }
-
+        
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor,
             Vector2 origin, float scale)
         {
@@ -177,7 +176,6 @@ namespace PotionCraft.Content.Items
         public override bool? UseItem(Player player)
         {
             Item.useStyle = PotionUseStyle;
-            Item.UseSound = (SoundStyle)ItemSound.Invoke(null, [23]);
             foreach (var item in PotionDictionary)
             {
                 player.AddBuff(item.Key, item.Value.BuffTime);

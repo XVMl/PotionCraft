@@ -60,118 +60,11 @@ Items: {
 	}
 }
 
-Colorfulfont: {
-	Craftfont: {
-		Purifying: {
-			1: "[c/FC14E2:Purifying]"
-			2: "[c/FC14D8:Purifying]"
-			3: "[c/FC14CD:Purifying]"
-			4: "[c/FC14C3:Purifying]"
-			5: "[c/FC14BA:Purifying]"
-			6: "[c/FC14B0:Purifying]"
-			7: "[c/FC14A6:Purifying]"
-			8: "[c/FC149C:Purifying]"
-			9: "[c/FC1492:Purifying]"
-			10: "[c/FC1488:Purifying]"
-			11: "[c/FC147E:Purifying]"
-			12: "[c/FC105C:Purifying]"
-		}
-
-		Purifyingleftparenthesis: {
-			1: "[c/FC14E2:(]"
-			2: "[c/FC14D8:(]"
-		}
-
-		MashUp: {
-			And: {
-				1: "[c/7A1FE6:And]"
-				2: "[c/6B19D1:And]"
-				3: "[c/5C14BC:And]"
-				4: "[c/4D0F9F:And]"
-				5: "[c/3E0B87:And]"
-				6: "[c/340773:And]"
-				7: "[c/2B065F:And]"
-				8: "[c/21044B:And]"
-				9: "[c/190238:And]"
-				10: "[c/100024:And]"
-				11: "[c/0D0036:And]"
-				12: "[c/0A004A:And]"
-				13: "[c/0a0032:And]"
-				14: "[c/02000f:And]"
-			}
-		}
-	}
-
-	BuffColors: {
-		TModLoader: {
-			AmmoConservation: "[c/907A2D:Ammo Conservation]"
-			Archery: "[c/965600:Archery]"
-			Battle: "[c/592575:Battle]"
-			BiomeSight: "[c/C6A5DE:Biome Sight]"
-			Builder: "[c/8D64A9:Builder]"
-			Calming: "[c/4681B2:Calming]"
-			Crate: "[c/98622F:Crate]"
-			Dangersense: "[c/BD5715:Dangersense]"
-			Endurance: "[c/585858:Endurance]"
-			Featherfall: "[c/3FACBF:Featherfall]"
-			Fishing: "[c/1E7371:Fishing]"
-			Flipper: "[c/167F8D:Flipper]"
-			GenderChange: "[c/AF97DC:Gender Change]"
-			Gills: "[c/2E51C5:Gills]"
-			Gravitation: "[c/481C90:Gravitation]"
-			Heartreach: "[c/5186C9:Heartreach]"
-			Hunter: "[c/B96B3A:Hunter]"
-			Inferno: "[c/E14D08:Inferno]"
-			Invisibility: "[c/C8D2CC:Invisibility]"
-			Ironskin: "[c/8C7D71:Ironskin]"
-			Lifeforce: "[c/3E6D84:Lifeforce]"
-			Love: "[c/A52B33:Love]"
-			LesserLuck: "[c/8B8BA8:Lesser Luck]"
-			Luck: "[c/4B4C54:Luck]"
-			GreaterLuck: "[c/8D1874:Greater Luck]"
-			MagicPower: "[c/7949D2:Magic Power]"
-			MagicRegeneration: "[c/7949D2:Magic Regeneration]"
-			Mining: "[c/587A6B:Mining]"
-			NightOwl: "[c/6FE623:Night Owl]"
-			ObsidianSkin: "[c/3B3232:Obsidian Skin]"
-			Rage: "[c/963E44:Rage]"
-			Recall: "[c/3E7CAB:Recall]"
-			Regeneration: "[c/e60a8b:Regeneration]"
-			Return: "[c/4E4442:Return]"
-			Shine: "[c/F2E055:Shine]"
-			Sonar: "[c/2E6DBB:Sonar]"
-			Spelunker: "[c/D1D5DF:Spelunker]"
-			Stink: "[c/5E834D:Stink]"
-			Summoning: "[c/3D7320:Summoning]"
-			Swiftness: "[c/7CE551:Swiftness]"
-			Teleportation: "[c/63C3CB:Teleportation]"
-			Thorns: "[c/569A5D:Thorns]"
-			Titan: "[c/7CBDB9:Titan]"
-			Warmth: "[c/FDD273:Warmth]"
-			WaterWalking: "[c/3E74B7:Water Walking]"
-			Wormhole: "[c/536645:Wormhole]"
-			Wrath: "[c/720000:Wrath]"
-		}
-
-		Calamity: {
-		}
-	}
-}
-
-NPCs: {
-	Thiu: {
-		DisplayName: Thiu
-
-		TownNPCMood: {
-			Content: I am content.
-			NoHome: I hate not having a home.
-			FarFromHome: I am too far from home.
-			LoveSpace: I love having so much space.
-			DislikeCrowded: I dislike how crowded I am.
-			HateCrowded: I hate how crowded I am.
-			LikeNPC_Princess: I like {NPCName}.
-			Princess_LovesNPC: I like {NPCName}.
-		}
+CustomMaterials: {
+	BaseType: {
+		0: "[c/5E87D2:Water]"
+		1: "[c/340773:Wine]"
+		2: "[c/340773:Magic]"
 	}
 }
 
@@ -184,3 +77,5 @@ Projectiles: {
 	EnergyTrial.DisplayName: Energy Trial
 	Smoke.DisplayName: Smoke
 }
+
+Keybinds.ExtraList.DisplayName: Extra List

@@ -71,7 +71,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
            
             if(oldPotion.PotionDictionary.Count!=newPotion.PotionDictionary.Count) return false;
 
-            return oldPotion.PotionDictionary.All(item => newPotion.PotionDictionary.Any( s => s.Value.BuffId == item.Value.BuffId && s.Value.BuffTime == item.Value.BuffTime));            
+            return oldPotion.PotionDictionary.All(item => newPotion.PotionDictionary.Any(s => s.Value.BuffId == item.Value.BuffId && s.Value.BuffTime == item.Value.BuffTime));
         }
 
         public override void Update(GameTime gameTime)
@@ -101,10 +101,25 @@ namespace PotionCraft.Content.UI.PotionTooltip
         {
             if (!Show) return;
             spriteBatch.Draw(Assets.UITexture("ToolName").Value, NameArea.GetDimensions().ToRectangle(), Color.White);
-            spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(),  Color.White);
-            //spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(),new(0,0,363,40) , Color.White);
-            //spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(), new(0, 40, 363, (int)Area.Height.Pixels) ,Color.White);
-            //spriteBatch.Draw(Assets.UI.Tooltip, Area.GetDimensions().ToRectangle(), new(0, 483, 363, 510), Color.White);
+            if(!PotionCraftModPlayer.PotionCraftKeybind.Current) return;
+            var AreaRectangle = Area.GetDimensions().ToRectangle();
+            var height = (int)Area.Height.Pixels;
+            for (;;)
+            {
+                switch (height)
+                {
+                    case > 440:
+                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X,AreaRectangle.Y+40,363,440), new(0, 40, 363, 440),Color.White);
+                        height -= 440;
+                        break;
+                    case > 0:
+                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X,AreaRectangle.Y+40,363,height), new(0, 40, 363, height),Color.White);
+                        height = 0;
+                        break;
+                }
+                if (height==0) break;
+            }
+            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X,AreaRectangle.Y,363,27), new(0, 483, 363, 27), Color.White);
         }
     }
 }

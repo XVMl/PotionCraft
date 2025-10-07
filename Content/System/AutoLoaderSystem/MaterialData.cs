@@ -7,6 +7,8 @@ public struct MaterialData
     public string NameColor;
     public float ScaleSize = 1f;
     public int UseStyle = 5;
+    public PotionUseSound PotionUseSound = PotionUseSound.Item2;
+    
 
     public MaterialData(string name, string tooltips, Base baseType)
     {
@@ -19,9 +21,7 @@ public struct MaterialData
     {
         ScaleSize = scaleSize;
     }
-
-
-
+    
     public MaterialData(string name, string tooltips, Base baseType, string nameColor,float scalesize)
     {
         Name = name;

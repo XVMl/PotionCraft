@@ -13,6 +13,8 @@ using Microsoft.Xna.Framework.Input;
 using Terraria.GameInput;
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
+using Terraria.Audio;
+using static PotionCraft.Content.System.LanguageHelper;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BaseFluidState: AutoUIState
@@ -131,6 +133,14 @@ namespace PotionCraft.Content.UI.CraftUI
             createdPotion.DrawPotionList.Add(PotionCraftState.Material.type);
             createdPotion.DrawCountList.Clear();
             createdPotion.DrawCountList.Add(1);
+            createdPotion.BaseName =PotionCraftState.Material.Name;
+            if (PotionCraftState.Material.ModItem is not BaseCustomMaterials) return;
+            var materialData =AsMaterial(PotionCraftState.Material);
+            createdPotion.PotionUseSounds =  (int)materialData.Materialdata.PotionUseSound;
+            createdPotion.Item.UseSound =
+                (SoundStyle)BasePotion.ItemSound.Invoke(null, [createdPotion.PotionUseSounds]);
+            createdPotion.PotionUseStyle = materialData.Materialdata.UseStyle;
+            createdPotion.Item.useStyle = createdPotion.PotionUseStyle;
         }
 
         public override void LeftClick(UIMouseEvent evt)

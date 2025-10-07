@@ -15,7 +15,7 @@ namespace PotionCraft.Content.Items;
 public class BaseCustomMaterials : ModItem
 {
     
-    private MaterialData Materialdata;
+    public MaterialData Materialdata;
 
     public BaseCustomMaterials(MaterialData  materialData)
     {
