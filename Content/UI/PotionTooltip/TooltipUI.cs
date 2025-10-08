@@ -86,8 +86,9 @@ namespace PotionCraft.Content.UI.PotionTooltip
             if (CheckPotion(ShowBasePotion, PotionElement<MashUpState>.AsPotion(Main.HoverItem))) return;
             PotionIngredients.UIgrid.Clear();
             ShowBasePotion = PotionElement<TooltipUI>.AsPotion(Main.HoverItem);
-            PotionIngredients.SetPotionCraftState(this, Main.HoverItem);
             CalculateHeight();
+            if (!PotionCraftModPlayer.PotionCraftKeybind.Current) return;
+            PotionIngredients.SetPotionCraftState(this, Main.HoverItem);
         }
 
         private void CalculateHeight( )
@@ -100,26 +101,46 @@ namespace PotionCraft.Content.UI.PotionTooltip
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             if (!Show) return;
-            spriteBatch.Draw(Assets.UITexture("ToolName").Value, NameArea.GetDimensions().ToRectangle(), Color.White);
-            if(!PotionCraftModPlayer.PotionCraftKeybind.Current) return;
+            var nametex = Assets.UITexture("ToolName").Value;
+            var namearea = NameArea.GetDimensions().ToRectangle();
+            var nameheight = namearea.Height-45;
+            spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y, 363, 23), new(0, 0, 363, 23), Color.White);
+            spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + nameheight, 363, 23), new(0, 101, 363, 23), Color.White);
+            for (;;)
+            {
+                switch(nameheight)
+                {
+                    case > 123:
+                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 23 + namearea.Height- 45 - nameheight, 363, 78), new(0, 23, 363, 78), Color.White);
+                        nameheight -= 123;
+                        break;
+                    case > 0:
+                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 23 + namearea.Height- 45  - nameheight, 363, nameheight), new(0, 40, 363, nameheight), Color.White);
+                        nameheight = 0;
+                        break;
+                }
+                if (nameheight<=0)  break;
+            }
+            if (!PotionCraftModPlayer.PotionCraftKeybind.Current) return;
             var AreaRectangle = Area.GetDimensions().ToRectangle();
-            var height = (int)Area.Height.Pixels;
+            var height = (int)Area.Height.Pixels-68;
+            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y, 363, 40), new(0, 0, 363, 40), Color.White);
+            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y + height, 363, 28), new(0, 482, 363, 28), Color.White);
             for (;;)
             {
                 switch (height)
                 {
                     case > 440:
-                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X,AreaRectangle.Y+40,363,440), new(0, 40, 363, 440),Color.White);
+                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X,AreaRectangle.Y+40 + (int)Area.Height.Pixels - 68 - height, 363,440), new(0, 40, 363, 440),Color.White);
                         height -= 440;
                         break;
                     case > 0:
-                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X,AreaRectangle.Y+40,363,height), new(0, 40, 363, height),Color.White);
+                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X,AreaRectangle.Y+40 + (int)Area.Height.Pixels - 68 - height, 363,height), new(0, 40, 363, height),Color.White);
                         height = 0;
                         break;
                 }
                 if (height==0) break;
             }
-            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X,AreaRectangle.Y,363,27), new(0, 483, 363, 27), Color.White);
         }
     }
 }

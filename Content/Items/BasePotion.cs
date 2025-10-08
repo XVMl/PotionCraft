@@ -15,6 +15,7 @@ using static PotionCraft.Assets;
 using static PotionCraft.Content.System.LanguageHelper;
 using Terraria.Localization;
 using Terraria.Audio;
+using Newtonsoft.Json.Linq;
 
 namespace PotionCraft.Content.Items
 {
@@ -74,6 +75,24 @@ namespace PotionCraft.Content.Items
         /// 用于记录药剂的使用声音
         /// </summary>
         public int PotionUseSounds = (int)PotionUseSound.Item2;
+        /// <summary>
+        /// 用于记录药剂是否包装
+        /// </summary>
+        public bool IsPackage = true;
+        /// <summary>
+        /// 用于记录药剂的图标ID
+        /// </summary>
+        public int IconID = ModContent.ItemType<BasePotion>();
+        //{
+        //    get
+        //    {
+        //        return IconID == 0 ? Item.type : IconID;
+        //    }
+        //    set
+        //    {
+        //        IconID = value;
+        //    }
+        //}
 
         public static readonly MethodInfo ItemSound = typeof(SoundID).GetMethod("ItemSound", BindingFlags.NonPublic | BindingFlags.Static, [typeof(int)]);
 
@@ -111,6 +130,8 @@ namespace PotionCraft.Content.Items
             tag["MashUpCount"] = MashUpCount;
             tag["PotionUseStyle"] = PotionUseStyle;
             tag["PotionUseSound"] = PotionUseSounds;
+            tag["IsPackage"] = IsPackage;
+            tag["IconID"] = IconID;
         }
 
         public override void LoadData(TagCompound tag)
@@ -132,6 +153,9 @@ namespace PotionCraft.Content.Items
             MashUpCount = tag.Get<int>("MashUpCount");
             PotionUseStyle = tag.Get<int>("PotionUseStyle");
             PotionUseSounds = tag.Get<int>("PotionUseSound");
+            IsPackage = tag.Get<bool>("IsPackage");
+            IconID = tag.Get<int>("IconID");
+            if (IconID == -1) IconID = Item.type;
             if (PotionUseSounds == 0) PotionUseSounds = 1;
             Item.UseSound = (SoundStyle)ItemSound.Invoke(null, [PotionUseSounds]);
             Item.useStyle = PotionUseStyle;
@@ -140,8 +164,13 @@ namespace PotionCraft.Content.Items
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor,
             Vector2 origin, float scale)
         {
-            if (DrawPotionList.Count == 0)
-                return base.PreDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
+            if (IsPackage)
+            {
+                Main.instance.LoadItem(IconID);
+                var icon = TextureAssets.Item[IconID].Value;
+                spriteBatch.Draw(icon, position, null, Color.White, 0, icon.Size() / 2, scale*2, SpriteEffects.None, 0);
+                return false;
+            }
             for (int i = 0; i < DrawPotionList.Count; i++)
             {
                 for (int j = 0; j < DrawCountList[i]; j++)
@@ -155,8 +184,13 @@ namespace PotionCraft.Content.Items
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            if (DrawPotionList.Count == 0)
-                return base.PreDrawInWorld(spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
+            if (IsPackage)
+            {
+                Main.instance.LoadItem(IconID);
+                var icon = TextureAssets.Item[IconID].Value;
+                spriteBatch.Draw(icon, Item.position - Main.screenPosition, null, Color.White, 0, icon.Size() / 2, scale*2, SpriteEffects.None, 0);
+                return false;
+            }
             for (int i = 0; i < DrawPotionList.Count; i++)
             {
                 for (int j = 0; j < DrawCountList[i]; j++)
