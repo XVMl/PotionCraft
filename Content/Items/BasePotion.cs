@@ -21,7 +21,7 @@ namespace PotionCraft.Content.Items
 {
     public class BasePotion : ModItem
     {
-        public override string Texture => Path.Items + "BasePotion";
+        public override string Texture => Path.Items + "Style1";
         /// <summary>
         /// 将会显示的药剂名
         /// </summary>
@@ -83,16 +83,6 @@ namespace PotionCraft.Content.Items
         /// 用于记录药剂的图标ID
         /// </summary>
         public int IconID = ModContent.ItemType<BasePotion>();
-        //{
-        //    get
-        //    {
-        //        return IconID == 0 ? Item.type : IconID;
-        //    }
-        //    set
-        //    {
-        //        IconID = value;
-        //    }
-        //}
 
         public static readonly MethodInfo ItemSound = typeof(SoundID).GetMethod("ItemSound", BindingFlags.NonPublic | BindingFlags.Static, [typeof(int)]);
 
@@ -106,7 +96,7 @@ namespace PotionCraft.Content.Items
             Item.width = 20;
             Item.height = 20;
             Item.maxStack = 9999;
-            Item.rare = ItemRarityID.Pink;
+            Item.rare = ItemRarityID.White;
             Item.useAnimation = 45;
             Item.useTime = 45;
             Item.useStyle = ItemUseStyleID.HoldUp;
@@ -168,7 +158,7 @@ namespace PotionCraft.Content.Items
             {
                 Main.instance.LoadItem(IconID);
                 var icon = TextureAssets.Item[IconID].Value;
-                spriteBatch.Draw(icon, position, null, Color.White, 0, icon.Size() / 2, scale*2, SpriteEffects.None, 0);
+                spriteBatch.Draw(icon, position, null, Color.White, 0, icon.Size() / 2f, scale*1.5f, SpriteEffects.None, 0);
                 return false;
             }
             for (int i = 0; i < DrawPotionList.Count; i++)
@@ -188,7 +178,7 @@ namespace PotionCraft.Content.Items
             {
                 Main.instance.LoadItem(IconID);
                 var icon = TextureAssets.Item[IconID].Value;
-                spriteBatch.Draw(icon, Item.position - Main.screenPosition, null, Color.White, 0, icon.Size() / 2, scale*2, SpriteEffects.None, 0);
+                spriteBatch.Draw(icon, Item.position - Main.screenPosition, null, Color.White, 0, icon.Size() / 2, scale*1.5f, SpriteEffects.None, 0);
                 return false;
             }
             for (int i = 0; i < DrawPotionList.Count; i++)

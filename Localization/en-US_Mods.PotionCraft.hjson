@@ -58,6 +58,21 @@ Items: {
 		DisplayName: Lily
 		Tooltip: ""
 	}
+
+	Style2: {
+		DisplayName: Style2
+		Tooltip: ""
+	}
+
+	Style3: {
+		DisplayName: Style3
+		Tooltip: ""
+	}
+
+	Style4: {
+		DisplayName: Style4
+		Tooltip: ""
+	}
 }
 
 CustomMaterials: {
@@ -79,3 +94,4 @@ Projectiles: {
 }
 
 Keybinds.ExtraList.DisplayName: Extra List
+KeybindsTips: Please press the {0} key to display detailed information.

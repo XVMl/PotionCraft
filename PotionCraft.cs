@@ -13,7 +13,8 @@ namespace PotionCraft
 	{
 		Water,
 		Wine,
-		Magic
+		Magic,
+		None
 	}
 	public enum PotionUseSound
 	{

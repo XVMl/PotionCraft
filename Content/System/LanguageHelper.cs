@@ -24,10 +24,17 @@ namespace PotionCraft.Content.System
             string lang = null;
             string key = "Mods.PotionCraft.Colorfulfont." + path.Replace(" ", "");
             lang += Language.GetTextValue(key);
-            Main.NewText(lang);
             return lang.Equals(key) ? null : lang;
         }
-        
+
+        public static string TryGetLanguagValue(string path, object arg0)
+        {
+            string lang = null;
+            string key = "Mods.PotionCraft." + path.Replace(" ", "");
+            lang += Language.GetTextValue(key,arg0);
+            return lang.Equals(key) ? null : lang;
+        }
+
         public static string TryGetPurifyText(int count) =>PurifyColor.GetValueOrDefault(count, null)?.Insert(10,"Purified ");
         
         public static string TryGetMashUpText(int count) =>MashUpColor.GetValueOrDefault(count, null)?.Insert(10,"MashUp ");
