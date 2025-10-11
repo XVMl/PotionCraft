@@ -33,6 +33,10 @@ namespace PotionCraft.Content.UI.CraftUI
         public BaseFuildInput SignaturesInput;
 
         private BaseFuildButtun BaseFuildButtun;
+        
+        private BaseFuildSwitch AutoUseSwitch;
+        
+        private BaseFuildSwitch EditorSwitch;
 
         private UIElement Area;
 
@@ -64,24 +68,40 @@ namespace PotionCraft.Content.UI.CraftUI
                 VAlign = 0.65f,
             };
             Append(SignaturesInput);
+
+            AutoUseSwitch = new (this,"AutoUse",()=>
+            {
+                AsPotion(Potion).AutoUse = AutoUseSwitch.Switchvalue;
+            })
+            {
+                HAlign = 0.6f,
+                VAlign = 0.65f,
+            };
+            Append(AutoUseSwitch);
+
+            EditorSwitch = new BaseFuildSwitch(this,"Editor",()=>
+            {
+                AsPotion(Potion).EditorName = EditorSwitch.Switchvalue ? EditorSwitch.SwitchText : "";
+            })
+            {
+                HAlign = 0.6f,
+                VAlign = 0.60f,
+            };
+            Append(EditorSwitch);
             
-            Potionslot = new(this,
-                () =>
-                {
+            Potionslot = new(this, () => {
                     BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName + AsPotion(Potion).BaseName;
                     SignaturesInput.Currentvalue = AsPotion(Potion).Signatures;
-                })
+            })
             {
                 HAlign = 0.45f,
                 VAlign = 0.5f,
             };
             Area.Append(Potionslot);
 
-            Materialslot = new(this,
-                () =>
-                {
-                    BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName + AsPotion(Potion).BaseName;
-                })
+            Materialslot = new(this, () => {
+                    BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName + AsPotion(Potion).BaseName; 
+            })
             {
                 HAlign = 0.55f,
                 VAlign = 0.5f,
@@ -107,6 +127,7 @@ namespace PotionCraft.Content.UI.CraftUI
         public override void Update(GameTime gameTime)
         {
             BaseFuildInput.Update(gameTime);
+            
         }
 
     }
@@ -222,6 +243,43 @@ namespace PotionCraft.Content.UI.CraftUI
             Utils.DrawBorderString(spriteBatch, Currentvalue, GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
         }
 
+    }
+
+    public class BaseFuildSwitch : PotionElement<BaseFluidState>
+    {
+        public Action OnClick;
+
+        private BaseFluidState BaseFluidState;
+        
+        public string SwitchText;
+
+        public bool Switchvalue;
+        public BaseFuildSwitch(BaseFluidState baseFluidState, string switchtext,Action onClick)
+        {
+            OnClick = onClick;
+            SwitchText = switchtext;
+            BaseFluidState = baseFluidState;
+            Width.Set(100f, 0);
+            Height.Set(32f, 0);
+        }
+
+        public void ResetValue(bool value)
+        {
+            Switchvalue = value;
+        }
+        
+        public override void LeftClick(UIMouseEvent evt)
+        {
+            base.LeftClick(evt);
+            OnClick?.Invoke();
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            base.DrawSelf(spriteBatch);
+            Utils.DrawBorderString(spriteBatch, SwitchText, GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
+        }
+        
     }
     
 

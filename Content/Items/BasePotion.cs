@@ -83,6 +83,14 @@ namespace PotionCraft.Content.Items
         /// 用于记录药剂的图标ID
         /// </summary>
         public int IconID = ModContent.ItemType<BasePotion>();
+        /// <summary>
+        /// 用于记录药剂是否自动使用
+        /// </summary>
+        public bool AutoUse;
+        /// <summary>
+        /// 用于记录可以编辑的玩家名称
+        /// </summary>
+        public string EditorName;
 
         public static readonly MethodInfo ItemSound = typeof(SoundID).GetMethod("ItemSound", BindingFlags.NonPublic | BindingFlags.Static, [typeof(int)]);
 

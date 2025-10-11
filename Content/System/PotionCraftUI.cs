@@ -221,5 +221,10 @@ namespace PotionCraft.Content.System
             return ModContent.GetInstance<BasePotion>();
         }
 
+        public static bool CheckEditor(Item item,Player player)
+        {
+            return AsPotion(item).EditorName.Equals("") || AsPotion(item).EditorName.Equals(player.name);
+        }
+
     }
 }

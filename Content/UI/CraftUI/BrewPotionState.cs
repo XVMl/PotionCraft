@@ -81,6 +81,7 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             if (!IsPotion(potion)) return;
             PotionCraftState.Potion.stack = PotionCraftState.PotionCount;
+            Main.LocalPlayer.BuyItem(50 * PotionCraftState.PotionCount);
         }
 
         public override void LeftClick(UIMouseEvent evt)
@@ -92,7 +93,9 @@ namespace PotionCraft.Content.UI.CraftUI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Assets.UI.Button, GetDimensions().ToRectangle(), Color.White);
+            var rectangle = GetDimensions().ToRectangle();
+            spriteBatch.Draw(Assets.UI.Button, rectangle, Color.White);
+            ItemSlot.DrawSavings(spriteBatch,rectangle.X, rectangle.Y);
         }
 
     }
