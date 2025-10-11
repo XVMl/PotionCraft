@@ -1,17 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ModLoader;
@@ -78,6 +72,11 @@ namespace PotionCraft.Content.UI.PotionTooltip
             return oldPotion.PotionDictionary.All(item => newPotion.PotionDictionary.Any(s => s.Value.BuffId == item.Value.BuffId && s.Value.BuffTime == item.Value.BuffTime));
         }
 
+        public static bool CheckPotion_Item(Item oldPotion,Item newPotion)
+        {
+            return oldPotion.ModItem is BasePotion && newPotion.ModItem is BasePotion &&
+                   CheckPotion(AsPotion(oldPotion), AsPotion(newPotion));
+        }
         public override void Update(GameTime gameTime)
         {
             Vector2 pos = Main.MouseScreen+new Vector2(20,20);
