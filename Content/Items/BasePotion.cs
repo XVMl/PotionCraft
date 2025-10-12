@@ -153,6 +153,7 @@ namespace PotionCraft.Content.Items
             PotionUseSounds = tag.Get<int>("PotionUseSound");
             IsPackage = tag.Get<bool>("IsPackage");
             IconID = tag.Get<int>("IconID");
+            LocationPotionText(ref PotionName);
             if (IconID == -1) IconID = Item.type;
             if (PotionUseSounds == 0) PotionUseSounds = 1;
             Item.UseSound = (SoundStyle)ItemSound.Invoke(null, [PotionUseSounds]);

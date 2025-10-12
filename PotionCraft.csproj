@@ -22,9 +22,6 @@
 	  <None Remove="assets\autoloadedeffects\shaders\Star.fx" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Assets\" />
-	</ItemGroup>
-	<ItemGroup>
 	  <Reference Include="Luminance">
 	    <HintPath>libs\Luminance.dll</HintPath>
 	  </Reference>

@@ -4,11 +4,15 @@ using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
+using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.Social.Steam;
 using Terraria.UI;
 
 using static PotionCraft.Content.System.LanguageHelper;
@@ -35,6 +39,9 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         private UIText PotionName;
 
+        //public static MethodInfo ActiveCulture = typeof(LanguageManager).GetProperty("ActiveCulture",BindingFlags.Instance).GetGetMethod();
+
+
         public override void OnInitialize()
         {
             Area = new();
@@ -48,12 +55,12 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Append(Area);
             PotionIngredients = new(this);
             PotionIngredients.Top.Set(60, 0);
-            PotionIngredients.Left.Set(20, 0);
+            PotionIngredients.Left.Set(0, 0);
             PotionIngredients.Width.Set(350, 0);
             PotionIngredients.Height.Set(500, 0);
             Area.Append(PotionIngredients);
             PotionName = new("");
-            PotionName.Left.Set(35, 0);
+            PotionName.Left.Set(25, 0);
             PotionName.Top.Set(40, 0);
             NameArea.Append(PotionName);
         }
@@ -90,6 +97,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             if (CheckPotion(ShowBasePotion, PotionElement<MashUpState>.AsPotion(Main.HoverItem)))
                 return;
             PotionIngredients.UIgrid.Clear();
+            NameArea.Height.Set(123, 0);
             ShowBasePotion = PotionElement<TooltipUI>.AsPotion(Main.HoverItem);
             CalculateHeight();
             PotionIngredients.SetPotionCraftState(this, Main.HoverItem);
@@ -97,9 +105,23 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         private void CalculateHeight( )
         {
-            var data = WrapTextWithColors(ShowBasePotion.PotionName, 40);
+            var linetextnum = LanguageManager.Instance.ActiveCulture.Name switch
+            {
+                "zh-Hans" => 30,
+                "en-US" => 35,
+                _ => 40,
+            };
+            var data = WrapTextWithColors(ShowBasePotion.PotionName, linetextnum);
             PotionName.SetText(data.Item1);
-            //PotionIngredients.Top.Set(50+data.Item2*21, 0);
+            var height = NameArea.Height.Pixels;
+            NameArea.Height.Set(height + MathHelper.Max(0,data.Item2-2)*30, 0);
+            var top = Area.Top.Pixels;
+            var h = Area.Height.Pixels + 20;
+            if (top + h > Main.screenHeight)
+            {
+                Area.Left.Set(Main.MouseScreen.X + 380, 0);
+                Area.Top.Set(Main.MouseScreen.Y+20,0 );
+            }
         }
 
         public static (string,bool) GetKeybind(ModKeybind key)
@@ -128,11 +150,11 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 switch (nameheight)
                 {
                     case > 78:
-                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 23 + namearea.Height - 45 - nameheight, 363, 78), new(0, 23, 363, 78), Color.White);
+                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 23 + namearea.Height - 45 - nameheight, 363, 78), new(0, 24, 363, 78), Color.White);
                         nameheight -= 78;
                         break;
                     case > 0:
-                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 23 + namearea.Height - 45 - nameheight, 363, nameheight), new(0, 23, 363, nameheight), Color.White);
+                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 23 + namearea.Height - 45 - nameheight, 363, nameheight), new(0, 24, 363, nameheight), Color.White);
                         nameheight = 0;
                         break;
                 }
@@ -140,7 +162,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             }
             spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + namearea.Height - 22, 363, 22), new(0, 101, 363, 22), Color.White);
             var data = GetKeybind(PotionCraftModPlayer.PotionCraftKeybind);
-            if(!data.Item2)
+            if (!data.Item2)
                 Utils.DrawBorderString(spriteBatch,$"{TryGetLanguagValue("KeybindsTips", data.Item1)}", namearea.TopLeft()+new Vector2(0, namearea.Height), Color.White);
             
             if (!PotionCraftModPlayer.PotionCraftKeybind.Current) 
@@ -164,7 +186,6 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 if (height == 0) break;
             }
             spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y + AreaRectangle.Height-28, 363, 28), new(0, 482, 363, 28), Color.White);
-
         }
     }
 }

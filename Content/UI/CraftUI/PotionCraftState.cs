@@ -1,4 +1,5 @@
 ﻿using Luminance.Common.Utilities;
+using Luminance.Core.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
@@ -37,6 +38,18 @@ namespace PotionCraft.Content.UI.CraftUI
             area.Width.Set(820f, 0);
             area.Height.Set(600f, 0);
             Append(area);
+        }
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (!IsLoaded())
+                return;
+            base.Draw(spriteBatch);
+            ManagedScreenFilter distortion = ShaderManager.GetFilter("PotionCraft.GaussBlur");
+            if (!distortion.IsActive)
+            {
+                distortion.TrySetParameter("screenscalerevise", new Vector2(Main.screenWidth, Main.screenHeight) / Main.GameViewMatrix.Zoom);
+                distortion.Activate();
+            }
         }
     }
 

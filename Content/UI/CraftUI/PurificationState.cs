@@ -110,6 +110,7 @@ namespace PotionCraft.Content.UI.CraftUI
             }
             createdPotion.PurifyingCount++;
             createdPotion.PotionName = $"{TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))} {createdPotion.PotionName} {createdPotion.BaseName}";
+            LocationPotionText(ref createdPotion.PotionName);
         }
 
         public override void LeftClick(UIMouseEvent evt)

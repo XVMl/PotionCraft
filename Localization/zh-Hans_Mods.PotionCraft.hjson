@@ -1,11 +1,11 @@
 Items: {
 	BasePotion: {
-		DisplayName: Base Potion
+		DisplayName: 基础药剂
 		Tooltip: ""
 	}
 
 	TestSwitch: {
-		DisplayName: Test Switch
+		DisplayName: 测试开关
 		Tooltip: ""
 	}
 
@@ -52,16 +52,16 @@ Items: {
 
 CustomMaterials: {
 	BaseType: {
-		0: "[c/5E87D2:Water]"
-		1: "[c/340773:Wine]"
-		2: "[c/340773:Magic]"
+		0: "[c/5E87D2:水]"
+		1: "[c/340773:酒]"
+		2: "[c/340773:魔法]"
 	}
 }
 
 Craft: {
-	Purified: "Purified "
-	And: " And "
-	MashUp: "Mash Up "
+	Purified: 纯化
+	And: 和
+	MashUp: 组合
 }
 
 Keybinds.ExtraList.DisplayName: Extra List

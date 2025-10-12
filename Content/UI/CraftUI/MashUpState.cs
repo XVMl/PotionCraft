@@ -109,9 +109,12 @@ namespace PotionCraft.Content.UI.CraftUI
                 createdPotion.DrawPotionList.Add(material.DrawPotionList[i]);
                 createdPotion.DrawCountList.Add(material.DrawCountList[i]);
             }
-            createdPotion.MashUpCount+=material.MashUpCount;
+            createdPotion.MashUpCount += material.MashUpCount+1;
             createdPotion.PotionName =
-                $"{GetBracketText(Math.Min(12, createdPotion.MashUpCount), right: true)} {createdPotion.PotionName} {TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))} {material.PotionName} {GetBracketText(Math.Min(12, createdPotion.MashUpCount))} {createdPotion.BaseName}";
+                $"{GetBracketText(Math.Min(12, createdPotion.MashUpCount), right: true)}{createdPotion.PotionName} {TryGetAndText(Math.Min(14, createdPotion.MashUpCount))} {material.PotionName}{GetBracketText(Math.Min(12, createdPotion.MashUpCount))}{createdPotion.BaseName}";
+            if (createdPotion.MashUpCount == material.MashUpCount + 1)
+                createdPotion.PotionName = material.PotionName;
+            LocationPotionText(ref createdPotion.PotionName);
         }
 
         private void MashUp(Item potion, Item material)
@@ -128,8 +131,15 @@ namespace PotionCraft.Content.UI.CraftUI
             createdPotion.DrawPotionList.Add(material.type);
             createdPotion.DrawCountList.Add(1);
             createdPotion.PotionName =
-                $"{GetBracketText(Math.Min(12, createdPotion.MashUpCount), right: true)} {createdPotion.PotionName} {TryGetAndText(Math.Min(14, createdPotion.MashUpCount))} {TryGetPotionText(material.buffType)} {GetBracketText(Math.Min(12, createdPotion.MashUpCount))} {TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))}";
+                $"{GetBracketText(Math.Min(12, createdPotion.MashUpCount), right: true)}{createdPotion.PotionName}{TryGetAndText(Math.Min(14, createdPotion.MashUpCount))}{TryGetPotionText(material.buffType)}{GetBracketText(Math.Min(12, createdPotion.MashUpCount))}{TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))}";
+            if (createdPotion.MashUpCount == 0)
+                createdPotion.PotionName = TryGetPotionText(material.buffType);
             createdPotion.MashUpCount++;
+            Mod instance = ModContent.GetInstance<PotionCraft>();
+            instance.Logger.Error(createdPotion.PotionName);
+            instance.Logger.Error(WrapTextWithColors(createdPotion.PotionName, 30).Item1);
+
+            LocationPotionText(ref createdPotion.PotionName);
         }
 
         public override void LeftClick(UIMouseEvent evt)

@@ -1,5 +1,6 @@
 using System.Reflection;
 using Luminance.Core.Hooking;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MonoMod.Cil;
 using PotionCraft.Content.UI.PotionTooltip;
 using Terraria;
@@ -35,8 +36,10 @@ public class ItemSlotLeftClickHook:ModSystem
         FieldInfo maxStack = typeof(Item).GetField(nameof(Item.maxStack))!;
 
         FieldInfo stack = typeof(Item).GetField(nameof(Item.stack))!;
-        
+
         MethodInfo checkpotion = typeof(TooltipUI).GetMethod(nameof(TooltipUI.CheckPotion_Item))!;
+
+        TypeInfo item = typeof(Item).GetTypeInfo();
 
         ILCursor cursor = new ILCursor(context);
         ILCursor il = new ILCursor(cursor);
@@ -48,20 +51,19 @@ public class ItemSlotLeftClickHook:ModSystem
             !il.TryGotoNext(MoveType.AfterLabel,
                 i => i.MatchLdarg0(),
                 i => i.MatchLdarg2(),
-                i => i.MatchLdelemRef(),
-                i => i.MatchLdfld(stack),
-                i => i.MatchLdcI4(0)
+                i => i.MatchLdelema(item),
+                i => i.MatchLdsflda(mouseItem)
             ))
         {
             edit.LogFailure("Find ItemSlotLeftClick ERROR!");
             return;
         }
 
-        cursor.EmitLdsfld(mouseItem);
         cursor.EmitLdarg0();
         cursor.EmitLdarg2();
         cursor.EmitLdelemRef();
-        cursor.EmitCallvirt(checkpotion);
+        cursor.EmitLdsfld(mouseItem);
+        cursor.EmitCall(checkpotion);
         cursor.Emit(Mono.Cecil.Cil.OpCodes.Brfalse_S, context.Instrs[il.Index]);
 
     }

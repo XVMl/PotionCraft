@@ -22,7 +22,7 @@ namespace PotionCraft.Content.System
         public static string TryGetLanguagValue(string path)
         {
             string lang = null;
-            string key = "Mods.PotionCraft.Colorfulfont." + path.Replace(" ", "");
+            string key = "Mods.PotionCraft." + path.Replace(" ", "");
             lang += Language.GetTextValue(key);
             return lang.Equals(key) ? null : lang;
         }
@@ -31,20 +31,34 @@ namespace PotionCraft.Content.System
         {
             string lang = null;
             string key = "Mods.PotionCraft." + path.Replace(" ", "");
-            lang += Language.GetTextValue(key,arg0);
+            lang += Language.GetTextValue(key, arg0);
             return lang.Equals(key) ? null : lang;
         }
 
-        public static string TryGetPurifyText(int count) =>PurifyColor.GetValueOrDefault(count, null)?.Insert(10,"Purified ");
-        
-        public static string TryGetMashUpText(int count) =>MashUpColor.GetValueOrDefault(count, null)?.Insert(10,"MashUp ");
+        public static string TryGetPurifyText(int count) => PurifyColor.GetValueOrDefault(count, null)?.Insert(10, "Purified ");
 
-        public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count, null)?.Insert(10, "MashUp ");
+        public static string TryGetMashUpText(int count) => MashUpColor.GetValueOrDefault(count, null)?.Insert(10, "MashUp ");
 
-        public static string GetBracketText(int count,bool mashup=false,bool right = false)
+        public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count, null)?.Insert(10, " And ");
+
+        public static void LocationPotionText(ref string name)
         {
-            string bracket = right ? "(": ")";
-            return mashup ? PurifyColor.GetValueOrDefault(count, null)?.Insert(10, bracket) : MashUpColor.GetValueOrDefault(count, null)?.Insert(10, bracket);
+            name = LanguageManager.Instance.ActiveCulture.Name switch
+            {
+                "zh-Hans" => name.Replace("Purified ", TryGetLanguagValue("Craft.Purified"))
+                                 .Replace(" And ", TryGetLanguagValue("Craft.And"))
+                                 .Replace("MashUp ", TryGetLanguagValue("Craft.MashUp")),
+                "en-US" => name.Replace("纯化", TryGetLanguagValue("Craft.Purified"))
+                               .Replace("和", TryGetLanguagValue("Craft.And"))
+                               .Replace("组合", TryGetLanguagValue("Craft.MashUp")),
+                _ => name,
+            };
+        }
+
+        public static string GetBracketText(int count, bool mashup = false, bool right = false)
+        {
+            string bracket = right ? "(" : ")";
+            return MashUpColor.GetValueOrDefault(count, null)?.Insert(10, bracket);
         }
 
         // 判断是否为中文字符
@@ -66,13 +80,22 @@ namespace PotionCraft.Content.System
             }
             return parts;
         }
+        private static int CalculateWidth(string text)
+        {
+            int width = 0;
+            foreach (var c in text)
+            {
+                width += IsChineseCharacter(c) ? 2 : 1;
+            }
+            return width;
+        }
         /// <summary>
         /// 智能换行
         /// </summary>
         /// <param name="text"></param>
         /// <param name="length"></param>
         /// <returns>Item1:包含颜色的字符串；Item2：总行数</returns>
-        public static (string,int) WrapTextWithColors(string text, int length)
+        public static (string, int) WrapTextWithColors(string text, int length)
         {
             var parsedParts = ParseText(text);
             var lines = new List<string>();
@@ -81,26 +104,22 @@ namespace PotionCraft.Content.System
             int linecount = 1;
             foreach (var (colorCode, partText) in parsedParts)
             {
-                int partWidth = 0;
-                foreach (var c in partText)
-                {
-                    partWidth += IsChineseCharacter(c) ? 2 : 1;
-                }
+                int partWidth = CalculateWidth(partText);
                 if (currentWidth + partWidth > length)
                 {
-                    lines.Add(currentLine.ToString());
+                    lines.Add(currentLine.ToString().Trim());
                     currentLine.Clear();
                     currentWidth = 0;
                     linecount++;
                 }
-                currentLine.Append($"[c/{colorCode}:{partText}] ");
+                currentLine.Append($"[c/{colorCode}:{partText}]");
                 currentWidth += partWidth;
             }
             if (currentLine.Length > 0)
             {
                 lines.Add(currentLine.ToString().Trim());
             }
-            return (string.Join("\n", lines),linecount);
+            return (string.Join("\n", lines), linecount);
         }
 
         public static string DeleteTextColor(string msg)
@@ -114,7 +133,7 @@ namespace PotionCraft.Content.System
             }
             return result;
         }
-        
+
         public static string TryGetPotionText(int buffid)
         {
             var text = TModLoader.PotionColor.GetValueOrDefault(buffid, null);
@@ -151,16 +170,16 @@ namespace PotionCraft.Content.System
                 {
                     case "purified":
                     case "bowling":
-                    {
-                        string operand = stack.Pop();
+                        {
+                            string operand = stack.Pop();
 
-                        bool needParens = operand.Contains("and") || operand.Contains("purified") || operand.Contains("boling");
+                            bool needParens = operand.Contains("and") || operand.Contains("purified") || operand.Contains("boling");
 
-                        string expr = needParens ? $"({operand})" : operand;
+                            string expr = needParens ? $"({operand})" : operand;
 
-                        stack.Push(token == "purified" ? $"purified({expr})" : $"{expr}bowling");
-                        break;
-                    }
+                            stack.Push(token == "purified" ? $"purified({expr})" : $"{expr}bowling");
+                            break;
+                        }
                     case "and":
                         stack.Push($"{stack.Pop()} and {stack.Pop()}");
                         break;
