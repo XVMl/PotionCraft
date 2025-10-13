@@ -22,10 +22,33 @@ namespace PotionCraft.Content.Items
     public class BasePotion : ModItem
     {
         public override string Texture => Path.Items + "Style1";
+
         /// <summary>
         /// 将会显示的药剂名
         /// </summary>
-        public string PotionName = "";
+        public string PotionName
+        {
+            get
+            {
+                if (CanCustomName) 
+                    return $"{CustomName}{BaseName}";
+                return LanguageManager.Instance.ActiveCulture.Name switch
+                {
+                    "zh-Hans" => LocationTranslate(_Name,false)+BaseName,
+                    _ => LocationTranslate(_Name)+BaseName,
+                };
+            }
+        }
+        /// <summary>
+        /// 用药水名、+和@记录的类似于后缀表达式的特殊名称，用于快速比对和本地化翻译
+        /// </summary>
+        public string _Name;
+        /// <summary>
+        /// 
+        /// </summary>
+        public string CustomName;
+
+        public bool CanCustomName;
         /// <summary>
         /// 精炼的次数，用于改变字体颜色
         /// </summary>
@@ -49,7 +72,7 @@ namespace PotionCraft.Content.Items
         /// <summary>
         /// 用于记录药剂的药水数据
         /// </summary>
-        public Dictionary<int, PotionData> PotionDictionary = new();
+        public Dictionary<string, PotionData> PotionDictionary = new();
         /// <summary>
         /// 用于记录药剂的绘制列表
         /// </summary>
@@ -58,7 +81,6 @@ namespace PotionCraft.Content.Items
         /// 用于记录药剂的绘制列表
         /// </summary>
         public List<int> DrawCountList = new();
-        //TODO 添加文本的记录
         /// <summary>
         /// 用于记录展示于物品栏上方药剂的名称文本
         /// </summary>
@@ -66,7 +88,7 @@ namespace PotionCraft.Content.Items
         /// <summary>
         /// 用于记录药剂的基液名称
         /// </summary>
-        public string BaseName;
+        public string BaseName = TryGetLanguagValue("BaseName.0");
         /// <summary>
         /// 用于记录药剂的使用方式
         /// </summary>
@@ -116,13 +138,13 @@ namespace PotionCraft.Content.Items
         {
             var potiondatalist = PotionDictionary.Select(potiondata => new TagCompound()
             {
-                { "BuffID", potiondata.Value.BuffId }, { "BuffTime", potiondata.Value.BuffTime },
+                { "BuffName", potiondata.Value.BuffName }, { "BuffTime", potiondata.Value.BuffTime },
                 { "Counts", potiondata.Value.Counts }, { "ItemId", potiondata.Value.ItemId }
             }).ToList();
             tag["PotionData"] = potiondatalist;
             tag["DrawPotionList"] = DrawPotionList;
             tag["DrawCountList"] = DrawCountList;
-            tag["PotionName"] = PotionName;
+            tag["CustomName"] = CustomName;
             tag["Signatures"] = Signatures;
             tag["PurifyingCount"] = PurifyingCount;
             tag["MashUpCount"] = MashUpCount;
@@ -130,6 +152,8 @@ namespace PotionCraft.Content.Items
             tag["PotionUseSound"] = PotionUseSounds;
             tag["IsPackage"] = IsPackage;
             tag["IconID"] = IconID;
+            tag["CanCustomName"] = CanCustomName;
+            
         }
 
         public override void LoadData(TagCompound tag)
@@ -137,23 +161,26 @@ namespace PotionCraft.Content.Items
             var potiondatalist = tag.GetList<TagCompound>("PotionData");
             foreach (var potion in potiondatalist)
             {
-                PotionDictionary.Add(potion.Get<int>("BuffID"),
-                    new PotionData(potion.GetInt("BuffID"),
-                        potion.GetInt("ItemId"),
+                PotionDictionary.Add(potion.Get<string>("BuffName"),
+                    new PotionData(
+                        potion.GetString("BuffName"),
+                            potion.GetInt("ItemID"),
                         potion.GetInt("Counts"),
-                        potion.GetInt("BuffTime")));
+                        potion.GetInt("BuffTime"),
+                        potion.GetInt("BuffID"))
+                    );
             }
             DrawPotionList = tag.GetList<int>("DrawPotionList").ToList();
             DrawCountList = tag.GetList<int>("DrawCountList").ToList();
             Signatures = tag.GetString("Signatures");
-            PotionName = tag.GetString("PotionName");
+            CustomName = tag.GetString("CustomName");
             PurifyingCount = tag.Get<int>("PurifyingCount");
             MashUpCount = tag.Get<int>("MashUpCount");
             PotionUseStyle = tag.Get<int>("PotionUseStyle");
             PotionUseSounds = tag.Get<int>("PotionUseSound");
             IsPackage = tag.Get<bool>("IsPackage");
+            CanCustomName = tag.Get<bool>("CanCustomName");
             IconID = tag.Get<int>("IconID");
-            LocationPotionText(ref PotionName);
             if (IconID == -1) IconID = Item.type;
             if (PotionUseSounds == 0) PotionUseSounds = 1;
             Item.UseSound = (SoundStyle)ItemSound.Invoke(null, [PotionUseSounds]);
@@ -211,7 +238,7 @@ namespace PotionCraft.Content.Items
             Item.useStyle = PotionUseStyle;
             foreach (var item in PotionDictionary)
             {
-                player.AddBuff(item.Key, item.Value.BuffTime);
+                player.AddBuff(item.Value.BuffId, item.Value.BuffTime);
             }
             return true;
         }

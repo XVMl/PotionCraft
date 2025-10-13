@@ -9,6 +9,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using static PotionCraft.Content.System.ColorfulText.OperatorColorText;
 using static PotionCraft.Content.System.ColorfulText.PotionColorText;
+using static PotionCraft.Content.System.AutoLoaderSystem.JsonLoader;
 
 namespace PotionCraft.Content.System
 {
@@ -35,12 +36,15 @@ namespace PotionCraft.Content.System
             return lang.Equals(key) ? null : lang;
         }
 
-        public static string TryGetPurifyText(int count) => PurifyColor.GetValueOrDefault(count, null)?.Insert(10, "Purified ");
+        public static string TryGetPurifyText(int count) => PurifyColor.GetValueOrDefault(count.ToString(), null)?.Insert(10, "Purified ");
 
-        public static string TryGetMashUpText(int count) => MashUpColor.GetValueOrDefault(count, null)?.Insert(10, "MashUp ");
+        public static string TryGetMashUpText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), null)?.Insert(10, "MashUp ");
 
-        public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count, null)?.Insert(10, " And ");
+        public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), null)?.Insert(10, " And ");
 
+        public static string TryGetBuffName(string name, bool space = false) => ColorfulTexts["BuffName"]
+            .GetValueOrDefault(name, null)?.Insert(10, $"{name}{(space ? " " : "")}");
+        
         public static void LocationPotionText(ref string name)
         {
             name = LanguageManager.Instance.ActiveCulture.Name switch
@@ -55,10 +59,10 @@ namespace PotionCraft.Content.System
             };
         }
 
-        public static string GetBracketText(int count, bool mashup = false, bool right = false)
+        public static string TryGetBracketText(int count,bool right = false)
         {
-            string bracket = right ? "(" : ")";
-            return MashUpColor.GetValueOrDefault(count, null)?.Insert(10, bracket);
+            string bracket = !right ? "(" : ")";
+            return MashUpColor.GetValueOrDefault(count.ToString(), null)?.Insert(10, bracket);
         }
 
         // 判断是否为中文字符
@@ -133,12 +137,7 @@ namespace PotionCraft.Content.System
             }
             return result;
         }
-
-        public static string TryGetPotionText(int buffid)
-        {
-            var text = TModLoader.PotionColor.GetValueOrDefault(buffid, null);
-            return text?.Insert(10, Lang.GetBuffName(buffid));
-        }
+        
         public static List<string> GenerateRandomPostfix()
         {
             Random random = new Random();
@@ -161,36 +160,34 @@ namespace PotionCraft.Content.System
             return experssion;
         }
 
-        public static string ConverToInfix(List<string> postlist)
+        public static string LocationTranslate(string _name,bool bracket = true)
         {
+            string[] parts = _name.Split(' ');
             Stack<string> stack = new();
-            foreach (string token in postlist)
+            var mashupconunt = 1;
+            var purifycount = 1;
+            foreach (string token in parts)
             {
                 switch (token)
                 {
-                    case "purified":
-                    case "bowling":
-                        {
-                            string operand = stack.Pop();
-
-                            bool needParens = operand.Contains("and") || operand.Contains("purified") || operand.Contains("boling");
-
-                            string expr = needParens ? $"({operand})" : operand;
-
-                            stack.Push(token == "purified" ? $"purified({expr})" : $"{expr}bowling");
-                            break;
-                        }
-                    case "and":
-                        stack.Push($"{stack.Pop()} and {stack.Pop()}");
+                    case "+":
+                    {
+                        stack.Push(bracket
+                            ? $"{TryGetBracketText(mashupconunt)}{TryGetBuffName(stack.Pop())}{TryGetAndText(mashupconunt)}{TryGetBuffName(stack.Pop(),true)}{TryGetBracketText(mashupconunt, true)}{TryGetMashUpText(mashupconunt++)}"
+                            : $"{TryGetBuffName(stack.Pop())}{TryGetAndText(mashupconunt)}{TryGetBuffName(stack.Pop(),true)}{TryGetMashUpText(mashupconunt++)}");
+                        break;
+                    }
+                    case "@":
+                        stack.Push($"{TryGetPurifyText(purifycount++)} ");
                         break;
                     default:
                         stack.Push(token);
                         break;
                 }
             }
-            return stack.Pop();
+            return  string.Join(" ", stack.ToList());
         }
-
-
+        
+        
     }
 }

@@ -1,10 +1,11 @@
 
 namespace PotionCraft.Content.Items;
 
-public class PotionData(int buffId, int itemId, int counts, int buffTime)
+public class PotionData(string buffName, int itemId, int counts, int buffTime,int buffid)
 {
-    public int BuffId = buffId;
+    public string BuffName = buffName;
     public int ItemId = itemId;
     public int Counts = counts;
     public int BuffTime = buffTime;
+    public int  BuffId = buffid;
 }

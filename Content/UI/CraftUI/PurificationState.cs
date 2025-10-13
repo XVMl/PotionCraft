@@ -109,8 +109,7 @@ namespace PotionCraft.Content.UI.CraftUI
                 createdPotion.DrawCountList[i] *= 2;
             }
             createdPotion.PurifyingCount++;
-            createdPotion.PotionName = $"{TryGetPurifyText(Math.Min(12, createdPotion.PurifyingCount))} {createdPotion.PotionName} {createdPotion.BaseName}";
-            LocationPotionText(ref createdPotion.PotionName);
+            createdPotion._Name += "@ ";
         }
 
         public override void LeftClick(UIMouseEvent evt)

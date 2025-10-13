@@ -2,16 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.UI;
-using static PotionCraft.Content.System.LanguageHelper;
 using static PotionCraft.Assets;
 namespace PotionCraft.Content.UI.CraftUI
 {
@@ -110,36 +102,32 @@ namespace PotionCraft.Content.UI.CraftUI
                 createdPotion.DrawCountList.Add(material.DrawCountList[i]);
             }
             createdPotion.MashUpCount += material.MashUpCount+1;
-            createdPotion.PotionName =
-                $"{GetBracketText(Math.Min(12, createdPotion.MashUpCount), right: true)}{createdPotion.PotionName} {TryGetAndText(Math.Min(14, createdPotion.MashUpCount))} {material.PotionName}{GetBracketText(Math.Min(12, createdPotion.MashUpCount))}{createdPotion.BaseName}";
+            createdPotion._Name +=
+                $"{material._Name} +";    
             if (createdPotion.MashUpCount == material.MashUpCount + 1)
-                createdPotion.PotionName = material.PotionName;
-            LocationPotionText(ref createdPotion.PotionName);
+                createdPotion._Name = material._Name;
         }
 
         private void MashUp(Item potion, Item material)
         {
             BasePotion createdPotion = CloneOrCreatPotion(PotionCraftState,potion);
-            createdPotion.PotionDictionary.TryAdd(material.buffType, new PotionData(
-                material.buffType,
+            var name = Lang.GetBuffName(material.buffType);
+            createdPotion.PotionDictionary.TryAdd(name, new PotionData(
+                name,
                  material.type,
                  0,
-                 0
+                 0,
+                material.buffType
             ));
-            createdPotion.PotionDictionary[material.buffType].BuffTime+= material.buffTime;
-            createdPotion.PotionDictionary[material.buffType].Counts++;
+            createdPotion.PotionDictionary[name].BuffTime+= material.buffTime;
+            createdPotion.PotionDictionary[name].Counts++;
             createdPotion.DrawPotionList.Add(material.type);
             createdPotion.DrawCountList.Add(1);
-            createdPotion.PotionName =
-                $"{GetBracketText(Math.Min(12, createdPotion.MashUpCount), right: true)}{createdPotion.PotionName}{TryGetAndText(Math.Min(14, createdPotion.MashUpCount))}{TryGetPotionText(material.buffType)}{GetBracketText(Math.Min(12, createdPotion.MashUpCount))}{TryGetMashUpText(Math.Min(14, createdPotion.MashUpCount))}";
+            createdPotion._Name +=
+                $"{Lang.GetBuffName(material.buffType)} + ";    
             if (createdPotion.MashUpCount == 0)
-                createdPotion.PotionName = TryGetPotionText(material.buffType);
+                createdPotion._Name = $"{Lang.GetBuffName(material.buffType)} ";
             createdPotion.MashUpCount++;
-            Mod instance = ModContent.GetInstance<PotionCraft>();
-            instance.Logger.Error(createdPotion.PotionName);
-            instance.Logger.Error(WrapTextWithColors(createdPotion.PotionName, 30).Item1);
-
-            LocationPotionText(ref createdPotion.PotionName);
         }
 
         public override void LeftClick(UIMouseEvent evt)

@@ -72,11 +72,11 @@ namespace PotionCraft.Content.UI.PotionTooltip
         /// <returns></returns>
         public static bool CheckPotion(BasePotion oldPotion, BasePotion newPotion)
         {
-            if (oldPotion.PotionName != newPotion.PotionName) return false;
+            if (oldPotion._Name != newPotion._Name) return false;
            
             if(oldPotion.PotionDictionary.Count!=newPotion.PotionDictionary.Count) return false;
 
-            return oldPotion.PotionDictionary.All(item => newPotion.PotionDictionary.Any(s => s.Value.BuffId == item.Value.BuffId && s.Value.BuffTime == item.Value.BuffTime));
+            return oldPotion.PotionDictionary.All(item => newPotion.PotionDictionary.Any(s => s.Value.BuffName == item.Value.BuffName && s.Value.BuffTime == item.Value.BuffTime));
         }
 
         public static bool CheckPotion_Item(Item oldPotion,Item newPotion)

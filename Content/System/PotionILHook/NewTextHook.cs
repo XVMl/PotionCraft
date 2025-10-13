@@ -46,7 +46,7 @@ public class NewTextHook:ModSystem
 
         MethodInfo AsPotion = typeof(AutoUIState).GetMethod(nameof(AutoUIState.AsPotion));
 
-        FieldInfo PotionName = typeof(BasePotion).GetField(nameof(Items.BasePotion.PotionName));
+        MethodInfo potionname = typeof(BasePotion).GetProperty(nameof(Items.BasePotion.PotionName)).GetGetMethod()!;
 
         MethodInfo DeleteTextColor = typeof(LanguageHelper).GetMethod(nameof(LanguageHelper.DeleteTextColor));
 
@@ -72,7 +72,7 @@ public class NewTextHook:ModSystem
         cursor.EmitLdloc(11);
         cursor.EmitLdarg1();
         cursor.EmitCall(AsPotion);
-        cursor.EmitLdfld(PotionName);
+        cursor.EmitCall(potionname);
         cursor.EmitCall(DeleteTextColor);
         cursor.EmitStfld(name);
 

@@ -147,7 +147,7 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             PotionCraftState.Potion = potion.Clone();
             BasePotion createdPotion = AsPotion(PotionCraftState.Potion);
-            createdPotion.PotionName = BaseFluidState.BaseFuildInput.Currentvalue;
+            createdPotion.CustomName = BaseFluidState.BaseFuildInput.Currentvalue;
             createdPotion.Signatures =  BaseFluidState.SignaturesInput.Currentvalue;
             if (PotionCraftState.Material.IsAir) return;
             createdPotion.DrawPotionList.Clear();

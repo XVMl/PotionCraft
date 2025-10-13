@@ -33,8 +33,8 @@ internal class DrawMouseOverHook : ModSystem
         
         FieldInfo type = typeof(Item).GetField(nameof(Item.type));
 
-        FieldInfo potionname = typeof(BasePotion).GetField(nameof(BasePotion.PotionName));
-
+        MethodInfo potionname = typeof(BasePotion).GetProperty(nameof(BasePotion.PotionName)).GetGetMethod()!;
+        
         MethodInfo AsPotion = typeof(AutoUIState).GetMethod(nameof(AutoUIState.AsPotion));
 
         FieldInfo item = typeof(Main).GetField(nameof(Main.item));
@@ -62,7 +62,7 @@ internal class DrawMouseOverHook : ModSystem
         cursor.EmitLdloc1();
         cursor.EmitLdelemRef();
         cursor.EmitCall(AsPotion);
-        cursor.EmitLdfld(potionname);
+        cursor.EmitCall(potionname);
         cursor.EmitStloc(5);
     }
 }

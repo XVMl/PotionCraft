@@ -141,11 +141,12 @@ namespace PotionCraft.Content.System
                 createdPotion = AsPotion(crafetstate.CreatedPotion);
                 createdPotion.DrawPotionList.Add(soure.type);
                 createdPotion.DrawCountList.Add(1);
-                createdPotion.PotionDictionary.TryAdd(soure.buffType, new PotionData(
-                    soure.buffType,
+                createdPotion.PotionDictionary.TryAdd(Lang.GetBuffName(soure.buffType), new PotionData(
+                    Lang.GetBuffName(soure.buffType),
                     soure.type,
                     0,
-                    soure.buffTime
+                    soure.buffTime,
+                    soure.buffType
                 ));
             }
             else
@@ -154,10 +155,11 @@ namespace PotionCraft.Content.System
                 createdPotion = AsPotion(crafetstate.CreatedPotion);
                 createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key,
                     v => new PotionData(
-                        v.Value.BuffId,
+                        v.Value.BuffName,
                         v.Value.ItemId,
                         v.Value.Counts,
-                        v.Value.BuffTime
+                        v.Value.BuffTime,
+                        v.Value.BuffId
                 ));
                 createdPotion.DrawPotionList = [.. createdPotion.DrawPotionList];
                 createdPotion.DrawCountList = [.. createdPotion.DrawCountList];
