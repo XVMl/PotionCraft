@@ -39,22 +39,22 @@ public class JsonLoader:ModSystem
     {
         try
         {
-            using var js = new StreamReader(FileStreamText(filetext));
-            var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(js.ReadToEnd());
+            var js = FileStreamText(filetext);
+            var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(js);
             if (!jsonObject.TryGetValue("Type", out object value)) return;
-            string[] operations = ["And", "MashUp", "Purified"];
+            string[] operations = ["And", "MashUp", "Purify"];
             switch (value)
             {
-                case "Operator":
+                case "Operation":
                     foreach (var operation in operations)
                         dict.TryAdd(operation,Activator.CreateInstance(typeof(Dictionary<string,string>),
                             ArrayDictionary(jsonObject, operation) ) as Dictionary<string, string>);
                     break;
-                case "ColorfulText":
+                case "BuffName":
                     dict.TryAdd("BuffName", jsonObject.ToDictionary(k => k.Key, v => v.Value.ToString()));
                     break;
                 case "Materials":
-                    
+                    LoaderItems(jsonObject);
                     break;
                 default:
                     return;
@@ -71,7 +71,7 @@ public class JsonLoader:ModSystem
     {
         try
         {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var path = Main.SavePath;
 
         }
         catch (Exception e)
@@ -92,14 +92,13 @@ public class JsonLoader:ModSystem
                 aDictionary[property.Name] = property.Value.ToString();
             }
         }
-
         return aDictionary;
     }
 
     public override void Load()
     {
-        var files =Mod.GetFileNames()
-            .Where( f=> f.StartsWith("Assets/ColorfulText")&& f.EndsWith(".json"));
+        var files = Mod.GetFileNames()
+            .Where( f=> f.StartsWith("Assets")&& f.EndsWith(".json"));
         foreach (var file in files)
         {
             JsonToDictionary(file,ref ColorfulTexts);

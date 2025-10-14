@@ -18,9 +18,9 @@ public class LoaderItemsSystem:ModSystem
     
     public override void Load()
     {
-        foreach (var item in Materials)
-        {
-            Mod.AddContent(new BaseCustomMaterials(item));
-        }
+        //foreach (var item in Materials)
+        //{
+        //    Mod.AddContent(new BaseCustomMaterials(item));
+        //}
     }
 }

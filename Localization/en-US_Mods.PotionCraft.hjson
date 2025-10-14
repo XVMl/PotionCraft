@@ -57,9 +57,9 @@ CustomMaterials: {
 		2: "[c/340773:Magic]"
 	}
 }
-BaseName:{
-    0:"Potion"
-}
+
+BaseName.0: Potion
+
 Craft: {
 	Purified: "Purified "
 	And: " And "

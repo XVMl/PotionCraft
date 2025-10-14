@@ -39,9 +39,6 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         private UIText PotionName;
 
-        //public static MethodInfo ActiveCulture = typeof(LanguageManager).GetProperty("ActiveCulture",BindingFlags.Instance).GetGetMethod();
-
-
         public override void OnInitialize()
         {
             Area = new();
@@ -54,7 +51,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Area.Top.Set(140f, 0f);
             Append(Area);
             PotionIngredients = new(this);
-            PotionIngredients.Top.Set(60, 0);
+            PotionIngredients.Top.Set(30, 0);
             PotionIngredients.Left.Set(0, 0);
             PotionIngredients.Width.Set(350, 0);
             PotionIngredients.Height.Set(500, 0);
@@ -95,7 +92,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             if (pos.Y + y + h > Main.screenHeight)
             {
                 x = 380;
-                y = 20;
+                y = 0;
             }
             Area.Left.Set(pos.X +x, 0); 
             Area.Top.Set(pos.Y + y, 0);
@@ -123,7 +120,10 @@ namespace PotionCraft.Content.UI.PotionTooltip
             PotionName.SetText(data.Item1);
             var height = NameArea.Height.Pixels;
             NameArea.Height.Set(height + MathHelper.Max(0,data.Item2-2)*30, 0);
-            
+            var count = ShowBasePotion.PotionDictionary.Count/2+1;
+            Area.Height.Set(count * 50 + 90, 0);
+            PotionIngredients.Height.Set(count*50+70, 0);
+            PotionIngredients.UIgrid.Height.Set(count * 50 + 70, 0);
         }
 
         public static (string,bool) GetKeybind(ModKeybind key)

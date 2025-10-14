@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using static PotionCraft.Content.System.ColorfulText.OperatorColorText;
 using static PotionCraft.Content.System.ColorfulText.PotionColorText;
 using static PotionCraft.Content.System.AutoLoaderSystem.JsonLoader;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PotionCraft.Content.System
 {
@@ -36,33 +37,24 @@ namespace PotionCraft.Content.System
             return lang.Equals(key) ? null : lang;
         }
 
-        public static string TryGetPurifyText(int count) => PurifyColor.GetValueOrDefault(count.ToString(), null)?.Insert(10, "Purified ");
+        public static string TryGetPurifyText(int count) => PurifyColor.GetValueOrDefault(count.ToString(), new string('*', 10))?
+            .Insert(10, TryGetLanguagValue($"Craft.Purified").Replace("*",""));
+        public static string TryGetMashUpText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), new string('*', 10))?
+            .Insert(10, TryGetLanguagValue($"Craft.MashUp").Replace("*", ""));
 
-        public static string TryGetMashUpText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), null)?.Insert(10, "MashUp ");
-
-        public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), null)?.Insert(10, " And ");
+        public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), new string('*', 10))?
+            .Insert(10, TryGetLanguagValue($"Craft.And").Replace("*", ""));
 
         public static string TryGetBuffName(string name, bool space = false) => ColorfulTexts["BuffName"]
-            .GetValueOrDefault(name, null)?.Insert(10, $"{name}{(space ? " " : "")}");
-        
-        public static void LocationPotionText(ref string name)
-        {
-            name = LanguageManager.Instance.ActiveCulture.Name switch
-            {
-                "zh-Hans" => name.Replace("Purified ", TryGetLanguagValue("Craft.Purified"))
-                                 .Replace(" And ", TryGetLanguagValue("Craft.And"))
-                                 .Replace("MashUp ", TryGetLanguagValue("Craft.MashUp")),
-                "en-US" => name.Replace("纯化", TryGetLanguagValue("Craft.Purified"))
-                               .Replace("和", TryGetLanguagValue("Craft.And"))
-                               .Replace("组合", TryGetLanguagValue("Craft.MashUp")),
-                _ => name,
-            };
-        }
+            .GetValueOrDefault(name, new string('*', 10))?.Insert(10, $"{name}{(space ? " " : "")}".Replace("*", ""));
 
-        public static string TryGetBracketText(int count,bool right = false)
+        public static string LocationPotionText(string text) => TryGetLanguagValue($"Craft.{text}");
+        
+        public static string TryGetBracketText(int count, bool right = false)
         {
             string bracket = !right ? "(" : ")";
-            return MashUpColor.GetValueOrDefault(count.ToString(), null)?.Insert(10, bracket);
+            return MashUpColor.GetValueOrDefault(count.ToString(), new string('*', 10))?
+            .Insert(10, bracket).Replace("*", "");
         }
 
         // 判断是否为中文字符
@@ -137,7 +129,7 @@ namespace PotionCraft.Content.System
             }
             return result;
         }
-        
+
         public static List<string> GenerateRandomPostfix()
         {
             Random random = new Random();
@@ -160,7 +152,7 @@ namespace PotionCraft.Content.System
             return experssion;
         }
 
-        public static string LocationTranslate(string _name,bool bracket = true)
+        public static string LocationTranslate(string _name, bool bracket = true)
         {
             string[] parts = _name.Split(' ');
             Stack<string> stack = new();
@@ -171,23 +163,23 @@ namespace PotionCraft.Content.System
                 switch (token)
                 {
                     case "+":
-                    {
+                        var potion2 = stack.Pop();
+                        var potion1 = stack.Pop();
                         stack.Push(bracket
-                            ? $"{TryGetBracketText(mashupconunt)}{TryGetBuffName(stack.Pop())}{TryGetAndText(mashupconunt)}{TryGetBuffName(stack.Pop(),true)}{TryGetBracketText(mashupconunt, true)}{TryGetMashUpText(mashupconunt++)}"
-                            : $"{TryGetBuffName(stack.Pop())}{TryGetAndText(mashupconunt)}{TryGetBuffName(stack.Pop(),true)}{TryGetMashUpText(mashupconunt++)}");
+                        ? $"{TryGetBracketText(mashupconunt)}{potion1}{TryGetAndText(mashupconunt)}{potion2}{TryGetBracketText(mashupconunt, true)}{TryGetMashUpText(mashupconunt++)}"
+                        : $"{potion1}{TryGetAndText(mashupconunt)}{potion2}{TryGetMashUpText(mashupconunt++)}");
                         break;
-                    }
                     case "@":
                         stack.Push($"{TryGetPurifyText(purifycount++)} ");
                         break;
                     default:
-                        stack.Push(token);
+                        stack.Push(TryGetBuffName(token));
                         break;
                 }
             }
-            return  string.Join(" ", stack.ToList());
+            return string.Join(" ", stack.ToList());
         }
-        
-        
+
+
     }
 }

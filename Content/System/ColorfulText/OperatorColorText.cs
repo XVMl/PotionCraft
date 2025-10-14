@@ -4,7 +4,7 @@ namespace PotionCraft.Content.System.ColorfulText
 {
     public class OperatorColorText
     {
-        public static Dictionary<string, string> PurifyColor => ColorfulTexts["Purified"];
+        public static Dictionary<string, string> PurifyColor => ColorfulTexts["Purify"];
 
         public static Dictionary<string, string> MashUpColor =>ColorfulTexts["MashUp"];
         

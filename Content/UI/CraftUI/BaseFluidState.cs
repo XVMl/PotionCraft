@@ -55,7 +55,7 @@ namespace PotionCraft.Content.UI.CraftUI
             Area.Height.Set(400f, 0);
             Append(Area);
 
-            BaseFuildInput = new(AsPotion(CreatedPotion).PotionName)
+            BaseFuildInput = new("")
             {
                 HAlign = 0.5f,
                 VAlign = 0.65f,
@@ -90,7 +90,7 @@ namespace PotionCraft.Content.UI.CraftUI
             Append(EditorSwitch);
             
             Potionslot = new(this, () => {
-                    BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName + AsPotion(Potion).BaseName;
+                    BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName;
                     SignaturesInput.Currentvalue = AsPotion(Potion).Signatures;
             })
             {
@@ -100,7 +100,7 @@ namespace PotionCraft.Content.UI.CraftUI
             Area.Append(Potionslot);
 
             Materialslot = new(this, () => {
-                    BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName + AsPotion(Potion).BaseName; 
+                    BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName; 
             })
             {
                 HAlign = 0.55f,

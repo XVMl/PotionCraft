@@ -138,8 +138,11 @@ namespace PotionCraft.Content.Items
         {
             var potiondatalist = PotionDictionary.Select(potiondata => new TagCompound()
             {
-                { "BuffName", potiondata.Value.BuffName }, { "BuffTime", potiondata.Value.BuffTime },
-                { "Counts", potiondata.Value.Counts }, { "ItemId", potiondata.Value.ItemId }
+                { "BuffName", potiondata.Value.BuffName },
+                { "ItemID", potiondata.Value.ItemId },
+                { "Counts", potiondata.Value.Counts },
+                { "BuffTime", potiondata.Value.BuffTime },
+                { "BuffID", potiondata.Value.BuffId }, 
             }).ToList();
             tag["PotionData"] = potiondatalist;
             tag["DrawPotionList"] = DrawPotionList;
@@ -153,7 +156,7 @@ namespace PotionCraft.Content.Items
             tag["IsPackage"] = IsPackage;
             tag["IconID"] = IconID;
             tag["CanCustomName"] = CanCustomName;
-            
+            tag["_Name"] = _Name;
         }
 
         public override void LoadData(TagCompound tag)
@@ -164,7 +167,7 @@ namespace PotionCraft.Content.Items
                 PotionDictionary.Add(potion.Get<string>("BuffName"),
                     new PotionData(
                         potion.GetString("BuffName"),
-                            potion.GetInt("ItemID"),
+                        potion.GetInt("ItemID"),
                         potion.GetInt("Counts"),
                         potion.GetInt("BuffTime"),
                         potion.GetInt("BuffID"))
@@ -181,6 +184,7 @@ namespace PotionCraft.Content.Items
             IsPackage = tag.Get<bool>("IsPackage");
             CanCustomName = tag.Get<bool>("CanCustomName");
             IconID = tag.Get<int>("IconID");
+            _Name = tag.GetString("_Name");
             if (IconID == -1) IconID = Item.type;
             if (PotionUseSounds == 0) PotionUseSounds = 1;
             Item.UseSound = (SoundStyle)ItemSound.Invoke(null, [PotionUseSounds]);

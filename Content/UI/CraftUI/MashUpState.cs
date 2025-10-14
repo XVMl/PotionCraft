@@ -114,9 +114,9 @@ namespace PotionCraft.Content.UI.CraftUI
             var name = Lang.GetBuffName(material.buffType);
             createdPotion.PotionDictionary.TryAdd(name, new PotionData(
                 name,
-                 material.type,
-                 0,
-                 0,
+                material.type,
+                0,
+                0,
                 material.buffType
             ));
             createdPotion.PotionDictionary[name].BuffTime+= material.buffTime;
@@ -124,9 +124,9 @@ namespace PotionCraft.Content.UI.CraftUI
             createdPotion.DrawPotionList.Add(material.type);
             createdPotion.DrawCountList.Add(1);
             createdPotion._Name +=
-                $"{Lang.GetBuffName(material.buffType)} + ";    
+                $"{Lang.GetBuffName(material.buffType).Replace(" ", "")} + ";    
             if (createdPotion.MashUpCount == 0)
-                createdPotion._Name = $"{Lang.GetBuffName(material.buffType)} ";
+                createdPotion._Name = $"{Lang.GetBuffName(material.buffType).Replace(" ","")} ";
             createdPotion.MashUpCount++;
         }
 

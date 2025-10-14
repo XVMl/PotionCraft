@@ -58,6 +58,8 @@ CustomMaterials: {
 	}
 }
 
+// BaseName.0: Potion
+
 Craft: {
 	Purified: 纯化
 	And: 和
