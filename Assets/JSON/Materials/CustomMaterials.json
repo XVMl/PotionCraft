@@ -1,2 +1,59 @@
 {
+  "Type": "Materials",
+  "Materials": [
+    {
+      "Name": "Pudding",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 2,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "Jelly",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1.7,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "Lily",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1.65,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "Style2",
+      "Tooltips": "",
+      "BaseType": 3,
+      "NameColor": "",
+      "ScaleSize": 1.5,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "Style3",
+      "Tooltips": "",
+      "BaseType": 3,
+      "NameColor": "",
+      "ScaleSize": 1.5,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "Style4",
+      "Tooltips": "",
+      "BaseType": 3,
+      "NameColor": "",
+      "ScaleSize": 1.5,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    }
+  ]
 }

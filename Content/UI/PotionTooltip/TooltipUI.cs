@@ -89,8 +89,16 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Vector2 pos = Main.MouseScreen+new Vector2(20,20);
             NameArea.Left.Set(pos.X, 0);
             NameArea.Top.Set(pos.Y, 0);
-            Area.Left.Set(pos.X, 0);
-            Area.Top.Set(pos.Y + NameArea.Height.Pixels+20, 0);
+            var h = Area.Height.Pixels + 20;
+            var x = 0;
+            var y = NameArea.Height.Pixels+20;
+            if (pos.Y + y + h > Main.screenHeight)
+            {
+                x = 380;
+                y = 20;
+            }
+            Area.Left.Set(pos.X +x, 0); 
+            Area.Top.Set(pos.Y + y, 0);
             ShowToolTip = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
             if (!ShowToolTip) 
                 return;
@@ -115,13 +123,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             PotionName.SetText(data.Item1);
             var height = NameArea.Height.Pixels;
             NameArea.Height.Set(height + MathHelper.Max(0,data.Item2-2)*30, 0);
-            var top = Area.Top.Pixels;
-            var h = Area.Height.Pixels + 20;
-            if (top + h > Main.screenHeight)
-            {
-                Area.Left.Set(Main.MouseScreen.X + 380, 0);
-                Area.Top.Set(Main.MouseScreen.Y+20,0 );
-            }
+            
         }
 
         public static (string,bool) GetKeybind(ModKeybind key)

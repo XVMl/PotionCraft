@@ -5,8 +5,11 @@ using System.Linq;
 using MonoMod.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PotionCraft.Content.Items;
 using PotionCraft.Content.System.ColorfulText;
+using ReLogic.OS;
 using Stubble.Core.Contexts;
+using Terraria;
 using Terraria.ModLoader;
 using static PotionCraft.Content.System.ColorfulText.PotionColorText;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderItemsSystem;
@@ -20,6 +23,16 @@ public class JsonLoader:ModSystem
     {
         using var reader = new StreamReader(Mod.GetFileStream(filename));
         return reader.ReadToEnd();
+    }
+
+    private void LoaderItems(Dictionary<string, object> jsonObject)
+    {
+        var array = jsonObject["Materials"] as JArray;
+        foreach (var item in array)
+        {
+            var data = JsonConvert.DeserializeObject<MaterialData>(item.ToString());
+            Mod.AddContent(new BaseCustomMaterials(data));
+        }
     }
     
     private void JsonToDictionary(string filetext,ref Dictionary<string, Dictionary<string, string>> dict)
@@ -40,6 +53,9 @@ public class JsonLoader:ModSystem
                 case "ColorfulText":
                     dict.TryAdd("BuffName", jsonObject.ToDictionary(k => k.Key, v => v.Value.ToString()));
                     break;
+                case "Materials":
+                    
+                    break;
                 default:
                     return;
                 
@@ -51,6 +67,18 @@ public class JsonLoader:ModSystem
         }
     }
 
+    public void LoadCustumSetting()
+    {
+        try
+        {
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
     private static Dictionary<string, string> ArrayDictionary(Dictionary<string, object> jsonObject,string key)
     {
         if (!jsonObject.TryGetValue(key, out _)) return null;
