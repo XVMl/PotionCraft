@@ -42,11 +42,11 @@ namespace PotionCraft.Content.Items
         /// <summary>
         /// 用药水名、+和@记录的类似于后缀表达式的特殊名称，用于快速比对和本地化翻译
         /// </summary>
-        public string _Name;
+        public string _Name="";
         /// <summary>
         /// 
         /// </summary>
-        public string CustomName;
+        public string CustomName="";
 
         public bool CanCustomName;
         /// <summary>
@@ -244,6 +244,7 @@ namespace PotionCraft.Content.Items
             {
                 player.AddBuff(item.Value.BuffId, item.Value.BuffTime);
             }
+            Main.NewText(CustomName);
             return true;
         }
 

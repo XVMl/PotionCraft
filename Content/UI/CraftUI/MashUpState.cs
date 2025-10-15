@@ -62,8 +62,8 @@ namespace PotionCraft.Content.UI.CraftUI
 
             mashupbutton = new(this)
             {
-                VAlign = 0.0f,
-                HAlign = 0.0f,
+                VAlign = 0.5f,
+                HAlign = 0.5f,
             };
             Append(mashupbutton);
         }

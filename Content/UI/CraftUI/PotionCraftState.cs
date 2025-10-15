@@ -94,7 +94,8 @@ namespace PotionCraft.Content.UI.CraftUI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(UITexture(TexturePath).Value, GetDimensions().ToRectangle(), Color.White);
+            var tex = UITexture(TexturePath).Value;
+            spriteBatch.Draw(tex, GetDimensions().ToRectangle().TopLeft(),Color.White);
             if (PotionCraftState.Potion.IsAir) return;
             Main.inventoryScale = 2.30f;
             ItemSlot.Draw(spriteBatch, ref PotionCraftState.Potion, 21, GetDimensions().Position());

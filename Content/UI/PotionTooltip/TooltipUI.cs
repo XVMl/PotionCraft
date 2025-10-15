@@ -116,6 +116,9 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 "en-US" => 35,
                 _ => 40,
             };
+            Main.NewText(ShowBasePotion.PotionName);
+            //ModContent.GetInstance<PotionCraft>().Logger.Debug(ShowBasePotion.PotionName);
+            //ModContent.GetInstance<PotionCraft>().Logger.Debug(ShowBasePotion._Name);
             var data = WrapTextWithColors(ShowBasePotion.PotionName, linetextnum);
             PotionName.SetText(data.Item1);
             var height = NameArea.Height.Pixels;

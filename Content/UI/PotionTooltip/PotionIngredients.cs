@@ -14,7 +14,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
-
+using static PotionCraft.Content.System.LanguageHelper;
 namespace PotionCraft.Content.UI.PotionTooltip
 {
     public class PotionIngredients:PotionElement<TooltipUI>
@@ -66,11 +66,12 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Height.Set(50, 0);
             IngredientType = ingredientType;
             Count = count;
-            IngredientTime = new("")
+            IngredientTime = new("",.9f)
             {
                 HAlign = 0.05f,
                 VAlign = 0.05f
             };
+
             Main.instance.LoadItem(IngredientType);
             IngredientTime.Width.Set(100, 0);
             IngredientTime.Height.Set(30, 0);
@@ -81,8 +82,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
         {
             if (!PotionCraftModPlayer.PotionCraftKeybind.Current)
                 return;
-            Utils.DrawBorderString(spriteBatch, Count.ToString(), GetDimensions().ToRectangle().TopLeft() + new Vector2(30, 25), Color.White);
-            Utils.DrawBorderString(spriteBatch, Lang.GetItemName(IngredientType).Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(55, 15), Color.White);
+            Utils.DrawBorderString(spriteBatch, Count.ToString(), GetDimensions().ToRectangle().TopLeft() + new Vector2(30, 25), Deafult);
+            Utils.DrawBorderString(spriteBatch, Lang.GetItemName(IngredientType).Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(55, 15), Deafult);
             spriteBatch.Draw(TextureAssets.Item[IngredientType].Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(20, 25), null, Color.White, 0, TextureAssets.Item[IngredientType].Value.Size() / 2, 1f, 0, 0);
 
         }

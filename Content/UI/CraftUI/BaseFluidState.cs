@@ -15,6 +15,8 @@ using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
 using Terraria.Audio;
 using static PotionCraft.Content.System.LanguageHelper;
+using Luminance.Common.Utilities;
+using static PotionCraft.Assets;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BaseFluidState: AutoUIState
@@ -25,8 +27,6 @@ namespace PotionCraft.Content.UI.CraftUI
         private PotionSlot<BaseFluidState> Potionslot;
 
         private MaterialSlot<BaseFluidState> Materialslot;
-
-        private CreatedPotionSlot<BaseFluidState> CreatedPotionSlot;
 
         public BaseFuildInput BaseFuildInput;
 
@@ -42,17 +42,15 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void OnInitialize()
         {
-            Width.Set(920, 0);
-            Height.Set(640, 0);
             HAlign = 0.5f;
             VAlign = 0.5f;
             Area = new UIElement()
             {
-                HAlign = 0.2f,
-                VAlign = 0.3f,
+                HAlign = 0.5f,
+                VAlign = 0.5f,
             };
-            Area.Width.Set(400f, 0);
-            Area.Height.Set(400f, 0);
+            Area.Width.Set(312f, 0);
+            Area.Height.Set(429f, 0);
             Append(Area);
 
             BaseFuildInput = new("")
@@ -62,7 +60,7 @@ namespace PotionCraft.Content.UI.CraftUI
             };
             Append(BaseFuildInput);
 
-            SignaturesInput = new(AsPotion(CreatedPotion).Signatures)
+            SignaturesInput = new("")
             {
                 HAlign = 1f,
                 VAlign = 0.65f,
@@ -71,6 +69,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
             AutoUseSwitch = new (this,"AutoUse",()=>
             {
+                if (Potion.ModItem is not BasePotion) return;
                 AsPotion(Potion).AutoUse = AutoUseSwitch.Switchvalue;
             })
             {
@@ -81,6 +80,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
             EditorSwitch = new BaseFuildSwitch(this,"Editor",()=>
             {
+                if (Potion.ModItem is not BasePotion) return;
                 AsPotion(Potion).EditorName = EditorSwitch.Switchvalue ? EditorSwitch.SwitchText : "";
             })
             {
@@ -90,31 +90,26 @@ namespace PotionCraft.Content.UI.CraftUI
             Append(EditorSwitch);
             
             Potionslot = new(this, () => {
-                    BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName;
-                    SignaturesInput.Currentvalue = AsPotion(Potion).Signatures;
+                if (Potion.ModItem is not BasePotion) return;
+                BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName;
+                SignaturesInput.Currentvalue = AsPotion(Potion).Signatures;
             })
             {
-                HAlign = 0.45f,
-                VAlign = 0.5f,
+                HAlign = 0.2f,
+                VAlign = 0.45f,
+                TexturePath="Pixel"
             };
             Area.Append(Potionslot);
 
             Materialslot = new(this, () => {
-                    BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName; 
+                if (Potion.ModItem is not BasePotion) return;
+                BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName; 
             })
             {
                 HAlign = 0.55f,
                 VAlign = 0.5f,
             };
-            Area.Append(Materialslot);
 
-            CreatedPotionSlot = new(this)
-            {
-                HAlign = 0.5f,
-                VAlign = 0.3f,
-            };
-            Area.Append(CreatedPotionSlot);
-            
             BaseFuildButtun = new(this)
             {
                 HAlign = 0.5f,
@@ -126,8 +121,15 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void Update(GameTime gameTime)
         {
+            if (Area.IsMouseHovering)
+                Main.LocalPlayer.mouseInterface = true;   
             BaseFuildInput.Update(gameTime);
-            
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(UITexture("BaseFluid").Value, Area.GetDimensions().ToRectangle(), Color.White);
+            base.Draw(spriteBatch);
         }
 
     }
@@ -137,7 +139,7 @@ namespace PotionCraft.Content.UI.CraftUI
         private BaseFluidState BaseFluidState;
         public BaseFuildButtun(BaseFluidState baseFluidState)
         {
-            this.BaseFluidState = baseFluidState;
+            BaseFluidState = baseFluidState;
             PotionCraftState = baseFluidState;
             Width.Set(100f, 0);
             Height.Set(32f, 0);
@@ -145,14 +147,15 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private void ChangBaseFluid(Item potion)
         {
-            PotionCraftState.Potion = potion.Clone();
             BasePotion createdPotion = AsPotion(PotionCraftState.Potion);
-            createdPotion.CustomName = BaseFluidState.BaseFuildInput.Currentvalue;
+            createdPotion.CustomName = "[c/AA1AAA:A<LDC#]";
+            createdPotion.CanCustomName = true;
             createdPotion.Signatures =  BaseFluidState.SignaturesInput.Currentvalue;
+            Main.NewText("!!!!");
             if (PotionCraftState.Material.IsAir) return;
             createdPotion.DrawPotionList.Clear();
-            createdPotion.DrawPotionList.Add(PotionCraftState.Material.type);
             createdPotion.DrawCountList.Clear();
+            createdPotion.DrawPotionList.Add(PotionCraftState.Material.type);
             createdPotion.DrawCountList.Add(1);
             createdPotion.BaseName =PotionCraftState.Material.Name;
             if (PotionCraftState.Material.ModItem is not BaseCustomMaterials) return;
@@ -170,6 +173,13 @@ namespace PotionCraft.Content.UI.CraftUI
             if (PotionCraftState.Potion.IsAir) return;
             ChangBaseFluid(PotionCraftState.Potion);
         }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Assets.UI.Button, GetDimensions().ToRectangle(), Color.White);
+            base.Draw(spriteBatch);
+        }
+
     }
 
     public class BaseFuildInput:PotionElement<BaseFluidState>

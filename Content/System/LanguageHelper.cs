@@ -11,11 +11,28 @@ using static PotionCraft.Content.System.ColorfulText.OperatorColorText;
 using static PotionCraft.Content.System.ColorfulText.PotionColorText;
 using static PotionCraft.Content.System.AutoLoaderSystem.JsonLoader;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Xna.Framework;
 
 namespace PotionCraft.Content.System
 {
     public class LanguageHelper
     {
+        public static readonly Color Deafult = new(234, 205, 143);
+
+        public static readonly string Deafult_Hex = "[c/EACD8F:]";
+
+        public static float Scale_location
+        {
+            get
+            {
+                return LanguageManager.Instance.ActiveCulture.Name switch
+                {
+                    "zhn-Hans" => 1f,
+                    "en-US" => .85f,
+                    _ => .8f
+                };
+            }
+        }
         /// <summary>
         /// 尝试从.hjson获取文本，没有则返回空
         /// </summary>
@@ -37,24 +54,26 @@ namespace PotionCraft.Content.System
             return lang.Equals(key) ? null : lang;
         }
 
-        public static string TryGetPurifyText(int count) => PurifyColor.GetValueOrDefault(count.ToString(), new string('*', 10))?
-            .Insert(10, TryGetLanguagValue($"Craft.Purified").Replace("*",""));
-        public static string TryGetMashUpText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), new string('*', 10))?
-            .Insert(10, TryGetLanguagValue($"Craft.MashUp").Replace("*", ""));
+        public static string TryGetPurifyText(int count) => PurifyColor.GetValueOrDefault(count.ToString(), Deafult_Hex)?
+            .Insert(10, TryGetLanguagValue($"Craft.Purified"));
+        public static string TryGetMashUpText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), Deafult_Hex)?
+            .Insert(10, TryGetLanguagValue($"Craft.MashUp"));
 
-        public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), new string('*', 10))?
-            .Insert(10, TryGetLanguagValue($"Craft.And").Replace("*", ""));
+        public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), Deafult_Hex)?
+            .Insert(10, TryGetLanguagValue($"Craft.And"));
 
         public static string TryGetBuffName(string name, bool space = false) => ColorfulTexts["BuffName"]
-            .GetValueOrDefault(name, new string('*', 10))?.Insert(10, $"{name}{(space ? " " : "")}".Replace("*", ""));
+            .GetValueOrDefault(name, Deafult_Hex).Insert(10, $"{name}{(space ? " " : "")}");
 
         public static string LocationPotionText(string text) => TryGetLanguagValue($"Craft.{text}");
-        
+
+        public static string RGBToHex(Color color) => color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+
         public static string TryGetBracketText(int count, bool right = false)
         {
             string bracket = !right ? "(" : ")";
-            return MashUpColor.GetValueOrDefault(count.ToString(), new string('*', 10))?
-            .Insert(10, bracket).Replace("*", "");
+            return MashUpColor.GetValueOrDefault(count.ToString(), Deafult_Hex)?
+            .Insert(10, bracket);
         }
 
         // 判断是否为中文字符
