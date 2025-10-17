@@ -49,8 +49,8 @@ namespace PotionCraft.Content.UI.CraftUI
                 HAlign = 0.5f,
                 VAlign = 0.5f,
             };
-            Area.Width.Set(312f, 0);
-            Area.Height.Set(429f, 0);
+            Area.Width.Set(712f, 0);
+            Area.Height.Set(536f, 0);
             Append(Area);
 
             BaseFuildInput = new("")
@@ -128,7 +128,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(UITexture("BaseFluid").Value, Area.GetDimensions().ToRectangle(), Color.White);
+            spriteBatch.Draw(UITexture("BaseFluid").Value, Area.GetDimensions().ToRectangle().TopLeft(), Color.White);
             base.Draw(spriteBatch);
         }
 

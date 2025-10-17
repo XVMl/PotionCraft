@@ -63,7 +63,7 @@ CustomMaterials: {
 Craft: {
 	Purified: 纯化
 	And: 和
-	MashUp: 组合
+	MashUp: 复合
 }
 
 Keybinds.ExtraList.DisplayName: Extra List

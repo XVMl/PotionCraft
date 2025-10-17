@@ -3,10 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
+using ReLogic.Graphics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
@@ -43,10 +45,10 @@ namespace PotionCraft.Content.UI.PotionTooltip
         {
             Area = new();
             NameArea = new();
-            NameArea.Width.Set(363f, 0f);
+            NameArea.Width.Set(360f, 0f);
             NameArea.Height.Set(123f, 0f);
             Append(NameArea);
-            Area.Width.Set(363f, 0f);
+            Area.Width.Set(360f, 0f);
             Area.Height.Set(510f, 0f);
             Area.Top.Set(140f, 0f);
             Append(Area);
@@ -116,9 +118,6 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 "en-US" => 35,
                 _ => 40,
             };
-            Main.NewText(ShowBasePotion.PotionName);
-            //ModContent.GetInstance<PotionCraft>().Logger.Debug(ShowBasePotion.PotionName);
-            //ModContent.GetInstance<PotionCraft>().Logger.Debug(ShowBasePotion._Name);
             var data = WrapTextWithColors(ShowBasePotion.PotionName, linetextnum);
             PotionName.SetText(data.Item1);
             var height = NameArea.Height.Pixels;
@@ -127,6 +126,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Area.Height.Set(count * 50 + 90, 0);
             PotionIngredients.Height.Set(count*50+70, 0);
             PotionIngredients.UIgrid.Height.Set(count * 50 + 70, 0);
+            var v3 = FontAssets.MouseText.Value.DefaultCharacterData.Kerning;
         }
 
         public static (string,bool) GetKeybind(ModKeybind key)
@@ -173,24 +173,24 @@ namespace PotionCraft.Content.UI.PotionTooltip
             if (!PotionCraftModPlayer.PotionCraftKeybind.Current) 
                 return;
             var AreaRectangle = Area.GetDimensions().ToRectangle();
-            var height = AreaRectangle.Height-68;
-            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y, 363, 40), new(0, 0, 363, 40), Color.White);
+            var height = AreaRectangle.Height-96;
+            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y, 360, 48), new(0, 0, 360, 48), Color.White);
             for (; ; )
             {
                 switch (height)
                 {
                     case > 440:
-                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y + 40 + (int)Area.Height.Pixels - 68 - height, 363, 440), new(0, 40, 363, 440), Color.White);
+                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y + 48 + (int)Area.Height.Pixels - 96 - height, 360, 440), new(0, 48, 360, 440), Color.White);
                         height -= 440;
                         break;
                     case > 0:
-                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y + 40 + (int)Area.Height.Pixels - 68 - height, 363, height), new(0, 40, 363, height), Color.White);
+                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y + 48 + (int)Area.Height.Pixels - 96 - height, 360, height), new(0, 48, 360, height), Color.White);
                         height = 0;
                         break;
                 }
                 if (height == 0) break;
             }
-            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y + AreaRectangle.Height-28, 363, 28), new(0, 482, 363, 28), Color.White);
+            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y + AreaRectangle.Height-48, 360, 48), new(0, 488, 360, 48), Color.White);
         }
     }
 }

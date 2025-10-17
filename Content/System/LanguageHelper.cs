@@ -12,14 +12,15 @@ using static PotionCraft.Content.System.ColorfulText.PotionColorText;
 using static PotionCraft.Content.System.AutoLoaderSystem.JsonLoader;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Xna.Framework;
+using Terraria.GameContent;
 
 namespace PotionCraft.Content.System
 {
     public class LanguageHelper
     {
-        public static readonly Color Deafult = new(234, 205, 143);
+        public static readonly Color Deafult = new(215, 193, 147);
 
-        public static readonly string Deafult_Hex = "[c/EACD8F:]";
+        public static readonly string Deafult_Hex = "[c/D7C193:]";
 
         public static float Scale_location
         {
@@ -169,6 +170,12 @@ namespace PotionCraft.Content.System
                 experssion.Insert(random.Next(1, experssion.Count + 1), oper);
             }
             return experssion;
+        }
+
+        public static (string,int) WrapText(string text)
+        {
+            string[] parts = text.Split(' ');
+            return (text.Replace(" ", "\n"), parts.Length);
         }
 
         public static string LocationTranslate(string _name, bool bracket = true)

@@ -12,7 +12,6 @@ using Stubble.Core.Contexts;
 using Terraria;
 using Terraria.ModLoader;
 using static PotionCraft.Content.System.ColorfulText.PotionColorText;
-using static PotionCraft.Content.System.AutoLoaderSystem.LoaderItemsSystem;
 namespace PotionCraft.Content.System.AutoLoaderSystem;
 
 public class JsonLoader:ModSystem

@@ -24,14 +24,13 @@ namespace PotionCraft.Content.UI.PotionTooltip
         public PotionIngredients(TooltipUI tooltipUI)
         {
             PotionCraftState = null;
-            //Width.Set(200, 0);
-            //Height.Set(200, 0);
             UIgrid = new UIGrid()
             {
+                OverflowHidden = true,
             };
             UIgrid.Width.Set(350, 0);
             UIgrid.Height.Set(320, 0);
-            UIgrid.PaddingLeft = 20;
+            UIgrid.PaddingLeft = 30;
             UIgrid.PaddingTop = 10;
             Append(UIgrid);
         }
@@ -41,7 +40,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             PotionCraftState = tooltipUI;
             if (PotionCraftState == null) return;
             BasePotion basePotion = AsPotion(item);
-            foreach (var ingredientElement in basePotion.PotionDictionary.Select(ingredient => new IngredientElement(ingredient.Value.ItemId,ingredient.Value.Counts)))
+            foreach (var ingredientElement in basePotion.PotionDictionary.Select(ingredient => new IngredientElement(ingredient.Value.BuffId, ingredient.Value.ItemId,ingredient.Value.Counts)))
             {
                 UIgrid.Add(ingredientElement);
                 UIgrid.RecalculateChildren();
@@ -59,11 +58,12 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         private UIText IngredientTime;
 
-        private UIImage IngredientImage;
-        public IngredientElement(int ingredientType,int count)
+        private int IngredientId;
+        public IngredientElement(int BuffId, int ingredientType,int count)
         {
             Width.Set(150, 0);
             Height.Set(50, 0);
+            IngredientId = BuffId;
             IngredientType = ingredientType;
             Count = count;
             IngredientTime = new("",.9f)
@@ -71,7 +71,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 HAlign = 0.05f,
                 VAlign = 0.05f
             };
-
+            OverflowHidden = true;
             Main.instance.LoadItem(IngredientType);
             IngredientTime.Width.Set(100, 0);
             IngredientTime.Height.Set(30, 0);
@@ -82,8 +82,16 @@ namespace PotionCraft.Content.UI.PotionTooltip
         {
             if (!PotionCraftModPlayer.PotionCraftKeybind.Current)
                 return;
-            Utils.DrawBorderString(spriteBatch, Count.ToString(), GetDimensions().ToRectangle().TopLeft() + new Vector2(30, 25), Deafult);
-            Utils.DrawBorderString(spriteBatch, Lang.GetItemName(IngredientType).Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(55, 15), Deafult);
+            var buffname = Lang.GetBuffName(IngredientId);
+            //var conut = FontAssets.MouseText.Value.MeasureString(IngredientName);
+            //var scale = 1f;
+            //if (conut.X > 100)
+            //{ 
+            //    buffname = buffname.Replace(" ", "\n");
+            //    scale = 0.5f;
+            //}
+            Utils.DrawBorderString(spriteBatch, Count.ToString(), GetDimensions().ToRectangle().TopLeft() + new Vector2(30, 25), Color.White);
+            Utils.DrawBorderString(spriteBatch, buffname, GetDimensions().ToRectangle().TopLeft() + new Vector2(50, 15), Deafult);
             spriteBatch.Draw(TextureAssets.Item[IngredientType].Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(20, 25), null, Color.White, 0, TextureAssets.Item[IngredientType].Value.Size() / 2, 1f, 0, 0);
 
         }
