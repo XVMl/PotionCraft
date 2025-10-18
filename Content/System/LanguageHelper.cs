@@ -8,11 +8,13 @@ using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using static PotionCraft.Content.System.ColorfulText.OperatorColorText;
-using static PotionCraft.Content.System.ColorfulText.PotionColorText;
+using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 using static PotionCraft.Content.System.AutoLoaderSystem.JsonLoader;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent;
+using Terraria.ID;
+using System.Reflection;
 
 namespace PotionCraft.Content.System
 {
@@ -63,8 +65,31 @@ namespace PotionCraft.Content.System
         public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), Deafult_Hex)?
             .Insert(10, TryGetLanguagValue($"Craft.And"));
 
-        public static string TryGetBuffName(string name, bool space = false) => ColorfulTexts["BuffName"]
-            .GetValueOrDefault(name, Deafult_Hex).Insert(10, $"{name}{(space ? " " : "")}");
+        public static string TryGetBuffName(string name, bool space = false){
+
+            var lname = TryGetBuffNameText(name);
+            return ColorfulTexts["BuffName"]
+                .GetValueOrDefault(name, Deafult_Hex).Insert(10, $"{lname}{(space ? " " : "")}");
+        }
+
+        public static string TryGetBuffNameText(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return "";
+            if (PotionList.TryGetValue(name, out var value) && value.Item1)
+                return Lang.GetBuffName(value.Item2);
+            if (PotionList.ContainsKey(name)&&!value.Item1)
+                return "NONE";
+            var buff = typeof(BuffID).GetField(name, BindingFlags.Static|BindingFlags.Public|BindingFlags.FlattenHierarchy);
+            if(buff is null)
+            {
+                PotionList.TryAdd(name,(false,0));
+                return "NONE";
+            }
+            var buffid = (int)buff.GetValue(null);
+            PotionList.TryAdd(name, (true, buffid));
+            return Lang.GetBuffName(buffid);
+        }
 
         public static string LocationPotionText(string text) => TryGetLanguagValue($"Craft.{text}");
 
@@ -186,6 +211,8 @@ namespace PotionCraft.Content.System
             var purifycount = 1;
             foreach (string token in parts)
             {
+                if (string.IsNullOrEmpty(token))
+                    continue;
                 switch (token)
                 {
                     case "+":
@@ -196,7 +223,7 @@ namespace PotionCraft.Content.System
                         : $"{potion1}{TryGetAndText(mashupconunt)}{potion2}{TryGetMashUpText(mashupconunt++)}");
                         break;
                     case "@":
-                        stack.Push($"{TryGetPurifyText(purifycount++)} ");
+                        stack.Push($"{TryGetPurifyText(purifycount++)} {stack.Pop()}");
                         break;
                     default:
                         stack.Push(TryGetBuffName(token));

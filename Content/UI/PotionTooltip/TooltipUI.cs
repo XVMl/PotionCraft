@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.Build.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
@@ -72,7 +73,11 @@ namespace PotionCraft.Content.UI.PotionTooltip
         public static bool CheckPotion(BasePotion oldPotion, BasePotion newPotion)
         {
             if (oldPotion._Name != newPotion._Name) return false;
-           
+
+            if(oldPotion.CustomName !=newPotion.CustomName) return false;
+
+            if (oldPotion.Signatures != newPotion.Signatures) return false;
+
             if(oldPotion.PotionDictionary.Count!=newPotion.PotionDictionary.Count) return false;
 
             return oldPotion.PotionDictionary.All(item => newPotion.PotionDictionary.Any(s => s.Value.BuffName == item.Value.BuffName && s.Value.BuffTime == item.Value.BuffTime));
@@ -148,24 +153,24 @@ namespace PotionCraft.Content.UI.PotionTooltip
             if (!ShowToolTip) return;
             var nametex = Assets.UITexture("ToolName").Value;
             var namearea = NameArea.GetDimensions().ToRectangle();
-            var nameheight = namearea.Height-45;
-            spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y, 363, 23), new(0, 0, 363, 23), Color.White);
+            var nameheight = namearea.Height-36;
+            spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y, 360, 18), new(0, 0, 360, 18), Color.White);
             for (; ; )
             {
                 switch (nameheight)
                 {
-                    case > 78:
-                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 23 + namearea.Height - 45 - nameheight, 363, 78), new(0, 24, 363, 78), Color.White);
-                        nameheight -= 78;
+                    case > 120:
+                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 18 + namearea.Height - 36 - nameheight, 360, 120), new(0, 18, 360, 120), Color.White);
+                        nameheight -= 120;
                         break;
                     case > 0:
-                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 23 + namearea.Height - 45 - nameheight, 363, nameheight), new(0, 24, 363, nameheight), Color.White);
+                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 18 + namearea.Height - 36 - nameheight, 360, nameheight), new(0, 18, 360, nameheight), Color.White);
                         nameheight = 0;
                         break;
                 }
                 if (nameheight <= 0) break;
             }
-            spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + namearea.Height - 22, 363, 22), new(0, 101, 363, 22), Color.White);
+            spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + namearea.Height - 18, 360, 18), new(0, 176, 360, 18), Color.White);
             var data = GetKeybind(PotionCraftModPlayer.PotionCraftKeybind);
             if (!data.Item2)
                 Utils.DrawBorderString(spriteBatch,$"{TryGetLanguagValue("KeybindsTips", data.Item1)}", namearea.TopLeft()+new Vector2(0, namearea.Height), Color.White);
