@@ -175,7 +175,20 @@ namespace PotionCraft.Content.System
             return result;
         }
 
-        public static List<string> GenerateRandomPostfix()
+        public static List<(string colorCode, string text)> ParseTextToList(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return [];
+            string pattern = @"\[c/[^:]+:([^]]+)\]";
+            MatchCollection matches = Regex.Matches(text, pattern);
+            List<(string colorCode, string text)> parts = new List<(string colorCode, string text)>();
+            foreach (Match match in matches)
+            {
+                parts.Add((colorCode: match.Groups[0].Value,text: match.Groups[1].Value));
+            }
+            return parts;
+        }
+        public static List<string> GenerateRandomPostfix(int level)
         {
             Random random = new Random();
             int numOperands = random.Next(3, 5);
@@ -197,6 +210,15 @@ namespace PotionCraft.Content.System
             return experssion;
         }
 
+        public static string CreatQuestion(int level)
+        {
+            var question = "";
+            var random = new Random();
+            var numOperands = level * random.Next(3, 5);
+
+            return question;
+        }
+        
         public static (string,int) WrapText(string text)
         {
             string[] parts = text.Split(' ');

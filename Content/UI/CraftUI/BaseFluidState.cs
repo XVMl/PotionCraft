@@ -13,10 +13,14 @@ using Microsoft.Xna.Framework.Input;
 using Terraria.GameInput;
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
+using ReLogic.Localization.IME;
+using ReLogic.OS;
 using Terraria.Audio;
+using Terraria.GameContent;
 using static PotionCraft.Content.System.LanguageHelper;
 using Luminance.Common.Utilities;
 using static PotionCraft.Assets;
+
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BaseFluidState: AutoUIState
@@ -91,8 +95,8 @@ namespace PotionCraft.Content.UI.CraftUI
             
             Potionslot = new(this, () => {
                 if (Potion.ModItem is not BasePotion) return;
-                BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName;
-                SignaturesInput.Currentvalue = AsPotion(Potion).Signatures;
+                BaseFuildInput.Recordvalue =ParseTextToList(AsPotion(Potion).PotionName);
+                SignaturesInput.Recordvalue =ParseTextToList(AsPotion(Potion).Signatures);
             })
             {
                 HAlign = 0.2f,
@@ -103,7 +107,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
             Materialslot = new(this, () => {
                 if (Potion.ModItem is not BasePotion) return;
-                BaseFuildInput.Currentvalue = AsPotion(Potion).PotionName; 
+                BaseFuildInput.Recordvalue =ParseTextToList(AsPotion(Potion).PotionName); 
             })
             {
                 HAlign = 0.55f,
@@ -121,6 +125,8 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void Update(GameTime gameTime)
         {
+            if (!IsLoaded())
+                return;
             if (Area.IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;   
             BaseFuildInput.Update(gameTime);
@@ -150,8 +156,7 @@ namespace PotionCraft.Content.UI.CraftUI
             BasePotion createdPotion = AsPotion(PotionCraftState.Potion);
             createdPotion.CustomName = "[c/AA1AAA:A<LDC#]";
             createdPotion.CanCustomName = true;
-            createdPotion.Signatures =  BaseFluidState.SignaturesInput.Currentvalue;
-            Main.NewText("!!!!");
+            createdPotion.Signatures =  BaseFluidState.SignaturesInput.Showstring;
             if (PotionCraftState.Material.IsAir) return;
             createdPotion.DrawPotionList.Clear();
             createdPotion.DrawCountList.Clear();
@@ -187,18 +192,33 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public bool Inputting;
         
-        public string Currentvalue;
+        public (string,string) Currentvalue;
+
+        public List<(string,string)> Recordvalue;
+        
+        public string Showstring;
+
+        private string SelectColor = Deafult_Hex;
+        
+        public Action Onchange;
         public BaseFuildInput(string currentValue=null)
         {   
             Width.Set(180f, 0f);
             Height.Set(50f, 0f);
-            Currentvalue = currentValue;
+            Recordvalue = ParseTextToList(currentValue);
+        }
+
+        public BaseFuildInput(Action onchange,string currentvalue=null )
+        {
+            Recordvalue = ParseTextToList(currentvalue);
+            Onchange = onchange;
         }
 
         private void InputText()
         {
             Inputting = true;
             Main.blockInput= true;
+            
         }
 
         private void HandleInputText()
@@ -210,18 +230,18 @@ namespace PotionCraft.Content.UI.CraftUI
 
             PlayerInput.WritingText = true;
             Main.instance.HandleIME();
-
-            string value = Main.GetInputText(Currentvalue);
-            if (value != Currentvalue)
-            {
-                Currentvalue = value;
-            }
+            if (Currentvalue.Item2.Length == 0)
+                Currentvalue = StListText();
+            Currentvalue = (Currentvalue.Item1,Main.GetInputText(Currentvalue.Item2));
         }
 
         private void EndInputText()
         {
             Main.blockInput = false;
             Inputting = false;
+            Recordvalue.Add(Currentvalue);
+            Showstring = string.Join("", Recordvalue.Select(s=>s.Item1.Insert(10,s.Item2)));
+            Onchange?.Invoke();
         }
 
         public override void Update(GameTime gameTime)
@@ -236,6 +256,15 @@ namespace PotionCraft.Content.UI.CraftUI
             }
         }
 
+        private (string,string) StListText()
+        {
+            if (Recordvalue.Count == 0)
+                return ("","");
+            var ss = Recordvalue.Last();
+            Recordvalue.Remove(Recordvalue.Last());
+            return ss;
+        }
+
         public override void LeftClick(UIMouseEvent evt)
         {
             base.LeftClick(evt);
@@ -244,13 +273,20 @@ namespace PotionCraft.Content.UI.CraftUI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
+            Utils.DrawBorderString(spriteBatch, Showstring, GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
+            Vector2 vector2 = GetDimensions().Position() + 
+                                FontAssets.MouseText.Value.MeasureString(string.Join("",Recordvalue.Select(s=>s.Item2))) ;
             if (Inputting)
             {
                 spriteBatch.Draw(Assets.UI.PanelGrayscale, GetDimensions().ToRectangle(), new Color(49, 84, 141));
-                HandleInputText();
                 Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
+                Utils.DrawBorderString(spriteBatch, Currentvalue.Item1.Insert(10, Currentvalue.Item2), vector2,
+                    Color.White, 0.75f, 0f, 0f, -1);
             }
-            Utils.DrawBorderString(spriteBatch, Currentvalue, GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
+            if (Main.GameUpdateCount % 20U >= 10U)
+                return;
+            Utils.DrawBorderString(spriteBatch, "|", vector2+FontAssets.MouseText.Value.MeasureString(Currentvalue.Item2), Color.White, 0.75f, 0.0f, 0.0f, -1);
+
         }
 
     }
@@ -272,7 +308,6 @@ namespace PotionCraft.Content.UI.CraftUI
             Width.Set(100f, 0);
             Height.Set(32f, 0);
         }
-
         public void ResetValue(bool value)
         {
             Switchvalue = value;
@@ -288,6 +323,7 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             base.DrawSelf(spriteBatch);
             Utils.DrawBorderString(spriteBatch, SwitchText, GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
+            
         }
         
     }

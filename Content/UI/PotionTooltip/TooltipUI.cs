@@ -126,7 +126,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
             var data = WrapTextWithColors(ShowBasePotion.PotionName, linetextnum);
             PotionName.SetText(data.Item1);
             var height = NameArea.Height.Pixels;
-            NameArea.Height.Set(height + MathHelper.Max(0,data.Item2-2)*30, 0);
+            var textheight= FontAssets.MouseText.Value.MeasureString(data.Item1).Y;
+            NameArea.Height.Set(textheight + 45, 0);
             var count = ShowBasePotion.PotionDictionary.Count/2+1;
             Area.Height.Set(count * 50 + 90, 0);
             PotionIngredients.Height.Set(count*50+70, 0);

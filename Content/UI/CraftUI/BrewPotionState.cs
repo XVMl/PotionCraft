@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
-
+using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 using static PotionCraft.Assets;
 namespace PotionCraft.Content.UI.CraftUI
 {
@@ -25,6 +25,8 @@ namespace PotionCraft.Content.UI.CraftUI
         private BrewPotionButton BrewPotionButton;
 
         public int PotionCount = 20;
+
+        private BasePotion CreatPotion = ModContent.GetInstance<BasePotion>();
 
         private UIElement Area;
         public override void OnInitialize()
@@ -59,6 +61,88 @@ namespace PotionCraft.Content.UI.CraftUI
 
         }
 
+        public static bool QuicklyCheckPotion(Item item1,BasePotion item2)
+        {
+            if (item1.ModItem is not BasePotion)
+                return false;
+            return AsPotion(item1)._Name == item2._Name;
+        }
+        
+        private void AddPotion(Item item)
+        {
+            if (ModPotionList.ContainsKey(item)&&item.ModItem is not BasePotion)
+                return;
+            
+            if (!QuicklyCheckPotion(item, CreatPotion) && item.type != ModContent.ItemType<MagicPanacea>() )
+            {
+                MashUp(item);
+                return; 
+            }
+            
+            foreach (var buff in CreatPotion.PotionDictionary)
+            {
+                buff.Value.BuffTime *= 2;
+                buff.Value.Counts *= 2;
+            }
+            for (var i = 0; i < CreatPotion.DrawPotionList.Count; i++)
+            {
+                CreatPotion.DrawCountList[i] *= 2;
+            }
+            CreatPotion.PurifyingCount++;
+            CreatPotion._Name += "@ ";
+        }
+        
+        private void MashUp(Item item)
+        {
+            var count = 0;
+            if(item.ModItem is BasePotion)
+                goto BasePotion;
+            
+            var name = Lang.GetBuffName(item.buffType);
+            CreatPotion.PotionDictionary.TryAdd(name, new PotionData(
+                name,
+                item.type,
+                0,
+                0,
+                item.buffType
+            ));
+            CreatPotion.PotionDictionary[name].BuffTime+= item.buffTime;
+            CreatPotion.PotionDictionary[name].Counts++;
+            CreatPotion.DrawPotionList.Add(item.type);
+            CreatPotion.DrawCountList.Add(1);
+            CreatPotion._Name +=
+                $"{Lang.GetBuffName(item.buffType).Replace(" ", "")} + ";    
+            goto End;
+            
+            BasePotion:
+            var material = AsPotion(item);
+            foreach (var buff in material.PotionDictionary)
+            {
+                CreatPotion.PotionDictionary.TryAdd(buff.Key,buff.Value);
+                CreatPotion.PotionDictionary[buff.Key].BuffTime+= buff.Value.BuffTime;
+                CreatPotion.PotionDictionary[buff.Key].Counts+= buff.Value.Counts;
+            }
+            for (int i = 0; i < material.DrawCountList.Count; i++)
+            {
+                CreatPotion.DrawPotionList.Add(material.DrawPotionList[i]);
+                CreatPotion.DrawCountList.Add(material.DrawCountList[i]);
+            }
+            CreatPotion.MashUpCount += material.MashUpCount+1;
+            count += material.MashUpCount;
+            CreatPotion._Name +=
+                $"{material._Name} +";    
+            
+            End:
+            CreatPotion.MashUpCount++; 
+            if (CreatPotion.MashUpCount == 0|| CreatPotion.MashUpCount == count + 1)
+                CreatPotion._Name = $"{Lang.GetBuffName(item.buffType).Replace(" ","")} ";
+        }
+        
+        private void ClearAll()
+        {
+            CreatPotion = ModContent.GetInstance<BasePotion>();
+        }
+        
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             base.DrawSelf(spriteBatch);
