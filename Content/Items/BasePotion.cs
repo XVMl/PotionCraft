@@ -198,7 +198,7 @@ namespace PotionCraft.Content.Items
             {
                 Main.instance.LoadItem(IconID);
                 var icon = TextureAssets.Item[IconID].Value;
-                spriteBatch.Draw(icon, position, null, Color.White, 0, icon.Size() / 2f, scale*1.5f, SpriteEffects.None, 0);
+                spriteBatch.Draw(icon, position, null, Color.White, 0, icon.Size() / 2f, scale*1f, SpriteEffects.None, 0);
                 return false;
             }
             for (int i = 0; i < DrawPotionList.Count; i++)
@@ -218,7 +218,7 @@ namespace PotionCraft.Content.Items
             {
                 Main.instance.LoadItem(IconID);
                 var icon = TextureAssets.Item[IconID].Value;
-                spriteBatch.Draw(icon, Item.position - Main.screenPosition, null, Color.White, 0, icon.Size() / 2, scale*1.5f, SpriteEffects.None, 0);
+                spriteBatch.Draw(icon, Item.position - Main.screenPosition, null, Color.White, 0, icon.Size() / 2, scale*1f, SpriteEffects.None, 0);
                 return false;
             }
             for (int i = 0; i < DrawPotionList.Count; i++)

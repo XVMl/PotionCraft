@@ -6,7 +6,7 @@
       "Tooltips": "",
       "BaseType": 2,
       "NameColor": "",
-      "ScaleSize": 2,
+      "ScaleSize": 1,
       "UseStyle": 5,
       "PotionUseSound": 2
     },
@@ -15,7 +15,7 @@
       "Tooltips": "",
       "BaseType": 2,
       "NameColor": "",
-      "ScaleSize": 1.7,
+      "ScaleSize": 1,
       "UseStyle": 5,
       "PotionUseSound": 2
     },
@@ -24,7 +24,7 @@
       "Tooltips": "",
       "BaseType": 2,
       "NameColor": "",
-      "ScaleSize": 1.65,
+      "ScaleSize": 1,
       "UseStyle": 5,
       "PotionUseSound": 2
     },
@@ -33,7 +33,7 @@
       "Tooltips": "",
       "BaseType": 3,
       "NameColor": "",
-      "ScaleSize": 1.5,
+      "ScaleSize": 1,
       "UseStyle": 5,
       "PotionUseSound": 2
     },
@@ -42,7 +42,7 @@
       "Tooltips": "",
       "BaseType": 3,
       "NameColor": "",
-      "ScaleSize": 1.5,
+      "ScaleSize": 1,
       "UseStyle": 5,
       "PotionUseSound": 2
     },
@@ -51,7 +51,7 @@
       "Tooltips": "",
       "BaseType": 3,
       "NameColor": "",
-      "ScaleSize": 1.5,
+      "ScaleSize": 1,
       "UseStyle": 5,
       "PotionUseSound": 2
     }
