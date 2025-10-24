@@ -29,6 +29,15 @@
       "PotionUseSound": 2
     },
     {
+      "Name": "FuLu",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1.65,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
       "Name": "Style2",
       "Tooltips": "",
       "BaseType": 3,
