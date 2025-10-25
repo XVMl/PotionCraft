@@ -48,6 +48,26 @@ Items: {
 		DisplayName: Style4
 		Tooltip: ""
 	}
+
+	FuLu: {
+		// DisplayName: Fu Lu
+		// Tooltip: ""
+	}
+
+	ClowCarb_1: {
+		// DisplayName: Clow Carb_1
+		// Tooltip: ""
+	}
+
+	ClowCard_2: {
+		// DisplayName: Clow Card_2
+		// Tooltip: ""
+	}
+
+	TarotCard: {
+		// DisplayName: Tarot Card
+		// Tooltip: ""
+	}
 }
 
 CustomMaterials: {
