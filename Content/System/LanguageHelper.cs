@@ -76,18 +76,18 @@ namespace PotionCraft.Content.System
         {
             if (string.IsNullOrEmpty(name))
                 return "";
-            if (PotionList.TryGetValue(name, out var value) && value.Item1)
+            if (BuffsList.TryGetValue(name, out var value) && value.Item1)
                 return Lang.GetBuffName(value.Item2);
-            if (PotionList.ContainsKey(name)&&!value.Item1)
+            if (BuffsList.ContainsKey(name)&&!value.Item1)
                 return "NONE";
             var buff = typeof(BuffID).GetField(name, BindingFlags.Static|BindingFlags.Public|BindingFlags.FlattenHierarchy);
             if(buff is null)
             {
-                PotionList.TryAdd(name,(false,0));
+                BuffsList.TryAdd(name,(false,0));
                 return "NONE";
             }
             var buffid = (int)buff.GetValue(null);
-            PotionList.TryAdd(name, (true, buffid));
+            BuffsList.TryAdd(name, (true, buffid));
             return Lang.GetBuffName(buffid);
         }
 
@@ -212,11 +212,19 @@ namespace PotionCraft.Content.System
 
         public static string CreatQuestion(int level)
         {
-            var question = "";
+            List<string> experssion = [];
             var random = new Random();
             var numOperands = level * random.Next(3, 5);
-
-            return question;
+            for (var  i = 0; i < numOperands; i++)
+            {
+                experssion.Add(Terrariabuffs[random.Next(0, Terrariabuffs.Count + 1)]);
+                experssion.Add("+ ");
+            }
+            var operrands = level*random.Next(2 * numOperands, 3 * numOperands);
+            for (var i = 0; i < operrands; i++)
+                experssion.Insert(random.Next(1, experssion.Count + 1), "@ ");
+            
+            return string.Join("", experssion);
         }
         
         public static (string,int) WrapText(string text)

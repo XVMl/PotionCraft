@@ -88,6 +88,22 @@ namespace PotionCraft.Content.System
 
         public static readonly int MashUpCountMax = 14;
 
+        public static string CurrentElement;
+
+        public override void MouseOver(UIMouseEvent evt)
+        {
+            if (!PotionCraftState.IsLoaded())
+                return;
+            base.MouseOver(evt);
+            CurrentElement = GetType().Name;
+        }
+
+        public override void MouseOut(UIMouseEvent evt)
+        {
+            base.MouseOut(evt);
+            CurrentElement = string.Empty;
+        }
+        
         public bool IsPotion(Item item)
         {
             return item.ModItem is BasePotion;

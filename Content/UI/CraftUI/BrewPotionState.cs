@@ -70,7 +70,7 @@ namespace PotionCraft.Content.UI.CraftUI
         
         private void AddPotion(Item item)
         {
-            if (ModPotionList.ContainsKey(item)&&item.ModItem is not BasePotion)
+            if (PotionList.ContainsKey(item)&&item.ModItem is not BasePotion)
                 return;
             
             if (!QuicklyCheckPotion(item, CreatPotion) && item.type != ModContent.ItemType<MagicPanacea>() )
