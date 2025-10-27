@@ -33,7 +33,34 @@
       "Tooltips": "",
       "BaseType": 2,
       "NameColor": "",
-      "ScaleSize": 1.65,
+      "ScaleSize": 1.1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "ClowCarb_1",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1.1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "ClowCard_2",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1.1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "TarotCard",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1.1,
       "UseStyle": 5,
       "PotionUseSound": 2
     },
