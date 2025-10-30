@@ -119,9 +119,9 @@ namespace PotionCraft.Content.UI.PotionTooltip
         {
             var linetextnum = LanguageManager.Instance.ActiveCulture.Name switch
             {
-                "zh-Hans" => 30,
-                "en-US" => 35,
-                _ => 40,
+                "zh-Hans" => 135,
+                "en-US" => 150,
+                _ => 140,
             };
             var data = WrapTextWithColors(ShowBasePotion.PotionName, linetextnum);
             PotionName.SetText(data.Item1);

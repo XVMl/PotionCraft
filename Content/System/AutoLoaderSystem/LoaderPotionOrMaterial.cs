@@ -34,7 +34,7 @@ public class LoaderPotionOrMaterial:ModSystem
             Terrariabuffs.Add(modfield.Name);
         }
         foreach (var buff in Modbuffs)
-            BuffsList.TryAdd(buff.Name, (false, Modbuffs.IndexOf(buff)));
+            BuffsList.TryAdd(buff.Name, (true, Modbuffs.IndexOf(buff)));
         
         for (var i = 0; i <ItemLoader.ItemCount; i++)
         {

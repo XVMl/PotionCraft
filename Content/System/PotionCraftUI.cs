@@ -92,9 +92,9 @@ namespace PotionCraft.Content.System
 
         public override void MouseOver(UIMouseEvent evt)
         {
+            base.MouseOver(evt);
             if (!PotionCraftState.IsLoaded())
                 return;
-            base.MouseOver(evt);
             CurrentElement = GetType().Name;
         }
 
