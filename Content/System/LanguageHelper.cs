@@ -76,18 +76,18 @@ namespace PotionCraft.Content.System
         {
             if (string.IsNullOrEmpty(name))
                 return "";
-            if (PotionList.TryGetValue(name, out var value) && value.Item1)
+            if (BuffsList.TryGetValue(name, out var value) && value.Item1)
                 return Lang.GetBuffName(value.Item2);
-            if (PotionList.ContainsKey(name)&&!value.Item1)
+            if (BuffsList.ContainsKey(name)&&!value.Item1)
                 return "NONE";
             var buff = typeof(BuffID).GetField(name, BindingFlags.Static|BindingFlags.Public|BindingFlags.FlattenHierarchy);
             if(buff is null)
             {
-                PotionList.TryAdd(name,(false,0));
+                BuffsList.TryAdd(name,(false,0));
                 return "NONE";
             }
             var buffid = (int)buff.GetValue(null);
-            PotionList.TryAdd(name, (true, buffid));
+            BuffsList.TryAdd(name, (true, buffid));
             return Lang.GetBuffName(buffid);
         }
 
@@ -121,31 +121,24 @@ namespace PotionCraft.Content.System
             }
             return parts;
         }
-        private static int CalculateWidth(string text)
-        {
-            int width = 0;
-            foreach (var c in text)
-            {
-                width += IsChineseCharacter(c) ? 2 : 1;
-            }
-            return width;
-        }
+        private static float CalculateWidth(string text) => FontAssets.MouseText.Value.MeasureString(DeleteTextColor_SaveString(text)).X;
+         
         /// <summary>
         /// 智能换行
         /// </summary>
         /// <param name="text"></param>
         /// <param name="length"></param>
         /// <returns>Item1:包含颜色的字符串；Item2：总行数</returns>
-        public static (string, int) WrapTextWithColors(string text, int length)
+        public static (string, int) WrapTextWithColors(string text, float length)
         {
             var parsedParts = ParseText(text);
             var lines = new List<string>();
             var currentLine = new StringBuilder();
-            int currentWidth = 0;
-            int linecount = 1;
+            float currentWidth = 0;
+            var linecount = 1;
             foreach (var (colorCode, partText) in parsedParts)
             {
-                int partWidth = CalculateWidth(partText);
+                var partWidth = CalculateWidth(partText);
                 if (currentWidth + partWidth > length)
                 {
                     lines.Add(currentLine.ToString().Trim());
@@ -174,7 +167,8 @@ namespace PotionCraft.Content.System
             }
             return result;
         }
-
+        public static string DeleteTextColor_SaveString(string msg) => Regex.Replace(msg, @"\[c/\w+:(.*?)\]", "$1");
+        
         public static List<(string colorCode, string text)> ParseTextToList(string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -188,35 +182,22 @@ namespace PotionCraft.Content.System
             }
             return parts;
         }
-        public static List<string> GenerateRandomPostfix(int level)
-        {
-            Random random = new Random();
-            int numOperands = random.Next(3, 5);
-            List<string> experssion = new() { "34" };
-
-            for (int i = 0; i < numOperands; i++)
-            {
-                experssion.Add(random.Next(1, 100).ToString());
-                experssion.Add("and");
-            }
-
-            int operrands = random.Next(2 * numOperands, 3 * numOperands);
-
-            for (int i = 0; i < operrands; i++)
-            {
-                string oper = random.Next(0, 2) == 1 ? "purified" : "boling";
-                experssion.Insert(random.Next(1, experssion.Count + 1), oper);
-            }
-            return experssion;
-        }
-
+        
         public static string CreatQuestion(int level)
         {
-            var question = "";
+            List<string> experssion = [];
             var random = new Random();
             var numOperands = level * random.Next(3, 5);
-
-            return question;
+            for (var  i = 0; i < numOperands; i++)
+            {
+                experssion.Add($"{Terrariabuffs[random.Next(0, Terrariabuffs.Count + 1)]} ");
+                experssion.Add("+ ");
+            }
+            var operrands = numOperands/level *(random.Next(2,3)+level);
+            for (var i = 0; i < operrands; i++)
+                experssion.Insert(random.Next(1, experssion.Count + 1), "@ ");
+            
+            return string.Join("", experssion);
         }
         
         public static (string,int) WrapText(string text)
