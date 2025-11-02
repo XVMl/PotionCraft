@@ -93,7 +93,7 @@ namespace PotionCraft.Content.System
         public override void MouseOver(UIMouseEvent evt)
         {
             base.MouseOver(evt);
-            if (!PotionCraftState.IsLoaded())
+            if (PotionCraftState is null || !PotionCraftState.IsLoaded())
                 return;
             CurrentElement = GetType().Name;
         }
@@ -101,6 +101,8 @@ namespace PotionCraft.Content.System
         public override void MouseOut(UIMouseEvent evt)
         {
             base.MouseOut(evt);
+            if (PotionCraftState is null || !PotionCraftState.IsLoaded())
+                return;
             CurrentElement = string.Empty;
         }
         

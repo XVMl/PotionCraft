@@ -68,6 +68,21 @@ Items: {
 		DisplayName: Tarot Card
 		Tooltip: ""
 	}
+
+	Croissant: {
+		Tooltip: ""
+		DisplayName: Croissant
+	}
+
+	TangHuLu: {
+		Tooltip: ""
+		DisplayName: Tang Hu Lu
+	}
+
+	Gingerbreadman: {
+		Tooltip: ""
+		DisplayName: Gingerbreadman
+	}
 }
 
 CustomMaterials: {

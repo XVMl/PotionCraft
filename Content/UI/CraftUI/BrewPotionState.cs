@@ -65,7 +65,7 @@ namespace PotionCraft.Content.UI.CraftUI
             PotionNameInput = new(() =>
             {
                 CreatPotion.CustomName = PotionNameInput.Showstring;
-            },CreatPotion.CustomName);
+            },this,CreatPotion.CustomName);
             {
 
             };
@@ -266,22 +266,24 @@ namespace PotionCraft.Content.UI.CraftUI
         
         public (string,string) Currentvalue;
 
-        public List<(string,string)> Recordvalue;
+        public List<(string,string)> Recordvalue=new();
         
-        public string Showstring;
+        public string Showstring="";
 
         private string SelectColor = Deafult_Hex;
         
         public Action Onchange;
-        public BrewPotionInput(string currentValue=null)
-        {   
+        public BrewPotionInput(BrewPotionState brewPotionState,string currentValue=null)
+        {
+            PotionCraftState = brewPotionState;
             Width.Set(180f, 0f);
             Height.Set(50f, 0f);
             Recordvalue = ParseTextToList(currentValue);
         }
 
-        public BrewPotionInput(Action onchange,string currentvalue=null )
+        public BrewPotionInput(Action onchange, BrewPotionState brewPotionState,string currentvalue=null )
         {
+            PotionCraftState = brewPotionState;
             Recordvalue = ParseTextToList(currentvalue);
             Onchange = onchange;
         }
@@ -318,6 +320,8 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void Update(GameTime gameTime)
         {
+            if (!PotionCraftState.IsLoaded())
+                return;
             if (Main.mouseLeft && !IsMouseHovering)
             {
                 EndInputText();
@@ -340,6 +344,8 @@ namespace PotionCraft.Content.UI.CraftUI
         public override void LeftClick(UIMouseEvent evt)
         {
             base.LeftClick(evt);
+            if (!PotionCraftState.IsLoaded())
+                return;
             InputText();
         }
 

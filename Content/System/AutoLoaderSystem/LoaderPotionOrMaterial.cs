@@ -25,7 +25,7 @@ public class LoaderPotionOrMaterial:ModSystem
     
     public override void PostAddRecipes()
     {
-        var Modbuffs = typeof(BuffID).GetField("buffs", BindingFlags.Static|BindingFlags.Public|BindingFlags.FlattenHierarchy)?.GetValue(null) as IList<ModBuff>;
+        //var Modbuffs = typeof(BuffID).GetField("buffs", BindingFlags.Static|BindingFlags.Public|BindingFlags.FlattenHierarchy)?.GetValue(null) as IList<ModBuff>;
         var modfields = typeof(BuffID).GetFields();
         foreach (var modfield in modfields)
         {
@@ -33,8 +33,8 @@ public class LoaderPotionOrMaterial:ModSystem
             BuffsList.TryAdd(modfield.Name, (true, (int)modfield.GetValue(null)! ));
             Terrariabuffs.Add(modfield.Name);
         }
-        foreach (var buff in Modbuffs)
-            BuffsList.TryAdd(buff.Name, (true, Modbuffs.IndexOf(buff)));
+        //foreach (var buff in Modbuffs)
+        //    BuffsList.TryAdd(buff.Name, (true, Modbuffs.IndexOf(buff)));
         
         for (var i = 0; i <ItemLoader.ItemCount; i++)
         {

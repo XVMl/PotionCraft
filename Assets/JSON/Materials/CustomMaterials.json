@@ -20,15 +20,6 @@
       "PotionUseSound": 2
     },
     {
-      "Name": "Lily",
-      "Tooltips": "",
-      "BaseType": 2,
-      "NameColor": "",
-      "ScaleSize": 1,
-      "UseStyle": 5,
-      "PotionUseSound": 2
-    },
-    {
       "Name": "FuLu",
       "Tooltips": "",
       "BaseType": 2,

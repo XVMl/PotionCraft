@@ -17,7 +17,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Social.Steam;
 using Terraria.UI;
-
+using static PotionCraft.Assets;
 using static PotionCraft.Content.System.LanguageHelper;
 
 namespace PotionCraft.Content.UI.PotionTooltip
@@ -119,9 +119,9 @@ namespace PotionCraft.Content.UI.PotionTooltip
         {
             var linetextnum = LanguageManager.Instance.ActiveCulture.Name switch
             {
-                "zh-Hans" => 135,
-                "en-US" => 150,
-                _ => 140,
+                "zh-Hans" => 300,
+                "en-US" => 300,
+                _ => 300,
             };
             var data = WrapTextWithColors(ShowBasePotion.PotionName, linetextnum);
             PotionName.SetText(data.Item1);
