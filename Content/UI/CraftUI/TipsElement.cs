@@ -30,7 +30,7 @@ public class TipsElement<T>:PotionElement<T> where T : AutoUIState
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);
-        if (!PotionCraftState.IsLoaded()) return;
+        if (!PotionCraftState.Active()) return;
         var s = LanguageHelper.TryGetLanguagValue(CurrentElement);
         if (!showtext.Equals(s))
         {

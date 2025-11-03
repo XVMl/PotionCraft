@@ -25,7 +25,7 @@ namespace PotionCraft.Content.UI.CraftUI
 {
     public class BaseFluidState: AutoUIState
     {
-        public override bool IsLoaded() => ActiveState && CraftState == CraftUiState.BaseFluid;
+        public override bool Active() => ActiveState && CraftState == CraftUiState.BaseFluid;
         public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private PotionSlot<BaseFluidState> Potionslot;
@@ -125,7 +125,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void Update(GameTime gameTime)
         {
-            if (!IsLoaded())
+            if (!Active())
                 return;
             if (Area.IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;   

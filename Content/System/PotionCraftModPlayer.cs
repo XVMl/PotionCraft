@@ -1,3 +1,5 @@
+using Luminance.Core.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using PotionCraft.Content.Items;
 using Terraria;
@@ -30,6 +32,19 @@ public class PotionCraftModPlayer:ModPlayer
             potion.UseItem(Main.LocalPlayer);
             potion.Item.stack -= 1;
             return;
+        }
+    }
+
+    public override void PostUpdate()
+    {
+        base.PostUpdate();
+        if (!ActiveState)
+            return;
+        ManagedScreenFilter distortion = ShaderManager.GetFilter("PotionCraft.GaussBlur");
+        if (!distortion.IsActive)
+        {
+            distortion.TrySetParameter("screenscalerevise", new Vector2(Main.screenWidth, Main.screenHeight) / Main.GameViewMatrix.Zoom);
+            distortion.Activate();
         }
     }
 

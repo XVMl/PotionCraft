@@ -22,7 +22,7 @@ namespace PotionCraft.Content.UI.CraftUI
     public delegate void SlotChange();
     public class PotionCraftState : AutoUIState
     {
-        public override bool IsLoaded() => ActiveState;
+        public override bool Active() => ActiveState;
 
         public override string LayersFindIndex => "Vanilla: Interface Logic 3";
 
@@ -41,15 +41,10 @@ namespace PotionCraft.Content.UI.CraftUI
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (!IsLoaded())
+            if (!Active())
                 return;
             base.Draw(spriteBatch);
-            ManagedScreenFilter distortion = ShaderManager.GetFilter("PotionCraft.GaussBlur");
-            if (!distortion.IsActive)
-            {
-                distortion.TrySetParameter("screenscalerevise", new Vector2(Main.screenWidth, Main.screenHeight) / Main.GameViewMatrix.Zoom);
-                distortion.Activate();
-            }
+            
         }
     }
 
@@ -75,7 +70,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            if (!PotionCraftState.IsLoaded())   return;
+            if (!PotionCraftState.Active())   return;
             switch (Main.mouseItem.IsAir)
             {
                 case false when PotionCraftState.Potion.IsAir:
@@ -128,7 +123,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            if (!PotionCraftState.IsLoaded()) return;
+            if (!PotionCraftState.Active()) return;
             switch (Main.mouseItem.IsAir)
             {
                 case false when PotionCraftState.Material.IsAir:
@@ -176,7 +171,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            if (!PotionCraftState.IsLoaded()) return;
+            if (!PotionCraftState.Active()) return;
             if (!Main.mouseItem.IsAir || PotionCraftState.CreatedPotion.IsAir) return;
             Main.mouseItem = PotionCraftState.CreatedPotion.Clone();
             PotionCraftState.CreatedPotion.TurnToAir();

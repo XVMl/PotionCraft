@@ -17,7 +17,7 @@ namespace PotionCraft.Content.UI.CraftUI
 {
     public class PurificationState : AutoUIState
     {
-        public override bool IsLoaded() => ActiveState && CraftState == CraftUiState.Purification;
+        public override bool Active() => ActiveState && CraftState == CraftUiState.Purification;
         public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private PotionSlot<PurificationState> PotionSlot;

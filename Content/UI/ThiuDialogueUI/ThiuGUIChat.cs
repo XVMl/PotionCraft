@@ -17,8 +17,8 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
 {
     public class ThiuGUIChat : AutoUIState
     {
-        private bool Active;
-        public override bool IsLoaded() => Active;
+        private bool isActive;
+        public override bool Active() => isActive;
         public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private UIElement Area;
@@ -45,11 +45,11 @@ namespace PotionCraft.Content.UI.ThouDialogueUI
         //{
         //    if (Main.LocalPlayer.talkNPC > 0)
         //    {
-        //        Active = Main.npc[Main.LocalPlayer.talkNPC].type == ModContent.NPCType<Thiu>();
+        //        isActive = Main.npc[Main.LocalPlayer.talkNPC].type == ModContent.NPCType<Thiu>();
         //    }
         //    else
         //    {
-        //        Active = false;
+        //        isActive = false;
         //        CraftState = CraftUiState.Default;
         //    }
         //}

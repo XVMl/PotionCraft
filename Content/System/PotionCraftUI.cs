@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.CodeAnalysis.Text;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.UI;
@@ -15,7 +16,7 @@ using Terraria.UI;
 
 namespace PotionCraft.Content.System
 {
-    public class PotionCraftUI:ModSystem
+    public class PotionCraftUI : ModSystem
     {
         private static Type[] _UIstate = [];
 
@@ -37,6 +38,8 @@ namespace PotionCraft.Content.System
             {
                 AutoUIState _state = (AutoUIState)Activator.CreateInstance(type, null);
                 UserInterface _userInterface = new();
+                if (!_state.Isload())
+                    continue;
                 _userInterface.SetState(_state);
                 _UserInterface.Add(_userInterface);
                 keyValuePairs[_state] = _userInterface;
@@ -57,7 +60,7 @@ namespace PotionCraft.Content.System
         {
             foreach (var item in keyValuePairs)
             {
-                if (!item.Key.IsLoaded())
+                if (!item.Key.Active())
                 {
                     continue;
                 }
@@ -80,7 +83,7 @@ namespace PotionCraft.Content.System
     /// 包含药品界面常用方法，承载PotionState
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class PotionElement<T>:UIElement where T : AutoUIState
+    public class PotionElement<T> : UIElement where T : AutoUIState
     {
         public T PotionCraftState;
 
@@ -90,10 +93,12 @@ namespace PotionCraft.Content.System
 
         public static string CurrentElement;
 
+        public Vector2 SourcePotion = Vector2.Zero;
+
         public override void MouseOver(UIMouseEvent evt)
         {
             base.MouseOver(evt);
-            if (PotionCraftState is null || !PotionCraftState.IsLoaded())
+            if (PotionCraftState is null || !PotionCraftState.Active())
                 return;
             CurrentElement = GetType().Name;
         }
@@ -101,11 +106,11 @@ namespace PotionCraft.Content.System
         public override void MouseOut(UIMouseEvent evt)
         {
             base.MouseOut(evt);
-            if (PotionCraftState is null || !PotionCraftState.IsLoaded())
+            if (PotionCraftState is null || !PotionCraftState.Active())
                 return;
             CurrentElement = string.Empty;
         }
-        
+
         public bool IsPotion(Item item)
         {
             return item.ModItem is BasePotion;
@@ -113,11 +118,11 @@ namespace PotionCraft.Content.System
 
         public static bool IsMaterial(Item item)
         {
-            if (item.consumable&&item.buffType!=0)
+            if (item.consumable && item.buffType != 0)
             {
                 return true;
             }
-            return item.type==ModContent.ItemType<MagicPanacea>();
+            return item.type == ModContent.ItemType<MagicPanacea>();
         }
 
         /// <summary>
@@ -134,7 +139,7 @@ namespace PotionCraft.Content.System
             Mod instance = ModContent.GetInstance<PotionCraft>();
             if (item.ModItem == null)
             {
-               instance.Logger.Warn($"Item was erroneously casted to Potion");
+                instance.Logger.Warn($"Item was erroneously casted to Potion");
             }
             return ModContent.GetInstance<BasePotion>();
         }
@@ -147,8 +152,8 @@ namespace PotionCraft.Content.System
             }
             return ModContent.GetInstance<BaseCustomMaterials>();
         }
-        
-        public static BasePotion CloneOrCreatPotion<TE>(TE crafetstate,Item soure) where TE : AutoUIState
+
+        public static BasePotion CloneOrCreatPotion<TE>(TE crafetstate, Item soure) where TE : AutoUIState
         {
             BasePotion createdPotion;
             if (IsMaterial(soure) && Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().CanNOBasePotion)
@@ -185,20 +190,45 @@ namespace PotionCraft.Content.System
             return createdPotion;
         }
 
-        
+
         public override void Update(GameTime gameTime)
         {
+            if (!PotionCraftState.Active())
+                return;
+
             if (IsMouseHovering)
-            {
                 Main.LocalPlayer.mouseInterface = true;
-            }
+
+            if (SourcePotion.Equals(Vector2.Zero))
+                return;
+
+            var pos = GetDimensions().ToRectangle().TopLeft();
+            var x = (float)(Utils.Lerp(pos.X, Main.MouseScreen.X, 0.03d));
+            var y = (float)(Utils.Lerp(pos.X, Main.MouseScreen.X, 0.03d));
+            if (Math.Abs(SourcePotion.X - Main.MouseScreen.X) > 200)
+                x=(float)Utils.Lerp(pos.X, SourcePotion.X, 0.1d);
+
+            if (Math.Abs(SourcePotion.Y - Main.MouseScreen.Y) > 200)
+                y = (float)Utils.Lerp(pos.Y, SourcePotion.Y, 0.1d);
+
+            Left.Set(x, 0);
+            Top.Set(y, 0);
+            //if (SourcePotion.Distance(Main.MouseScreen) > 200)
+            //{
+            //    Left.Set((float)Utils.Lerp(pos.X, SourcePotion.X, 0.03d), 0);
+            //    Left.Set(SourcePotion.X, 0);
+            //    Top.Set((float)Utils.Lerp(pos.Y, SourcePotion.Y, 0.03d), 0);
+            //    return;
+            //}
+            //Left.Set((float)(Utils.Lerp(pos.X, Main.MouseScreen.X, 0.03d)), 0);
+            //Top.Set((float)(Utils.Lerp(pos.Y, Main.MouseScreen.Y, 0.03d)), 0);
         }
 
     }
     /// <summary>
     /// 自动注册加载继承它的子类
     /// </summary>
-    public abstract class AutoUIState:UIState
+    public abstract class AutoUIState : UIState
     {
         public virtual string TypeName { get; }
 
@@ -206,11 +236,13 @@ namespace PotionCraft.Content.System
 
         public static CraftUiState CraftState;
 
+        public virtual bool Isload() => false;
+
         public Item Potion = new();
 
         public Item Material = new();
 
-        public Item CreatedPotion=new();
+        public Item CreatedPotion = new();
         /// <summary>
         /// 工艺界面的状态名称
         /// </summary>
@@ -223,7 +255,7 @@ namespace PotionCraft.Content.System
             BrewPotion,
         }
 
-        public virtual bool IsLoaded() => true;
+        public virtual bool Active() => true;
 
         public abstract string LayersFindIndex { get; }
 
@@ -241,7 +273,7 @@ namespace PotionCraft.Content.System
             return ModContent.GetInstance<BasePotion>();
         }
 
-        public static bool CheckEditor(Item item,Player player)
+        public static bool CheckEditor(Item item, Player player)
         {
             return AsPotion(item).EditorName.Equals("") || AsPotion(item).EditorName.Equals(player.name);
         }

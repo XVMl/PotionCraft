@@ -41,15 +41,16 @@ namespace PotionCraft.Content.Items
         public override bool? UseItem(Player player)
         {
             player.itemAnimation = Item.useAnimation;
-            if (player.altFunctionUse==2)
-            {
-                PotionCraftState.CraftState = (CraftUiState)((int)(PotionCraftState.CraftState + 1) % 5);
-                Main.NewText(PotionCraftState.CraftState);
-            }
-            else
-            {
-                PotionCraftState.ActiveState = !PotionCraftState.ActiveState;
-            }
+            //if (player.altFunctionUse==2)
+            //{
+            //    PotionCraftState.CraftState = (CraftUiState)((int)(PotionCraftState.CraftState + 1) % 5);
+            //}
+            //else
+            //{
+            //}
+            Main.NewText("!!!");
+            ActiveState = !ActiveState;
+            CraftState = CraftUiState.BrewPotion;
             return true;
         }
     }

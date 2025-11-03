@@ -19,8 +19,10 @@ namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
     {
-        public override bool IsLoaded() => ActiveState && CraftState == CraftUiState.BrewPotion;
-        
+        public override bool Active() => ActiveState && CraftState == CraftUiState.BrewPotion;
+
+        public override bool Isload() => true;
+
         public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private PotionSlot<BrewPotionState> PotionSlot;
@@ -38,14 +40,16 @@ namespace PotionCraft.Content.UI.CraftUI
         public Queue<Action> Crafts = new();
 
         private BrewPotionInput PotionNameInput;
+
+        private PotionSynopsis PotionSynopsis;
         
         private bool changecraft;
         public override void OnInitialize()
         {
-            Width.Set(920, 0);
-            Height.Set(640, 0);
-            HAlign = 0.5f;
-            VAlign = 0.5f;
+            //Width.Set(920, 0);
+            //Height.Set(640, 0);
+            //HAlign = 0.5f;
+            //VAlign = 0.5f;
             Area = new UIElement()
             {
                 HAlign = 0.2f,
@@ -55,28 +59,38 @@ namespace PotionCraft.Content.UI.CraftUI
             Area.Height.Set(270f, 0);
             Append(Area);
 
-            PotionSlot = new(this)
+            PotionSynopsis = new PotionSynopsis(this)
             {
-                HAlign = 0.5f,
-                VAlign = 0.5f,
+                //HAlign = 0.2f,
+                //VAlign = 0.5f,
             };
-            Area.Append(PotionSlot);
-
-            PotionNameInput = new(() =>
-            {
-                CreatPotion.CustomName = PotionNameInput.Showstring;
-            },this,CreatPotion.CustomName);
-            {
-
-            };
-            Area.Append(PotionNameInput);
+            PotionSynopsis.Top.Set(400, 0);
+            PotionSynopsis.Left.Set(400, 0);
+            PotionSynopsis.SourcePotion =new Vector2(PotionSynopsis.Left.Pixels, PotionSynopsis.Top.Pixels);
             
-            BrewPotionButton = new BrewPotionButton(this)
-            {
-                HAlign = 0.5f,
-                VAlign = 1f,
-            };
-            Append(BrewPotionButton);
+            Append(PotionSynopsis);
+            //PotionSlot = new(this)
+            //{
+            //    HAlign = 0.5f,
+            //    VAlign = 0.5f,
+            //};
+            //Area.Append(PotionSlot);
+
+            //PotionNameInput = new(() =>
+            //{
+            //    CreatPotion.CustomName = PotionNameInput.Showstring;
+            //},this,CreatPotion.CustomName);
+            //{
+
+            //};
+            //Area.Append(PotionNameInput);
+
+            //BrewPotionButton = new BrewPotionButton(this)
+            //{
+            //    HAlign = 0.5f,
+            //    VAlign = 1f,
+            //};
+            //Append(BrewPotionButton);
 
         }
 
@@ -200,12 +214,36 @@ namespace PotionCraft.Content.UI.CraftUI
             Potion = new Item();
             Potion.SetDefaults(ModContent.ItemType<BasePotion>());
         }
-        
-        
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            PotionSynopsis.Update(gameTime);
+        }
+
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             base.DrawSelf(spriteBatch);
             //spriteBatch.Draw(UITexture("PotionCraftBG").Value, GetDimensions().ToRectangle(), Color.White);
+            //spriteBatch.Draw(UITexture("UI1").Value, LeftArea.GetDimensions().ToRectangle(), Color.White);
+        }
+
+    }
+
+    public class PotionSynopsis: PotionElement<BrewPotionState>
+    {
+        public PotionSynopsis(BrewPotionState brewPotionState)
+        {
+            PotionCraftState = brewPotionState;
+            Width.Set(376, 0);
+            Height.Set(400, 0);
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            base.DrawSelf(spriteBatch);
+            var tex = UITexture("UI1").Value;
+            spriteBatch.Draw(tex, GetDimensions().ToRectangle(), null,Color.White,0,tex.Size()/2,SpriteEffects.None,0);
         }
 
     }
@@ -254,9 +292,9 @@ namespace PotionCraft.Content.UI.CraftUI
             Width.Set(100f, 0);
             Height.Set(50f, 0);
         }
+
         
-        
-        
+
     }
 
     public class BrewPotionInput:PotionElement<BrewPotionState>
@@ -264,7 +302,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public bool Inputting;
         
-        public (string,string) Currentvalue;
+        public (string,string) Currentvalue= ("","");
 
         public List<(string,string)> Recordvalue=new();
         
@@ -314,13 +352,13 @@ namespace PotionCraft.Content.UI.CraftUI
             Main.blockInput = false;
             Inputting = false;
             Recordvalue.Add(Currentvalue);
-            Showstring = string.Join("", Recordvalue.Select(s=>s.Item1.Insert(10,s.Item2)));
+            Showstring = string.Join("", Recordvalue.Select(s=>string.IsNullOrEmpty(s.Item1) ? Deafult_Hex : s.Item1.Insert(10,s.Item2)));
             Onchange?.Invoke();
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (!PotionCraftState.IsLoaded())
+            if (!PotionCraftState.Active())
                 return;
             if (Main.mouseLeft && !IsMouseHovering)
             {
@@ -344,7 +382,7 @@ namespace PotionCraft.Content.UI.CraftUI
         public override void LeftClick(UIMouseEvent evt)
         {
             base.LeftClick(evt);
-            if (!PotionCraftState.IsLoaded())
+            if (!PotionCraftState.Active())
                 return;
             InputText();
         }
