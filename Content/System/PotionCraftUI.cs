@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.Text;
+﻿using Luminance.Common.Utilities;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
@@ -94,6 +95,8 @@ namespace PotionCraft.Content.System
         public static string CurrentElement;
 
         public Vector2 SourcePotion = Vector2.Zero;
+
+        public Vector2 Range = new (30, 30);
 
         public override void MouseOver(UIMouseEvent evt)
         {
@@ -202,26 +205,23 @@ namespace PotionCraft.Content.System
             if (SourcePotion.Equals(Vector2.Zero))
                 return;
 
-            var pos = GetDimensions().ToRectangle().TopLeft();
-            var x = (float)(Utils.Lerp(pos.X, Main.MouseScreen.X, 0.03d));
-            var y = (float)(Utils.Lerp(pos.X, Main.MouseScreen.X, 0.03d));
-            if (Math.Abs(SourcePotion.X - Main.MouseScreen.X) > 200)
-                x=(float)Utils.Lerp(pos.X, SourcePotion.X, 0.1d);
+            var pos = GetDimensions().ToRectangle();
+            var 
+            x = (float)(Utils.Lerp(pos.X, SourcePotion.X, 0.03d));
+            var 
+            y = (float)(Utils.Lerp(pos.Y, SourcePotion.Y, 0.03d));
 
-            if (Math.Abs(SourcePotion.Y - Main.MouseScreen.Y) > 200)
-                y = (float)Utils.Lerp(pos.Y, SourcePotion.Y, 0.1d);
+            if ((SourcePotion.X - Main.MouseScreen.X < Range.X && SourcePotion.Y - Main.MouseScreen.Y < Range.Y)
+                && (Main.MouseScreen.X - SourcePotion.X - Width.Pixels < Range.X && Main.MouseScreen.Y - SourcePotion.Y - Height.Pixels < Range.Y))
+            {
+                var diff = Main.MouseScreen - new Vector2(Width.Pixels/2 , Height.Pixels/2 ) - SourcePotion;
+                var offset = Vector2.Divide(diff, new Vector2(Width.Pixels/2,Height.Pixels/2)+ Range) * Range;
+                x = (float)Utils.Lerp(pos.X, SourcePotion.X + offset.X, 0.03d);
+                y = (float)Utils.Lerp(pos.Y, SourcePotion.Y + offset.Y, 0.03d);
+            }
 
             Left.Set(x, 0);
             Top.Set(y, 0);
-            //if (SourcePotion.Distance(Main.MouseScreen) > 200)
-            //{
-            //    Left.Set((float)Utils.Lerp(pos.X, SourcePotion.X, 0.03d), 0);
-            //    Left.Set(SourcePotion.X, 0);
-            //    Top.Set((float)Utils.Lerp(pos.Y, SourcePotion.Y, 0.03d), 0);
-            //    return;
-            //}
-            //Left.Set((float)(Utils.Lerp(pos.X, Main.MouseScreen.X, 0.03d)), 0);
-            //Top.Set((float)(Utils.Lerp(pos.Y, Main.MouseScreen.Y, 0.03d)), 0);
         }
 
     }

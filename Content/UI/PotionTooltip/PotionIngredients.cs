@@ -56,42 +56,57 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         private int Count;
 
-        private UIText IngredientTime;
+        private UIText IngredientName;
 
         private int IngredientId;
+
+        private int overlenght;
+
+        private float LeftOffset;
+
+        private UIElement Area;
         public IngredientElement(int BuffId, int ingredientType,int count)
         {
             Width.Set(150, 0);
             Height.Set(50, 0);
-            IngredientId = BuffId;
             IngredientType = ingredientType;
             Count = count;
-            IngredientTime = new("",.9f)
-            {
-                HAlign = 0.05f,
-                VAlign = 0.05f
-            };
+            var buffname = Lang.GetBuffName(BuffId);
+
             OverflowHidden = true;
+            Area = new();
+            Area.Left.Set(50, 0);
+            Area.Top.Set(10, 0);
+            Area.Width.Set(100, 0);
+            Area.Height.Set(50, 0);
+            Area.OverflowHidden = true;
+            Append(Area);
+            IngredientName = new(buffname, .8f)
+            {
+                OverflowHidden = true,
+                TextColor = Deafult
+            };
+            IngredientName.Top.Set(10f, 0);
             Main.instance.LoadItem(IngredientType);
-            IngredientTime.Width.Set(100, 0);
-            IngredientTime.Height.Set(30, 0);
-            Append(IngredientTime);
+            IngredientName.Width.Set(100, 0);
+            IngredientName.Height.Set(50, 0);
+            overlenght = (int)FontAssets.MouseText.Value.MeasureString(buffname).X-100;
+            Area.Append(IngredientName);
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch)
         {
             if (!PotionCraftModPlayer.PotionCraftKeybind.Current)
+            {
+                LeftOffset = 0;
                 return;
-            var buffname = Lang.GetBuffName(IngredientId);
-            //var conut = FontAssets.MouseText.Value.MeasureString(IngredientName);
-            //var scale = 1f;
-            //if (conut.X > 100)
-            //{ 
-            //    buffname = buffname.Replace(" ", "\n");
-            //    scale = 0.5f;
-            //}
+            }
+            if (overlenght>0 &&LeftOffset<overlenght)
+                LeftOffset += 0.3f;
+            
+            base.DrawChildren(spriteBatch);
+            IngredientName.Left.Set(-LeftOffset, 0);
             Utils.DrawBorderString(spriteBatch, Count.ToString(), GetDimensions().ToRectangle().TopLeft() + new Vector2(30, 25), Color.White);
-            Utils.DrawBorderString(spriteBatch, buffname, GetDimensions().ToRectangle().TopLeft() + new Vector2(50, 15), Deafult);
             spriteBatch.Draw(TextureAssets.Item[IngredientType].Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(20, 25), null, Color.White, 0, TextureAssets.Item[IngredientType].Value.Size() / 2, 1f, 0, 0);
 
         }

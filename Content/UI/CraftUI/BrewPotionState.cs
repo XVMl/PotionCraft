@@ -13,8 +13,10 @@ using Microsoft.Xna.Framework.Input;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
-using static PotionCraft.Assets;
 using static PotionCraft.Content.System.LanguageHelper;
+using static PotionCraft.Assets;
+using Luminance.Core.Graphics;
+using rail;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
@@ -69,13 +71,6 @@ namespace PotionCraft.Content.UI.CraftUI
             PotionSynopsis.SourcePotion =new Vector2(PotionSynopsis.Left.Pixels, PotionSynopsis.Top.Pixels);
             
             Append(PotionSynopsis);
-            //PotionSlot = new(this)
-            //{
-            //    HAlign = 0.5f,
-            //    VAlign = 0.5f,
-            //};
-            //Area.Append(PotionSlot);
-
             //PotionNameInput = new(() =>
             //{
             //    CreatPotion.CustomName = PotionNameInput.Showstring;
@@ -230,20 +225,35 @@ namespace PotionCraft.Content.UI.CraftUI
 
     }
 
-    public class PotionSynopsis: PotionElement<BrewPotionState>
+    public class ColorSelector: PotionElement<BrewPotionState>
     {
-        public PotionSynopsis(BrewPotionState brewPotionState)
+        private UIElement palette;
+        public ColorSelector(BrewPotionState brewPotionState)
         {
             PotionCraftState = brewPotionState;
-            Width.Set(376, 0);
-            Height.Set(400, 0);
+            Width.Set(338f, 0);
+            Height.Set(194f, 0);
+            palette = new UIElement();
+            palette.Width.Set(300, 0);
+            palette.Height.Set(150, 0);
+            Append(palette);
         }
 
-        protected override void DrawSelf(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            base.DrawSelf(spriteBatch);
-            var tex = UITexture("UI1").Value;
-            spriteBatch.Draw(tex, GetDimensions().ToRectangle(), null,Color.White,0,tex.Size()/2,SpriteEffects.None,0);
+            base.Draw(spriteBatch);
+            spriteBatch.Draw(UITexture("Ui3").Value, GetDimensions().ToRectangle().TopLeft(), Color.White);
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone,null, Main.UIScaleMatrix);
+            var shader = ShaderManager.GetShader("PotionCraft.ColorSelector");
+            shader.TrySetParameter("R", 1f);
+            shader.TrySetParameter("G", 0.0f);
+            shader.TrySetParameter("B", 0.0f);
+            shader.Apply();
+            var tex = UITexture("Pixel").Value;
+            Main.spriteBatch.Draw(UITexture("Ui3").Value, palette.GetDimensions().ToRectangle(),  Color.White);
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin();
         }
 
     }
