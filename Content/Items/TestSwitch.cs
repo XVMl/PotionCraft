@@ -48,7 +48,6 @@ namespace PotionCraft.Content.Items
             //else
             //{
             //}
-            Main.NewText("!!!");
             ActiveState = !ActiveState;
             CraftState = CraftUiState.BrewPotion;
             return true;

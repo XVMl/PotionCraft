@@ -16,6 +16,7 @@
 	  <None Remove="assets\autoloadedeffects\shaders\Cheapstar.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\Color.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\ColorSelector.fx" />
+	  <None Remove="assets\autoloadedeffects\shaders\Colorvariation.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\EnergyTrial.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\Glowpotion.fx" />
 	  <None Remove="assets\autoloadedeffects\shaders\Laser.fx" />

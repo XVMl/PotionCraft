@@ -96,7 +96,7 @@ namespace PotionCraft.Content.System
 
         public Vector2 SourcePotion = Vector2.Zero;
 
-        public Vector2 Range = new (30, 30);
+        public Vector2 Range = new (50, 50);
 
         public override void MouseOver(UIMouseEvent evt)
         {
