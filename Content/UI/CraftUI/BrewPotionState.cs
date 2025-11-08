@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Terraria.ModLoader;
+using static PotionCraft.Assets;
 using Terraria.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
@@ -15,6 +16,7 @@ using Terraria.GameInput;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 using static PotionCraft.Content.System.LanguageHelper;
 using rail;
+using Luminance.Common.Utilities;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
@@ -43,7 +45,11 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private PotionSynopsis PotionSynopsis;
 
+        private PotionComponent potionComponent;
+
         private ColorSelector colorSelector;
+
+        private BrewPotionSlider brewPotionSlider;
 
         private bool changecraft;
         public override void OnInitialize()
@@ -61,28 +67,17 @@ namespace PotionCraft.Content.UI.CraftUI
             PotionSynopsis.Top.Set(300, 0);
             PotionSynopsis.Left.Set(500, 0);
             PotionSynopsis.SourcePotion =new Vector2(PotionSynopsis.Left.Pixels, PotionSynopsis.Top.Pixels);
+            Append(PotionSynopsis);
 
             colorSelector = new(this);
             colorSelector.Top.Set(300, 0);
             colorSelector.Left.Set(100, 0);
             Append(colorSelector);
 
-            Append(PotionSynopsis);
-            //PotionNameInput = new(() =>
-            //{
-            //    CreatPotion.CustomName = PotionNameInput.Showstring;
-            //},this,CreatPotion.CustomName);
-            //{
-
-            //};
-            //Area.Append(PotionNameInput);
-
-            //BrewPotionButton = new BrewPotionButton(this)
-            //{
-            //    HAlign = 0.5f,
-            //    VAlign = 1f,
-            //};
-            //Append(BrewPotionButton);
+            brewPotionSlider = new BrewPotionSlider(this);
+            brewPotionSlider.Left.Set(1200, 0);
+            brewPotionSlider.Top.Set(300, 0);
+            Append(brewPotionSlider);
 
         }
 
@@ -220,6 +215,84 @@ namespace PotionCraft.Content.UI.CraftUI
             //spriteBatch.Draw(UITexture("UI1").Value, LeftArea.GetDimensions().ToRectangle(), Color.White);
         }
 
+    }
+
+    public class PotionComponent : PotionElement<BrewPotionState>
+    {
+        public PotionComponent(BrewPotionState brewPotionState)
+        {
+            PotionCraftState = brewPotionState;
+            Width.Set(342f, 0);
+            Height.Set(388f, 0);
+        }
+
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+            var tex = UITexture("Ui3").Value;
+            spriteBatch.Draw(tex, GetDimensions().Position() + new Vector2(0,-24),new Rectangle(0,0,342,24), Color.White);
+            spriteBatch.Draw(tex, GetDimensions().Position(), Color.White);
+            spriteBatch.Draw(tex, GetDimensions().Position() + new Vector2(0, +24), new Rectangle(0, 164, 342, 24), Color.White);
+        }
+    }
+
+    public class BrewPotionSlider : PotionElement<BrewPotionState>
+    {
+        private int value;
+
+        private float maxvalue=1;
+
+        private bool mouseLeft;
+
+        public Action onChange;
+        public BrewPotionSlider(BrewPotionState brewPotionState)
+        {
+            Width.Set(300f, 0);
+            Height.Set(22f, 0);
+            PotionCraftState = brewPotionState;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (!mouseLeft)
+                return;
+            maxvalue = Utils.Clamp((int)(CaculateMoney(Main.LocalPlayer) / 1000), 1, 999);
+            value = Utils.Clamp((int)((Main.MouseScreen.X - Left.Pixels)*maxvalue/Width.Pixels), 0, (int)maxvalue);
+            onChange?.Invoke();
+            if (!Main.mouseLeft)
+                mouseLeft = false;
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+            var offset = Utils.Clamp(value/maxvalue*Width.Pixels,0,Width.Pixels -28);
+            spriteBatch.Draw(UITexture("Slider").Value,new Rectangle((int)Left.Pixels,(int)Top.Pixels,4,22),new Rectangle(0,0,4,22), Color.White);
+            spriteBatch.Draw(UITexture("Slider").Value, new Rectangle((int)Left.Pixels+4, (int)Top.Pixels,(int)Width.Pixels-8, 22), new Rectangle(10,0,1,22), Color.White);
+            spriteBatch.Draw(UITexture("Slider").Value, new Rectangle((int)Left.Pixels+(int)Width.Pixels-4, (int)Top.Pixels, 4, 22), new Rectangle(110, 0, 4, 22),Color.White);
+            spriteBatch.Draw(UITexture("Slider").Value, new Rectangle((int)Left.Pixels + 4, (int)Top.Pixels, (int)offset, 22), new Rectangle(4, 0, 2, 22), Color.White);
+
+            spriteBatch.Draw(UITexture("Slidericon").Value, GetDimensions().Position() + new Vector2(offset, 0), Color.White);
+        }
+
+        public override void LeftClick(UIMouseEvent evt)
+        {
+            base.LeftClick(evt);
+            Main.NewText("!");
+        }
+
+        public override void LeftMouseDown(UIMouseEvent evt) => mouseLeft = true;
+
+        public static long CaculateMoney(Player player)
+        {
+            var num = Utils.CoinsCount(out _, player.bank.item);
+            var num2 = Utils.CoinsCount(out _, player.bank2.item);
+            var num3 = Utils.CoinsCount(out _, player.bank3.item);
+            var num4 = Utils.CoinsCount(out _, player.bank4.item);
+            var num5 = Utils.CoinsCombineStacks(out _, num, num2, num3, num4);
+            return num5;
+        }
     }
 
     public class BrewPotionButton : PotionElement<BrewPotionState>

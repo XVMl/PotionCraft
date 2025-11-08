@@ -13,10 +13,6 @@ namespace PotionCraft.Content.UI.CraftUI
             PotionCraftState = brewPotionState;
             Width.Set(342, 0);
             Height.Set(414, 0);
-            //colorSelector = new(brewPotionState);
-            //colorSelector.Left.Set(-400, 0);
-            //Append(colorSelector);
-            
         }
 
 
