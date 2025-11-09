@@ -49,6 +49,14 @@ namespace PotionCraft
 
             public static Texture2D PanelGrayscale => UITexture("PanelGrayscale").Value;
 
+            public static Texture2D Delete => UITexture("Delete").Value;
+
+            public static Texture2D Brew => UITexture("Brew").Value;
+
+            public static Texture2D UI4 => UITexture("UI4").Value;
+
+            public static Texture2D Circular => UITexture("Circular").Value;
+
             public static string PotionCraftBG => Path.UI + "PotionCraftBG";
         }
         public class Items
