@@ -7,14 +7,22 @@ namespace PotionCraft.Content.UI.CraftUI
 {
     public class PotionSynopsis: PotionElement<BrewPotionState>
     {
-        private ColorSelector colorSelector;
+        private Button coloreelectorbutton;
+
         public PotionSynopsis(BrewPotionState brewPotionState)
         {
             PotionCraftState = brewPotionState;
             Width.Set(342, 0);
             Height.Set(414, 0);
+            coloreelectorbutton = new(Assets.UI.ColorSelector, Color.White);
+            coloreelectorbutton.Width.Set(18, 0);
+            coloreelectorbutton.Height.Set(18, 0);
+            coloreelectorbutton.Top.Set(290, 0);
+            coloreelectorbutton.Left.Set(26, 0);
+            coloreelectorbutton.onClike = () =>
+                ColorSelector.Active = !ColorSelector.Active;
+            Append(coloreelectorbutton);
         }
-
 
         public override void Draw(SpriteBatch spriteBatch)
         {

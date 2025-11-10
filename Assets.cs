@@ -57,6 +57,12 @@ namespace PotionCraft
 
             public static Texture2D Circular => UITexture("Circular").Value;
 
+            public static Asset<Texture2D> Icon => UITexture("Icon");
+
+            public static Asset<Texture2D> ColorSelector => UITexture("ColorSelector");
+
+            public static Asset<Texture2D> Input => UITexture("Input");
+
             public static string PotionCraftBG => Path.UI + "PotionCraftBG";
         }
         public class Items

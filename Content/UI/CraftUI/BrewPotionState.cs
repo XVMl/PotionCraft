@@ -249,6 +249,8 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private Slider slider;
 
+        private Button autouse;
+
         public PotionSetting(BrewPotionState brewPotionState)
         {
             PotionCraftState = brewPotionState;
@@ -270,6 +272,13 @@ namespace PotionCraft.Content.UI.CraftUI
             slider.Left.Set(90, 0);
             slider.Top.Set(122, 0);
             Append(slider);
+            autouse = new Button(Assets.UI.Icon, Color.White, new Rectangle(40,0,18,18));
+            autouse.Height.Set(18, 0);
+            autouse.Width.Set(18, 0);
+            autouse.Left.Set(122, 0);
+            autouse.Top.Set(46, 0);
+            autouse.iconcolor = Deafult;
+            Append(autouse);
 
         }
 
@@ -291,13 +300,17 @@ namespace PotionCraft.Content.UI.CraftUI
     {
         private Asset<Texture2D> Texture;
 
+        private Rectangle Rectangle =Rectangle.Empty;
+
         public Action onClike;
 
         public string text;
 
         public float scale;
 
-        public Color color;
+        public Color color = Color.White;
+
+        public Color iconcolor = Color.White;
         public Button(Asset<Texture2D> texture2D ,Color color,string text ="",float scale=1)
         {
             Texture  = texture2D;
@@ -305,7 +318,14 @@ namespace PotionCraft.Content.UI.CraftUI
             this.color = color;
             this.scale = scale;
         }
-
+        public Button(Asset<Texture2D> texture2D, Color color, Rectangle rectangle, string text = "", float scale = 1)
+        {
+            Texture = texture2D;
+            Rectangle = rectangle;
+            this.text = text;
+            this.color = color;
+            this.scale = scale;
+        }
         public override void LeftClick(UIMouseEvent evt)
         {
             base.LeftClick(evt);
@@ -320,7 +340,10 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture.Value, GetDimensions().ToRectangle(), Color.White);
+            if(!Rectangle.IsEmpty)
+                spriteBatch.Draw(Texture.Value, GetDimensions().ToRectangle(),Rectangle ,iconcolor);
+            else
+                spriteBatch.Draw(Texture.Value, GetDimensions().ToRectangle(), iconcolor);
             Utils.DrawBorderString(spriteBatch, text,GetDimensions().Position()+new Vector2(30,Height.Pixels/2) , color, 0.75f);
             base.Draw(spriteBatch);
         }

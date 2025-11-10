@@ -33,7 +33,6 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             if (!mouseLeft)
                 return;
-            Main.NewText(value);
             //maxvalue = Utils.Clamp((int)(CaculateMoney(Main.LocalPlayer) / 1000), 1, 999);
             value = Utils.Clamp((int)((Main.MouseScreen.X - GetDimensions().X) *maxvalue/Width.Pixels), 0, (int)maxvalue);
             onChange?.Invoke();
@@ -46,8 +45,8 @@ namespace PotionCraft.Content.UI.CraftUI
             base.Draw(spriteBatch);
             var offset = Utils.Clamp(value/maxvalue*Width.Pixels,0,Width.Pixels -28);
             spriteBatch.Draw(UITexture("Slider").Value,new Rectangle((int)GetDimensions().X,(int)GetDimensions().Y, 4,22),new Rectangle(0,0,4,22), Color.White);
-            spriteBatch.Draw(UITexture("Slider").Value, new Rectangle((int)GetDimensions().X + 4, (int)GetDimensions().Y, (int)Width.Pixels-8, 22), new Rectangle(10,0,1,22), Color.White);
-            spriteBatch.Draw(UITexture("Slider").Value, new Rectangle((int)GetDimensions().X +(int)GetDimensions().Y - 4, (int)Top.Pixels, 4, 22), new Rectangle(110, 0, 4, 22),Color.White);
+            spriteBatch.Draw(UITexture("Slider").Value, new Rectangle((int)GetDimensions().X + 4, (int)GetDimensions().Y, (int)Width.Pixels - 8, 22), new Rectangle(10, 0, 1, 22), Color.White);
+            spriteBatch.Draw(UITexture("Slider").Value, new Rectangle((int)GetDimensions().X +(int)GetDimensions().Width - 4, (int)GetDimensions().Y, 4, 22), new Rectangle(110, 0, 4, 22),Color.White);
             spriteBatch.Draw(UITexture("Slider").Value, new Rectangle((int)GetDimensions().X + 4, (int)GetDimensions().Y, (int)offset, 22), new Rectangle(4, 0, 2, 22), Color.White);
             var icon = UITexture("Slidericon").Value;
             spriteBatch.Draw(icon, GetDimensions().Position() + new Vector2(offset+14, 11), null, Color.White, 0, icon.Size() / 2, 1, SpriteEffects.None, 0); ;
