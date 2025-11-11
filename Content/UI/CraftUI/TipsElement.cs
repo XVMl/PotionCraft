@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.System;
@@ -19,6 +20,7 @@ public class TipsElement<T>:PotionElement<T> where T : AutoUIState
     
     private string showtext;
 
+    private int pos;
     public TipsElement(T potioncraftState)
     {
         PotionCraftState = potioncraftState;
@@ -31,18 +33,22 @@ public class TipsElement<T>:PotionElement<T> where T : AutoUIState
     {
         base.Update(gameTime);
         if (!PotionCraftState.Active()) return;
-        var s = LanguageHelper.TryGetLanguagValue(CurrentElement);
+        var s = CurrentElement;
         if (!showtext.Equals(s))
         {
-            showtext = s;
+            showtext = LanguageHelper.TryGetLanguagValue(CurrentElement);
+            pos = 0;
             current = string.Empty;
         }
-        if (Main.GameUpdateCount % 10 == 1)
-            current +=showtext;
+        if (Main.GameUpdateCount % 10 == 1 && showtext != null && pos <showtext.Length)
+        {
+            current += showtext[pos];
+            pos++;
+        }
         text.SetText(current);
         
     }
-
+    
     public override void Draw(SpriteBatch spriteBatch)
     {
         base.Draw(spriteBatch);

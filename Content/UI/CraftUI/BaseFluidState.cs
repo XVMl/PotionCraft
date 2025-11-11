@@ -95,8 +95,8 @@ namespace PotionCraft.Content.UI.CraftUI
             
             Potionslot = new(this, () => {
                 if (Potion.ModItem is not BasePotion) return;
-                BaseFuildInput.Recordvalue =ParseTextToList(AsPotion(Potion).PotionName);
-                SignaturesInput.Recordvalue =ParseTextToList(AsPotion(Potion).Signatures);
+                BaseFuildInput.Recordvalue =ParseText(AsPotion(Potion).PotionName);
+                SignaturesInput.Recordvalue =ParseText(AsPotion(Potion).Signatures);
             })
             {
                 HAlign = 0.2f,
@@ -107,7 +107,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
             Materialslot = new(this, () => {
                 if (Potion.ModItem is not BasePotion) return;
-                BaseFuildInput.Recordvalue =ParseTextToList(AsPotion(Potion).PotionName); 
+                BaseFuildInput.Recordvalue =ParseText(AsPotion(Potion).PotionName); 
             })
             {
                 HAlign = 0.55f,
@@ -205,12 +205,12 @@ namespace PotionCraft.Content.UI.CraftUI
         {   
             Width.Set(180f, 0f);
             Height.Set(50f, 0f);
-            Recordvalue = ParseTextToList(currentValue);
+            Recordvalue = ParseText(currentValue);
         }
 
         public BaseFuildInput(Action onchange,string currentvalue=null )
         {
-            Recordvalue = ParseTextToList(currentvalue);
+            Recordvalue = ParseText(currentvalue);
             Onchange = onchange;
         }
 

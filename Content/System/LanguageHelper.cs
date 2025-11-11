@@ -108,7 +108,7 @@ namespace PotionCraft.Content.System
             return c >= 0x4E00 && c <= 0x9FA5;
         }
         // 解析字符串并计算每个部分的宽度
-        private static List<(string colorCode, string text)> ParseText(string text)
+        public static List<(string colorCode, string text)> ParseText(string text)
         {
             var parts = new List<(string colorCode, string text)>();
             var regex = new Regex(@"\[c/(\w{6}):([^]]+)\]");
@@ -167,20 +167,24 @@ namespace PotionCraft.Content.System
             }
             return result;
         }
-        public static string DeleteTextColor_SaveString(string msg) => Regex.Replace(msg, @"\[c/\w+:(.*?)\]", "$1");
         
-        public static List<(string colorCode, string text)> ParseTextToList(string text)
+        public static string DeleteTextColor_SaveString(string msg) => Regex.Replace(msg, @"\[c/\w+:(.*?)\]", "$1");
+
+        public static Color HexToColor(string hex)
         {
-            if (string.IsNullOrEmpty(text))
-                return [];
-            string pattern = @"\[c/[^:]+:([^]]+)\]";
-            MatchCollection matches = Regex.Matches(text, pattern);
-            List<(string colorCode, string text)> parts = new List<(string colorCode, string text)>();
-            foreach (Match match in matches)
+            hex = hex.Substring(3, hex.Length - 5);
+            // 添加#号以符合HTML颜色格式
+            if (hex.StartsWith('#'))
+                hex = hex[1..];
+            return hex.Length switch
             {
-                parts.Add((colorCode: match.Groups[0].Value,text: match.Groups[1].Value));
-            }
-            return parts;
+                // 如果包含透明度
+                8 => new Color(Convert.ToInt32(hex[..2], 16), Convert.ToInt32(hex.Substring(2, 2), 16),
+                    Convert.ToInt32(hex.Substring(4, 2), 16), Convert.ToInt32(hex.Substring(6, 2), 16)),
+                6 => new Color(Convert.ToInt32(hex[..2], 16), Convert.ToInt32(hex.Substring(2, 2), 16),
+                    Convert.ToInt32(hex.Substring(4, 2), 16), 255),
+                _ => throw new ArgumentException("Invalid hex color string.")
+            };
         }
         
         public static string CreatQuestion(int level)
@@ -235,7 +239,7 @@ namespace PotionCraft.Content.System
             }
             return string.Join(" ", stack.ToList());
         }
-
-
+        
     }
+    
 }

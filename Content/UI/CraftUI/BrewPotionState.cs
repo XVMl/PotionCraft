@@ -28,6 +28,8 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override bool Isload() => true;
 
+        public static readonly MethodInfo SetModItem = typeof(Item).GetProperty(nameof(Item.ModItem))!.GetSetMethod();
+        
         public override string LayersFindIndex => "Vanilla: Mouse Text";
 
         private PotionSlot<BrewPotionState> PotionSlot;
@@ -36,9 +38,11 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private BrewPotionButton BrewPotionButton;
 
-        public int PotionCount = 20;
+        public int PotionStack = 20;
 
         public BasePotion CreatPotion = ModContent.GetInstance<BasePotion>();
+        
+        public BaseCustomMaterials CustomMaterials =  ModContent.GetInstance<BaseCustomMaterials>();
         
         private UIElement Area;
         
@@ -189,6 +193,17 @@ namespace PotionCraft.Content.UI.CraftUI
                 CreatPotion._Name = $"{Lang.GetBuffName(item.buffType).Replace(" ","")} ";
         }
 
+        private void BrewPotion(Item potion)
+        {
+            if (Crafts.Count != 0)
+                foreach (var craft in Crafts) craft.Invoke();
+             
+            SetModItem.Invoke(Potion, [CreatPotion]);
+            Potion.stack = PotionStack;
+            
+            Main.LocalPlayer.BuyItem(50 * PotionStack);
+        }
+        
         public void Refresh()
         {
             Potion = new Item();
@@ -214,6 +229,7 @@ namespace PotionCraft.Content.UI.CraftUI
             potionSetting.Update(gameTime);
         }
 
+        
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             base.DrawSelf(spriteBatch);
@@ -352,7 +368,6 @@ namespace PotionCraft.Content.UI.CraftUI
 
     public class BrewPotionButton : PotionElement<BrewPotionState>
     {
-        public static MethodInfo SetModItem = typeof(Item).GetProperty(nameof(Item.ModItem))!.GetSetMethod();
         public BrewPotionButton(BrewPotionState brewPotionState)
         {
             PotionCraftState = brewPotionState;
@@ -360,20 +375,20 @@ namespace PotionCraft.Content.UI.CraftUI
             Height.Set(32f, 0);
         }
 
-        private void BrewPotion(Item potion)
-        {
-            if (PotionCraftState.Crafts.Count != 0)
-                foreach (var craft in PotionCraftState.Crafts) craft.Invoke();
-             
-            SetModItem.Invoke(PotionCraftState.Potion, [PotionCraftState.CreatPotion]);
-            Main.LocalPlayer.BuyItem(50 * PotionCraftState.PotionCount);
-        }
+        // private void BrewPotion(Item potion)
+        // {
+        //     if (PotionCraftState.Crafts.Count != 0)
+        //         foreach (var craft in PotionCraftState.Crafts) craft.Invoke();
+        //     
+        //     SetModItem.Invoke(PotionCraftState.Potion, [PotionCraftState.CreatPotion]);
+        //     Main.LocalPlayer.BuyItem(50 * PotionCraftState.PotionCount);
+        // }
 
         public override void LeftClick(UIMouseEvent evt)
         {
             base.LeftClick(evt);
             if (PotionCraftState.Potion.IsAir) return;
-            BrewPotion((PotionCraftState.Potion));
+            // BrewPotion((PotionCraftState.Potion));
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -384,28 +399,14 @@ namespace PotionCraft.Content.UI.CraftUI
         }
 
     }
-
-    public class BrewPotionMashUpButton : PotionElement<BrewPotionState>
-    {
-        public bool CouldClick;
-        public BrewPotionMashUpButton(BrewPotionState brewPotionState)
-        {
-            PotionCraftState = brewPotionState;
-            Width.Set(100f, 0);
-            Height.Set(50f, 0);
-        }
-
-        
-
-    }
-
+    
     public class BrewPotionInput:PotionElement<BrewPotionState>
     {
 
         public bool Inputting;
         
-        public (string,string) Currentvalue= ("","");
-
+        public string Currentvalue;
+        
         public List<(string,string)> Recordvalue=new();
         
         public string Showstring="";
@@ -418,13 +419,13 @@ namespace PotionCraft.Content.UI.CraftUI
             PotionCraftState = brewPotionState;
             Width.Set(180f, 0f);
             Height.Set(50f, 0f);
-            Recordvalue = ParseTextToList(currentValue);
+            Recordvalue = ParseText(currentValue);
         }
 
         public BrewPotionInput(Action onchange, BrewPotionState brewPotionState,string currentvalue=null )
         {
             PotionCraftState = brewPotionState;
-            Recordvalue = ParseTextToList(currentvalue);
+            Recordvalue = ParseText(currentvalue);
             Onchange = onchange;
         }
 
@@ -432,7 +433,6 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             Inputting = true;
             Main.blockInput= true;
-            
         }
 
         private void HandleInputText()
@@ -444,16 +444,16 @@ namespace PotionCraft.Content.UI.CraftUI
 
             PlayerInput.WritingText = true;
             Main.instance.HandleIME();
-            if (Currentvalue.Item2.Length == 0)
+            if (!Currentvalue.IsNormalized())
                 Currentvalue = StListText();
-            Currentvalue = (Currentvalue.Item1,Main.GetInputText(Currentvalue.Item2));
+            Currentvalue = Main.GetInputText(Currentvalue);
         }
 
         private void EndInputText()
         {
             Main.blockInput = false;
             Inputting = false;
-            Recordvalue.Add(Currentvalue);
+            Recordvalue.Add((SelectColor, Currentvalue));
             Showstring = string.Join("", Recordvalue.Select(s=>string.IsNullOrEmpty(s.Item1) ? Deafult_Hex : s.Item1.Insert(10,s.Item2)));
             Onchange?.Invoke();
         }
@@ -472,13 +472,13 @@ namespace PotionCraft.Content.UI.CraftUI
             }
         }
 
-        private (string,string) StListText()
+        private string StListText()
         {
             if (Recordvalue.Count == 0)
-                return ("","");
-            var ss = Recordvalue.Last();
+                return "";
+            var text = Recordvalue.Last().Item2;
             Recordvalue.Remove(Recordvalue.Last());
-            return ss;
+            return text;
         }
 
         public override void LeftClick(UIMouseEvent evt)
@@ -498,30 +498,43 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 spriteBatch.Draw(Assets.UI.PanelGrayscale, GetDimensions().ToRectangle(), new Color(49, 84, 141));
                 Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
-                Utils.DrawBorderString(spriteBatch, Currentvalue.Item1.Insert(10, Currentvalue.Item2), vector2,
-                    Color.White, 0.75f, 0f, 0f, -1);
+                Utils.DrawBorderString(spriteBatch, Currentvalue, vector2,
+                    HexToColor(SelectColor), 0.75f, 0f, 0f, -1);
             }
             if (Main.GameUpdateCount % 20U >= 10U)
                 return;
-            Utils.DrawBorderString(spriteBatch, "|", vector2+FontAssets.MouseText.Value.MeasureString(Currentvalue.Item2), Color.White, 0.75f, 0.0f, 0.0f, -1);
-
+            Utils.DrawBorderString(spriteBatch, "|", vector2+FontAssets.MouseText.Value.MeasureString(Currentvalue), Color.White, 0.75f, 0.0f, 0.0f, -1);
         }
-
+        
     }
     
-    public class BrewPotionPutifyButton : PotionElement<BrewPotionState>
+    public class BrewPotionSwitch : PotionElement<BrewPotionState>
     {
-        public bool CouldClick;
-        public BrewPotionPutifyButton(BrewPotionState brewPotionState)
+        private Action _onClick;
+
+        private string _switchText;
+
+        public bool Switchvalue;
+        public BrewPotionSwitch(BrewPotionState brewPotionState, string switchtext,Action onClick)
         {
             PotionCraftState = brewPotionState;
             Width.Set(100f, 0);
-            Height.Set(50f, 0);
+            Height.Set(32f, 0);
         }
         
-        
+        public override void LeftClick(UIMouseEvent evt)
+        {
+            base.LeftClick(evt);
+            _onClick?.Invoke();
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            base.DrawSelf(spriteBatch);
+            Utils.DrawBorderString(spriteBatch, _switchText, GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
+            
+        }
         
     }
-    
     
 }
