@@ -48,6 +48,7 @@ namespace PotionCraft.Content.Items
         /// </summary>
         public string CustomName="";
 
+        
         public bool CanCustomName;
         /// <summary>
         /// 精炼的次数，用于改变字体颜色

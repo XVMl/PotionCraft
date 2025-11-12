@@ -2,15 +2,25 @@
 using PotionCraft.Content.System;
 using Terraria;
 using Microsoft.Xna.Framework;
+using PotionCraft.Content.Items;
 using static PotionCraft.Assets;
+using static PotionCraft.Content.System.LanguageHelper;
+
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class PotionSynopsis: PotionElement<BrewPotionState>
     {
+        private BrewPotionState _brewPotionState;
+        
         private Button coloreelectorbutton;
 
+        private Input _potionname;
+
+        private Input _potionremarks;
+        
         public PotionSynopsis(BrewPotionState brewPotionState)
         {
+            _brewPotionState = brewPotionState;
             PotionCraftState = brewPotionState;
             Width.Set(342, 0);
             Height.Set(414, 0);
@@ -19,11 +29,41 @@ namespace PotionCraft.Content.UI.CraftUI
             coloreelectorbutton.Height.Set(18, 0);
             coloreelectorbutton.Top.Set(290, 0);
             coloreelectorbutton.Left.Set(26, 0);
-            coloreelectorbutton.onClike = () =>
-                ColorSelector.Active = !ColorSelector.Active;
+            coloreelectorbutton.OnClike = () =>
+            {
+                brewPotionState?.colorSelector.TransitionAnimation?.Invoke();
+            };
+            
             Append(coloreelectorbutton);
+            _potionname = new(brewPotionState);
+            _potionname.Onchange = () =>
+            {
+                _brewPotionState.CreatPotion.CustomName = _potionname.Showstring;
+            };
+            _potionname.Left.Set(30, 0);
+            _potionname.Top.Set(100,0);
+            Append(_potionname);
+
+            _potionremarks = new(brewPotionState)
+            {
+                Canedit = true,
+                Onchange = () =>
+                {
+                    _brewPotionState.CreatPotion.Signatures = _potionremarks.Showstring;
+                }
+            };
+            _potionremarks.Left.Set(30, 0);
+            _potionremarks.Top.Set(300, 0);
+            Append(_potionremarks);
         }
 
+        public void SynopsisUpdate()
+        {
+            var potion = _brewPotionState.PreviewPotion.ModItem as BasePotion;
+            _potionname.Recordvalue = potion.CanCustomName ? ParseText(potion.CustomName) : ParseText(potion?.PotionName);
+            _potionremarks.Recordvalue = ParseText(potion.Signatures);
+        }
+        
         public override void Draw(SpriteBatch spriteBatch)
         {
             var tex = UITexture("UI1").Value;

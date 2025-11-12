@@ -30,7 +30,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
         public override bool Active() => ShowToolTip;
 
         public override bool Isload()=> true;
-        public override string LayersFindIndex => "Vanilla: Mouse Text";
+        public override string LayersFindIndex => "Vanilla: Mouse Item / NPC Head";
 
         private bool ShowToolTip;
         

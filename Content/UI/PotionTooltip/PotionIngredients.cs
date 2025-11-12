@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
@@ -21,7 +22,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
     {
         public UIGrid UIgrid;
 
-        public PotionIngredients(TooltipUI tooltipUI)
+        public PotionIngredients(AutoUIState potionCraftState)
         {
             PotionCraftState = null;
             UIgrid = new UIGrid()
@@ -47,7 +48,16 @@ namespace PotionCraft.Content.UI.PotionTooltip
             }
 
         }
-        
+        public void SetPotionCraftState(BasePotion potion)
+        {
+            if (PotionCraftState is null) return;
+            foreach (var ingredientElement in potion.PotionDictionary.Select(ingredient => new IngredientElement(ingredient.Value.BuffId, ingredient.Value.ItemId,ingredient.Value.Counts)))
+            {
+                UIgrid.Add(ingredientElement);
+                UIgrid.RecalculateChildren();
+            }
+
+        }
     }
 
     public class IngredientElement:UIElement

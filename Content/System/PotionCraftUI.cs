@@ -98,6 +98,8 @@ namespace PotionCraft.Content.System
 
         public Vector2 Range = new (50, 50);
 
+        public Action TransitionAnimation;
+
         public override void MouseOver(UIMouseEvent evt)
         {
             base.MouseOver(evt);

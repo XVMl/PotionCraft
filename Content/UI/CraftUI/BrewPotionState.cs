@@ -2,24 +2,16 @@
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Terraria.ModLoader;
 using static PotionCraft.Assets;
 using Terraria.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Terraria.GameContent;
-using Terraria.GameInput;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 using static PotionCraft.Content.System.LanguageHelper;
-using Luminance.Common.Utilities;
-using Terraria.GameContent.UI.Elements;
-using Terraria.Audio;
-using Terraria.ID;
-using ReLogic.Content;
+using PotionCraft.Content.UI.PotionTooltip;
+
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
@@ -42,34 +34,25 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public BasePotion CreatPotion = ModContent.GetInstance<BasePotion>();
         
+        public Item PreviewPotion;
+        
         public BaseCustomMaterials CustomMaterials =  ModContent.GetInstance<BaseCustomMaterials>();
         
-        private UIElement Area;
+        private bool ConflitCraft;
         
-        public Queue<Action> Crafts = new();
-
+        private Action<BasePotion,Item> Craft;
+        
         private PotionSynopsis PotionSynopsis;
 
         private PotionComponent potionComponent;
 
         private PotionSetting potionSetting;
 
-        private ColorSelector colorSelector;
-
-        private Slider brewPotionSlider;
+        public ColorSelector colorSelector;
 
         private bool changecraft;
         public override void OnInitialize()
         {
-            Area = new UIElement()
-            {
-                HAlign = 0.2f,
-                VAlign = 0.3f,
-            };
-            Area.Width.Set(270f, 0);
-            Area.Height.Set(270f, 0);
-            Append(Area);
-
             PotionSynopsis = new PotionSynopsis(this);
             PotionSynopsis.Top.Set(300, 0);
             PotionSynopsis.Left.Set(500, 0);
@@ -90,6 +73,8 @@ namespace PotionCraft.Content.UI.CraftUI
 
         }
 
+        #region 操作具体方法
+
         public static bool QuicklyCheckPotion(Item item1,BasePotion item2)
         {
             if (item1.ModItem is not BasePotion)
@@ -101,69 +86,58 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             if (PotionList.ContainsKey(item) && item.ModItem is not BasePotion)
                 return;
-            
+
+            Craft.Invoke(CreatPotion,currentItem);
+            ConflitCraft =  false;
             currentItem = item;
-            if (!QuicklyCheckPotion(item, CreatPotion) && item.type != ModContent.ItemType<MagicPanacea>())
+            if (item.type == ModContent.ItemType<MagicPanacea>())
             {
-                Crafts.Enqueue(()=>MashUp(item));
-                Crafts.Last()?.Invoke();
+                Craft = Putify;
+                return; 
+            } 
+            if (!QuicklyCheckPotion(item, CreatPotion) )
+            {
+                Craft =MashUp;
                 return;
             }
-            changecraft = false;
-            Crafts.Enqueue(() => Putify(item));
-            Crafts.Last()?.Invoke();
+            ConflitCraft = true;
+            Refresh();
         }
         
-        private void Putify(Item item)
+        private void Putify(BasePotion potion,Item item)
         {
-            
-            foreach (var buff in CreatPotion.PotionDictionary)
+            foreach (var buff in potion.PotionDictionary)
             {
                 buff.Value.BuffTime *= 2;
                 buff.Value.Counts *= 2;
             }
-            for (var i = 0; i < CreatPotion.DrawPotionList.Count; i++)
+            for (var i = 0; i < potion.DrawPotionList.Count; i++)
             {
-                CreatPotion.DrawCountList[i] *= 2;
+                potion.DrawCountList[i] *= 2;
             }
-            CreatPotion.PurifyingCount++;
-            CreatPotion._Name += "@ ";
+            potion.PurifyingCount++;
+            potion._Name += "@ ";
         }
 
-        private void ChangeCraft()
-        { 
-            Crafts.Dequeue();
-            if (!changecraft)
-            {
-                Crafts.Enqueue(()=>MashUp(currentItem));
-            }
-            else
-            {
-                Crafts.Enqueue(()=>Putify(currentItem));
-            }
-            changecraft = !changecraft;;
-            Refresh();
-        }
-        
-        private void MashUp(Item item)
+        private void MashUp(BasePotion potion,Item item)
         {
             var count = 0;
             if(item.ModItem is BasePotion)
                 goto BasePotion;
             
             var name = Lang.GetBuffName(item.buffType);
-            CreatPotion.PotionDictionary.TryAdd(name, new PotionData(
+            potion.PotionDictionary.TryAdd(name, new PotionData(
                 name,
                 item.type,
                 0,
                 0,
                 item.buffType
             ));
-            CreatPotion.PotionDictionary[name].BuffTime+= item.buffTime;
-            CreatPotion.PotionDictionary[name].Counts++;
-            CreatPotion.DrawPotionList.Add(item.type);
-            CreatPotion.DrawCountList.Add(1);
-            CreatPotion._Name +=
+            potion.PotionDictionary[name].BuffTime+= item.buffTime;
+            potion.PotionDictionary[name].Counts++;
+            potion.DrawPotionList.Add(item.type);
+            potion.DrawCountList.Add(1);
+            potion._Name +=
                 $"{Lang.GetBuffName(item.buffType).Replace(" ", "")} + ";    
             goto End;
             
@@ -171,53 +145,63 @@ namespace PotionCraft.Content.UI.CraftUI
             var material = AsPotion(item);
             foreach (var buff in material.PotionDictionary)
             {
-                CreatPotion.PotionDictionary.TryAdd(buff.Key,buff.Value);
-                CreatPotion.PotionDictionary[buff.Key].BuffTime+= buff.Value.BuffTime;
-                CreatPotion.PotionDictionary[buff.Key].Counts+= buff.Value.Counts;
+                potion.PotionDictionary.TryAdd(buff.Key,buff.Value);
+                potion.PotionDictionary[buff.Key].BuffTime+= buff.Value.BuffTime;
+                potion.PotionDictionary[buff.Key].Counts+= buff.Value.Counts;
             }
             
             for (var i = 0; i < material.DrawCountList.Count; i++)
             {
-                CreatPotion.DrawPotionList.Add(material.DrawPotionList[i]);
-                CreatPotion.DrawCountList.Add(material.DrawCountList[i]);
+                potion.DrawPotionList.Add(material.DrawPotionList[i]);
+                potion.DrawCountList.Add(material.DrawCountList[i]);
             }
-            CreatPotion.MashUpCount += material.MashUpCount+1;
+            potion.MashUpCount += material.MashUpCount+1;
             count += material.MashUpCount;
-            CreatPotion._Name +=
+            potion._Name +=
                 $"{material._Name} +";    
             
             End:
-            CreatPotion.MashUpCount++;
+            potion.MashUpCount++;
             item.stack--;
-            if (CreatPotion.MashUpCount == 0|| CreatPotion.MashUpCount == count + 1)
-                CreatPotion._Name = $"{Lang.GetBuffName(item.buffType).Replace(" ","")} ";
+            if (potion.MashUpCount == 0|| potion.MashUpCount == count + 1)
+                potion._Name = $"{Lang.GetBuffName(item.buffType).Replace(" ","")} ";
         }
 
-        private void BrewPotion(Item potion)
+        #endregion
+        
+        private void ChangeCraft()
         {
-            if (Crafts.Count != 0)
-                foreach (var craft in Crafts) craft.Invoke();
-             
-            SetModItem.Invoke(Potion, [CreatPotion]);
-            Potion.stack = PotionStack;
-            
-            Main.LocalPlayer.BuyItem(50 * PotionStack);
+            if (ConflitCraft)
+                Craft = Equals(Craft, (Action<BasePotion,Item>)Putify) ? MashUp : Putify;
+            Refresh();
         }
         
-        public void Refresh()
+        private void BrewPotion(Item potion)
         {
-            Potion = new Item();
+            Craft.Invoke(CreatPotion,currentItem);
             Potion.SetDefaults(ModContent.ItemType<BasePotion>());
-            foreach (var action in Crafts)
-            {
-                action.Invoke();
-            }
+            SetModItem.Invoke(Potion, [CreatPotion]);
+            Potion.stack = PotionStack;
+            Main.LocalPlayer.GetItem(Main.LocalPlayer.whoAmI, PreviewPotion, GetItemSettings.ItemCreatedFromItemUsage);
+            Main.LocalPlayer.BuyItem(50 * PotionStack);
+            ClearAll();
+        }
+
+        private void Refresh()
+        {
+            PreviewPotion = new Item();
+            PreviewPotion.SetDefaults(ModContent.ItemType<BasePotion>());
+            var preview = TransExp<BasePotion, BasePotion>.Trans(CreatPotion);
+            Craft.Invoke(preview, currentItem);
+            potionComponent.ComponentUpdate();
+            PotionSynopsis.SynopsisUpdate();
+            SetModItem.Invoke(PreviewPotion.ModItem, [preview]);
         }
         
         private void ClearAll()
         {
             CreatPotion = ModContent.GetInstance<BasePotion>();
-            Crafts.Clear();
+            Craft = null;
             Potion = new Item();
             Potion.SetDefaults(ModContent.ItemType<BasePotion>());
         }
@@ -228,7 +212,6 @@ namespace PotionCraft.Content.UI.CraftUI
             PotionSynopsis.Update(gameTime);
             potionSetting.Update(gameTime);
         }
-
         
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
@@ -240,13 +223,32 @@ namespace PotionCraft.Content.UI.CraftUI
 
     public class PotionComponent : PotionElement<BrewPotionState>
     {
+        private PotionIngredients _potionIngredients;
+
+        private BrewPotionState _brewPotionState;
+        
         public PotionComponent(BrewPotionState brewPotionState)
         {
             PotionCraftState = brewPotionState;
+            _brewPotionState = brewPotionState;
             Width.Set(342f, 0);
             Height.Set(388f, 0);
+            _potionIngredients = new PotionIngredients(brewPotionState);
+            _potionIngredients.Top.Set(30, 0);
+            _potionIngredients.Left.Set(0, 0);
+            _potionIngredients.Width.Set(350, 0);
+            _potionIngredients.Height.Set(500, 0);
+            Append(_potionIngredients);
+            
         }
 
+        public void ComponentUpdate()
+        {
+            var potion = _brewPotionState.PreviewPotion.ModItem as BasePotion;
+            _potionIngredients.UIgrid.Clear();
+            _potionIngredients.SetPotionCraftState(potion);
+        }
+        
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
@@ -266,6 +268,8 @@ namespace PotionCraft.Content.UI.CraftUI
         private Slider slider;
 
         private Button autouse;
+
+        private Button packing;
 
         public PotionSetting(BrewPotionState brewPotionState)
         {
@@ -293,9 +297,29 @@ namespace PotionCraft.Content.UI.CraftUI
             autouse.Width.Set(18, 0);
             autouse.Left.Set(122, 0);
             autouse.Top.Set(46, 0);
-            autouse.iconcolor = Deafult;
+            autouse.Iconcolor = Deafult;
+            autouse.Value = brewPotionState.CreatPotion.AutoUse;
+            autouse.OnClike = () =>
+            {
+                autouse.Value = !autouse.Value;
+                brewPotionState.CreatPotion.AutoUse = !autouse.Value;;
+            };
             Append(autouse);
 
+            packing = new Button(Assets.UI.Icon, Color.White, new Rectangle(20,0,18,18));
+            packing.Height.Set(18, 0);
+            packing.Width.Set(18, 0);
+            packing.Left.Set(26, 0);
+            packing.Top.Set(46, 0);
+            packing.Iconcolor = Deafult;
+            packing.OnClike = () =>
+            {
+                packing.Value = !packing.Value;
+                brewPotionState.CreatPotion.IsPackage = !packing.Value;
+                packing.Rectangle = packing.Value ? new Rectangle(0, 0, 18, 18) : new Rectangle(20, 0, 18, 18); ;
+            };
+            Append(packing);
+            
         }
 
         public override void Update(GameTime gameTime)
@@ -312,58 +336,9 @@ namespace PotionCraft.Content.UI.CraftUI
 
     }
 
-    public class Button : PotionElement<BrewPotionState>
+    public class PotionCrucible : PotionElement<BrewPotionState>
     {
-        private Asset<Texture2D> Texture;
-
-        private Rectangle Rectangle =Rectangle.Empty;
-
-        public Action onClike;
-
-        public string text;
-
-        public float scale;
-
-        public Color color = Color.White;
-
-        public Color iconcolor = Color.White;
-        public Button(Asset<Texture2D> texture2D ,Color color,string text ="",float scale=1)
-        {
-            Texture  = texture2D;
-            this.text = text;
-            this.color = color;
-            this.scale = scale;
-        }
-        public Button(Asset<Texture2D> texture2D, Color color, Rectangle rectangle, string text = "", float scale = 1)
-        {
-            Texture = texture2D;
-            Rectangle = rectangle;
-            this.text = text;
-            this.color = color;
-            this.scale = scale;
-        }
-        public override void LeftClick(UIMouseEvent evt)
-        {
-            base.LeftClick(evt);
-            onClike?.Invoke();
-        }
-
-        public override void MouseOver(UIMouseEvent evt)
-        {
-            base.MouseOver(evt);
-            SoundEngine.PlaySound(SoundID.MenuClose);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if(!Rectangle.IsEmpty)
-                spriteBatch.Draw(Texture.Value, GetDimensions().ToRectangle(),Rectangle ,iconcolor);
-            else
-                spriteBatch.Draw(Texture.Value, GetDimensions().ToRectangle(), iconcolor);
-            Utils.DrawBorderString(spriteBatch, text,GetDimensions().Position()+new Vector2(30,Height.Pixels/2) , color, 0.75f);
-            base.Draw(spriteBatch);
-        }
-
+                
     }
 
     public class BrewPotionButton : PotionElement<BrewPotionState>
@@ -399,142 +374,4 @@ namespace PotionCraft.Content.UI.CraftUI
         }
 
     }
-    
-    public class BrewPotionInput:PotionElement<BrewPotionState>
-    {
-
-        public bool Inputting;
-        
-        public string Currentvalue;
-        
-        public List<(string,string)> Recordvalue=new();
-        
-        public string Showstring="";
-
-        private string SelectColor = Deafult_Hex;
-        
-        public Action Onchange;
-        public BrewPotionInput(BrewPotionState brewPotionState,string currentValue=null)
-        {
-            PotionCraftState = brewPotionState;
-            Width.Set(180f, 0f);
-            Height.Set(50f, 0f);
-            Recordvalue = ParseText(currentValue);
-        }
-
-        public BrewPotionInput(Action onchange, BrewPotionState brewPotionState,string currentvalue=null )
-        {
-            PotionCraftState = brewPotionState;
-            Recordvalue = ParseText(currentvalue);
-            Onchange = onchange;
-        }
-
-        private void InputText()
-        {
-            Inputting = true;
-            Main.blockInput= true;
-        }
-
-        private void HandleInputText()
-        {
-            if (Main.keyState.IsKeyDown(Keys.Escape))
-            {
-                EndInputText();
-            }
-
-            PlayerInput.WritingText = true;
-            Main.instance.HandleIME();
-            if (!Currentvalue.IsNormalized())
-                Currentvalue = StListText();
-            Currentvalue = Main.GetInputText(Currentvalue);
-        }
-
-        private void EndInputText()
-        {
-            Main.blockInput = false;
-            Inputting = false;
-            Recordvalue.Add((SelectColor, Currentvalue));
-            Showstring = string.Join("", Recordvalue.Select(s=>string.IsNullOrEmpty(s.Item1) ? Deafult_Hex : s.Item1.Insert(10,s.Item2)));
-            Onchange?.Invoke();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            if (!PotionCraftState.Active())
-                return;
-            if (Main.mouseLeft && !IsMouseHovering)
-            {
-                EndInputText();
-            }
-            if (Inputting)
-            {
-                HandleInputText();
-            }
-        }
-
-        private string StListText()
-        {
-            if (Recordvalue.Count == 0)
-                return "";
-            var text = Recordvalue.Last().Item2;
-            Recordvalue.Remove(Recordvalue.Last());
-            return text;
-        }
-
-        public override void LeftClick(UIMouseEvent evt)
-        {
-            base.LeftClick(evt);
-            if (!PotionCraftState.Active())
-                return;
-            InputText();
-        }
-
-        protected override void DrawSelf(SpriteBatch spriteBatch)
-        {
-            Utils.DrawBorderString(spriteBatch, Showstring, GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
-            Vector2 vector2 = GetDimensions().Position() + 
-                              FontAssets.MouseText.Value.MeasureString(string.Join("",Recordvalue.Select(s=>s.Item2))) ;
-            if (Inputting)
-            {
-                spriteBatch.Draw(Assets.UI.PanelGrayscale, GetDimensions().ToRectangle(), new Color(49, 84, 141));
-                Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
-                Utils.DrawBorderString(spriteBatch, Currentvalue, vector2,
-                    HexToColor(SelectColor), 0.75f, 0f, 0f, -1);
-            }
-            if (Main.GameUpdateCount % 20U >= 10U)
-                return;
-            Utils.DrawBorderString(spriteBatch, "|", vector2+FontAssets.MouseText.Value.MeasureString(Currentvalue), Color.White, 0.75f, 0.0f, 0.0f, -1);
-        }
-        
-    }
-    
-    public class BrewPotionSwitch : PotionElement<BrewPotionState>
-    {
-        private Action _onClick;
-
-        private string _switchText;
-
-        public bool Switchvalue;
-        public BrewPotionSwitch(BrewPotionState brewPotionState, string switchtext,Action onClick)
-        {
-            PotionCraftState = brewPotionState;
-            Width.Set(100f, 0);
-            Height.Set(32f, 0);
-        }
-        
-        public override void LeftClick(UIMouseEvent evt)
-        {
-            base.LeftClick(evt);
-            _onClick?.Invoke();
-        }
-
-        protected override void DrawSelf(SpriteBatch spriteBatch)
-        {
-            base.DrawSelf(spriteBatch);
-            Utils.DrawBorderString(spriteBatch, _switchText, GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
-            
-        }
-        
-    }
-    
 }
