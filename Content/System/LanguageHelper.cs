@@ -111,6 +111,8 @@ namespace PotionCraft.Content.System
         public static List<(string colorCode, string text)> ParseText(string text)
         {
             var parts = new List<(string colorCode, string text)>();
+            if(string.IsNullOrEmpty(text))
+                return parts;
             var regex = new Regex(@"\[c/(\w{6}):([^]]+)\]");
             var matches = regex.Matches(text);
             foreach (Match match in matches)

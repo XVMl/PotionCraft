@@ -11,7 +11,9 @@ using Microsoft.Xna.Framework;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 using static PotionCraft.Content.System.LanguageHelper;
 using PotionCraft.Content.UI.PotionTooltip;
-
+using Terraria.GameInput;
+using Terraria.ModLoader.UI.Elements;
+using Terraria.GameContent.UI.Elements;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
@@ -50,18 +52,17 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public ColorSelector colorSelector;
 
-        private bool changecraft;
         public override void OnInitialize()
         {
             PotionSynopsis = new PotionSynopsis(this);
             PotionSynopsis.Top.Set(300, 0);
-            PotionSynopsis.Left.Set(500, 0);
-            PotionSynopsis.SourcePotion = new Vector2(PotionSynopsis.Left.Pixels, PotionSynopsis.Top.Pixels);
+            PotionSynopsis.Left.Set(400, 0);
+            //PotionSynopsis.SourcePotion = new Vector2(PotionSynopsis.Left.Pixels, PotionSynopsis.Top.Pixels);
             Append(PotionSynopsis);
 
             colorSelector = new(this);
             colorSelector.Top.Set(300, 0);
-            colorSelector.Left.Set(100, 0);
+            colorSelector.Left.Set(50, 0);
             Append(colorSelector);
 
             potionSetting = new PotionSetting(this)
@@ -211,6 +212,8 @@ namespace PotionCraft.Content.UI.CraftUI
             base.Update(gameTime);
             PotionSynopsis.Update(gameTime);
             potionSetting.Update(gameTime);
+            colorSelector.Update(gameTime);
+
         }
         
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -263,11 +266,13 @@ namespace PotionCraft.Content.UI.CraftUI
     {
         private Button delete;
 
-        private Button brew;
+        public Button brew;
 
         private Slider slider;
 
         private Button autouse;
+
+        private Button potionlock;
 
         private Button packing;
 
@@ -282,16 +287,19 @@ namespace PotionCraft.Content.UI.CraftUI
             delete.Left.Set(50, 0);
             delete.Top.Set(170, 0);
             Append(delete);
+
             brew = new Button(UITexture("Brew"), Color.White, "Brew");
             brew.Height.Set(34, 0);
             brew.Width.Set(96, 0);
             brew.Left.Set(250, 0);
             brew.Top.Set(170, 0);
             Append(brew);
+
             slider = new Slider(brewPotionState);
             slider.Left.Set(90, 0);
             slider.Top.Set(122, 0);
             Append(slider);
+
             autouse = new Button(Assets.UI.Icon, Color.White, new Rectangle(40,0,18,18));
             autouse.Height.Set(18, 0);
             autouse.Width.Set(18, 0);
@@ -306,7 +314,15 @@ namespace PotionCraft.Content.UI.CraftUI
             };
             Append(autouse);
 
-            packing = new Button(Assets.UI.Icon, Color.White, new Rectangle(20,0,18,18));
+            potionlock = new Button(Assets.UI.Icon, Color.White, new Rectangle(40, 0, 18, 18));
+            potionlock.Height.Set(18, 0);
+            potionlock.Width.Set(18, 0);
+            potionlock.Left.Set(100, 0);
+            potionlock.Top.Set(46, 0);
+            potionlock.Iconcolor = Deafult;
+            Append(potionlock);
+
+            packing = new Button(Assets.UI.Icon, Color.White, new Rectangle(20, 0, 18, 18));
             packing.Height.Set(18, 0);
             packing.Width.Set(18, 0);
             packing.Left.Set(26, 0);
@@ -319,7 +335,7 @@ namespace PotionCraft.Content.UI.CraftUI
                 packing.Rectangle = packing.Value ? new Rectangle(0, 0, 18, 18) : new Rectangle(20, 0, 18, 18); ;
             };
             Append(packing);
-            
+
         }
 
         public override void Update(GameTime gameTime)

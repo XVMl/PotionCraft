@@ -55,6 +55,8 @@ namespace PotionCraft
 
             public static Texture2D UI4 => UITexture("UI4").Value;
 
+            public static Texture2D UI1 => UITexture("UI1").Value;
+
             public static Texture2D Circular => UITexture("Circular").Value;
 
             public static Asset<Texture2D> Icon => UITexture("Icon");
@@ -83,6 +85,15 @@ namespace PotionCraft
 
             public static Texture2D Energy => NPCsTexture("Energy").Value;
 
+            public static Texture2D Hajimi => NPCsTexture("Hajimi").Value;
+
+            public static Texture2D Emoji1 => NPCsTexture("Emoji1").Value;
+
+            public static Texture2D Emoji2 => NPCsTexture("Emoji2").Value;
+
+            public static Texture2D Emoji3 => NPCsTexture("Emoji3").Value;
+
+            public static Texture2D Emoji4 => NPCsTexture("Emoji4").Value;
 
         }
     }

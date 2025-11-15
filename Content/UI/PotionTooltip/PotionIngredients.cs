@@ -18,7 +18,7 @@ using Terraria.UI;
 using static PotionCraft.Content.System.LanguageHelper;
 namespace PotionCraft.Content.UI.PotionTooltip
 {
-    public class PotionIngredients:PotionElement<TooltipUI>
+    public class PotionIngredients:PotionElement<AutoUIState>
     {
         public UIGrid UIgrid;
 

@@ -5,6 +5,7 @@ using PotionCraft.Content.System;
 using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.UI;
 
@@ -60,7 +61,9 @@ public class Button : PotionElement<BrewPotionState>
             spriteBatch.Draw(Texture.Value, GetDimensions().ToRectangle(),Rectangle ,Iconcolor);
         else
             spriteBatch.Draw(Texture.Value, GetDimensions().ToRectangle(), Iconcolor);
-        Utils.DrawBorderString(spriteBatch, Text,GetDimensions().Position()+new Vector2(30,Height.Pixels/2) , Color, 0.75f);
+
+        var v2 = FontAssets.MouseText.Value.MeasureString(Text);
+        Utils.DrawBorderString(spriteBatch, Text,GetDimensions().Position()+ new Vector2(30,(Height.Pixels - v2.Y)/2) , Color, 1f);
         base.Draw(spriteBatch);
     }
 

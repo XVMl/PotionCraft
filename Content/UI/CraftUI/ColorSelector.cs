@@ -92,6 +92,8 @@ namespace PotionCraft.Content.UI.CraftUI
                 return;
             palettemouseLeft = false;
             selectmouseLeft = false;
+
+            alapha = MathHelper.Lerp(alapha, targetalpha, .05f);
         }
 
         private void SelectColor()
@@ -144,7 +146,6 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             if (!Active || !PotionCraftState.Active())
                 return;
-            alapha = MathHelper.Lerp(alapha, targetalpha, .1f);
             spriteBatch.Draw(UITexture("ColorUI").Value, GetDimensions().ToRectangle().TopLeft(), Color.White * alapha);
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone,null, Main.UIScaleMatrix);
