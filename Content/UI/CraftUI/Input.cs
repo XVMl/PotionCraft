@@ -14,21 +14,26 @@ namespace PotionCraft.Content.UI.CraftUI;
 
 public class Input:PotionElement<BrewPotionState>
 {
+    private BrewPotionState _brewPotionState;
+    
     public bool Canedit;
-        
-    public bool Inputting;
-        
-    public string Currentvalue;
+
+    private bool Inputting;
+
+    private string Currentvalue;
         
     public List<(string,string)> Recordvalue=new();
         
     public string Showstring="";
+    
+    private string SelectColor => LanguageHelper.RGBToHex(_brewPotionState.colorSelector.Color);
 
-    private string SelectColor = LanguageHelper.Deafult_Hex;
-        
+    private string TempColor;
+    
     public Action Onchange;
     public Input(BrewPotionState brewPotionState,string currentValue=null)
     {
+        _brewPotionState = brewPotionState;
         PotionCraftState = brewPotionState;
         Width.Set(180f, 0f);
         Height.Set(50f, 0f);
@@ -37,6 +42,7 @@ public class Input:PotionElement<BrewPotionState>
 
     public Input(Action onchange, BrewPotionState brewPotionState,string currentvalue=null )
     {
+        _brewPotionState = brewPotionState;
         PotionCraftState = brewPotionState;
         Recordvalue = LanguageHelper.ParseText(currentvalue);
         Onchange = onchange;
@@ -59,8 +65,9 @@ public class Input:PotionElement<BrewPotionState>
 
         PlayerInput.WritingText = true;
         Main.instance.HandleIME();
-        if (!Currentvalue.IsNormalized())
-            Currentvalue = StListText();
+        if (string.IsNullOrEmpty(Currentvalue) && Main.inputText.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Back))
+            Recordvalue.Remove(Recordvalue.Last());
+        
         Currentvalue = Main.GetInputText(Currentvalue);
     }
 
@@ -68,7 +75,9 @@ public class Input:PotionElement<BrewPotionState>
     {
         Main.blockInput = false;
         Inputting = false;
-        Recordvalue.Add((SelectColor, Currentvalue));
+        foreach (var word in Currentvalue)
+           Recordvalue.Add((SelectColor, word.ToString()));
+           
         Showstring = string.Join("", Recordvalue.Select(s=>string.IsNullOrEmpty(s.Item1) ? LanguageHelper.Deafult_Hex : s.Item1.Insert(10,s.Item2)));
         Onchange?.Invoke();
     }
@@ -77,14 +86,15 @@ public class Input:PotionElement<BrewPotionState>
     {
         if (!PotionCraftState.Active())
             return;
+       
         if (Main.mouseLeft && !IsMouseHovering)
-        {
             EndInputText();
-        }
+        
         if (Inputting)
-        {
             HandleInputText();
-        }
+        
+        if (GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()))
+            HandleMouseScroll();
     }
 
     private string StListText()
@@ -92,6 +102,7 @@ public class Input:PotionElement<BrewPotionState>
         if (Recordvalue.Count == 0)
             return "";
         var text = Recordvalue.Last().Item2;
+        TempColor = Recordvalue.Last().Item1;
         Recordvalue.Remove(Recordvalue.Last());
         return text;
     }

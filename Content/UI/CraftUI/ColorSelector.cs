@@ -25,7 +25,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private bool selectmouseLeft;
 
-        private Color Color = Color.White;
+        public Color Color = Color.White;
 
         private Vector2 mousedata;
 

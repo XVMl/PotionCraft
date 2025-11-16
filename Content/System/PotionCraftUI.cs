@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -224,6 +225,15 @@ namespace PotionCraft.Content.System
 
             Left.Set(x, 0);
             Top.Set(y, 0);
+        }
+
+        protected void HandleMouseScroll()
+        {
+            if (Parent is null || Parent.Height.Pixels > Height.Pixels)
+                return;
+            var value = PlayerInput.ScrollWheelValueOld - PlayerInput.ScrollWheelValue;
+            var offset = Utils.Clamp(value,  Parent.Height.Pixels- Height.Pixels,0 );
+            Top.Set(offset,0);
         }
 
     }

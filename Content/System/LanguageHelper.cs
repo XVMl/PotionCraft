@@ -93,7 +93,7 @@ namespace PotionCraft.Content.System
 
         public static string LocationPotionText(string text) => TryGetLanguagValue($"Craft.{text}");
 
-        public static string RGBToHex(Color color) => color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+        public static string RGBToHex(Color color) =>color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
 
         public static string TryGetBracketText(int count, bool right = false)
         {
@@ -210,6 +210,13 @@ namespace PotionCraft.Content.System
             return (text.Replace(" ", "\n"), parts.Length);
         }
 
+        public static string ColorTextToEdtingText(string text)
+        {
+            var parsedParts = ParseText(text);
+            var result = parsedParts.Aggregate("", (current, part) => current + $"{part.colorCode}:{part.text}");
+            return result;
+        }
+        
         public static string LocationTranslate(string _name, bool bracket = true)
         {
             string[] parts = _name.Split(' ');

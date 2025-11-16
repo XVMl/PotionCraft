@@ -11,6 +11,8 @@ using Microsoft.Xna.Framework;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 using static PotionCraft.Content.System.LanguageHelper;
 using PotionCraft.Content.UI.PotionTooltip;
+using Terraria.GameContent.UI.Elements;
+using Terraria.GameInput;
 
 namespace PotionCraft.Content.UI.CraftUI
 {
@@ -70,7 +72,6 @@ namespace PotionCraft.Content.UI.CraftUI
                 VAlign = .7f
             };
             Append(potionSetting);
-
         }
 
         #region 操作具体方法
