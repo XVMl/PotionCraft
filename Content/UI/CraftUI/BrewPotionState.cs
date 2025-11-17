@@ -11,9 +11,12 @@ using Microsoft.Xna.Framework;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 using static PotionCraft.Content.System.LanguageHelper;
 using PotionCraft.Content.UI.PotionTooltip;
-using Terraria.GameInput;
-using Terraria.ModLoader.UI.Elements;
-using Terraria.GameContent.UI.Elements;
+using Steamworks;
+using Terraria.ID;
+using static System.Net.Mime.MediaTypeNames;
+using Terraria.GameContent;
+using Terraria.UI.Chat;
+using Terraria.Map;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
@@ -25,12 +28,8 @@ namespace PotionCraft.Content.UI.CraftUI
         public static readonly MethodInfo SetModItem = typeof(Item).GetProperty(nameof(Item.ModItem))!.GetSetMethod();
         
         public override string LayersFindIndex => "Vanilla: Mouse Text";
-
-        private PotionSlot<BrewPotionState> PotionSlot;
         
         private Item currentItem;
-
-        private BrewPotionButton BrewPotionButton;
 
         public int PotionStack = 20;
 
@@ -54,23 +53,28 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void OnInitialize()
         {
-            PotionSynopsis = new PotionSynopsis(this);
-            PotionSynopsis.Top.Set(300, 0);
-            PotionSynopsis.Left.Set(400, 0);
-            //PotionSynopsis.SourcePotion = new Vector2(PotionSynopsis.Left.Pixels, PotionSynopsis.Top.Pixels);
-            Append(PotionSynopsis);
-
-            colorSelector = new(this);
-            colorSelector.Top.Set(300, 0);
-            colorSelector.Left.Set(50, 0);
-            Append(colorSelector);
-
             potionSetting = new PotionSetting(this)
             {
                 HAlign = .5f,
                 VAlign = .7f
             };
             Append(potionSetting);
+
+            PotionSynopsis = new PotionSynopsis(this);
+            PotionSynopsis.Top.Set(300, 0);
+            PotionSynopsis.Left.Set(370, 0);
+            //PotionSynopsis.SourcePotion = new Vector2(PotionSynopsis.Left.Pixels, PotionSynopsis.Top.Pixels);
+            Append(PotionSynopsis);
+
+            colorSelector = new(this);
+            colorSelector.Top.Set(300, 0);
+            colorSelector.Left.Set(20, 0);
+            Append(colorSelector);
+
+            potionComponent = new PotionComponent(this);
+            potionComponent.Top.Set(228, 0);
+            potionComponent.Left.Set(1150, 0);
+            Append(potionComponent);
 
         }
 
@@ -177,6 +181,54 @@ namespace PotionCraft.Content.UI.CraftUI
             Refresh();
         }
         
+        public static void DrawCost(SpriteBatch spriteBatch,int cost,Vector2 pos)
+        {
+            string text2 = "";
+            int num59 = 0;
+            int num60 = 0;
+            int num61 = 0;
+            int num62 = 0;
+            int num63 = cost;
+            if (num63 < 1)
+                num63 = 1;
+
+            if (num63 >= 1000000)
+            {
+                num59 = num63 / 1000000;
+                num63 -= num59 * 1000000;
+            }
+
+            if (num63 >= 10000)
+            {
+                num60 = num63 / 10000;
+                num63 -= num60 * 10000;
+            }
+
+            if (num63 >= 100)
+            {
+                num61 = num63 / 100;
+                num63 -= num61 * 100;
+            }
+
+            if (num63 >= 1)
+                num62 = num63;
+
+            if (num59 > 0)
+                text2 = text2 + "[c/" + Colors.AlphaDarken(Colors.CoinPlatinum).Hex3() + ":" + num59 + " " + Lang.inter[15].Value + "] ";
+
+            if (num60 > 0)
+                text2 = text2 + "[c/" + Colors.AlphaDarken(Colors.CoinGold).Hex3() + ":" + num60 + " " + Lang.inter[16].Value + "] ";
+
+            if (num61 > 0)
+                text2 = text2 + "[c/" + Colors.AlphaDarken(Colors.CoinSilver).Hex3() + ":" + num61 + " " + Lang.inter[17].Value + "] ";
+
+            if (num62 > 0)
+                text2 = text2 + "[c/" + Colors.AlphaDarken(Colors.CoinCopper).Hex3() + ":" + num62 + " " + Lang.inter[18].Value + "] ";
+            
+            ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text2, new Vector2(pos.X , pos.Y),Color.White, 0f, Vector2.Zero, Vector2.One);
+
+        }
+
         private void BrewPotion(Item potion)
         {
             Craft.Invoke(CreatPotion,currentItem);
@@ -219,7 +271,7 @@ namespace PotionCraft.Content.UI.CraftUI
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             base.DrawSelf(spriteBatch);
-            
+            //ItemSlot.DrawSavings(spriteBatch, 600, 400);
         }
 
     }
@@ -234,8 +286,8 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             PotionCraftState = brewPotionState;
             _brewPotionState = brewPotionState;
-            Width.Set(342f, 0);
-            Height.Set(388f, 0);
+            Width.Set(346f, 0);
+            Height.Set(486f, 0);
             _potionIngredients = new PotionIngredients(brewPotionState);
             _potionIngredients.Top.Set(30, 0);
             _potionIngredients.Left.Set(0, 0);
@@ -255,15 +307,14 @@ namespace PotionCraft.Content.UI.CraftUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-            var tex = UITexture("Ui3").Value;
-            spriteBatch.Draw(tex, GetDimensions().Position() + new Vector2(0,-24),new Rectangle(0,0,342,24), Color.White);
-            spriteBatch.Draw(tex, GetDimensions().Position(), Color.White);
-            spriteBatch.Draw(tex, GetDimensions().Position() + new Vector2(0, +24), new Rectangle(0, 164, 342, 24), Color.White);
+            spriteBatch.Draw(Assets.UI.UI2, GetDimensions().Position(), Color.White);
         }
     }
 
     public class PotionSetting : PotionElement<BrewPotionState>
     {
+        private UIElement BG;
+
         private Button delete;
 
         public Button brew;
@@ -276,34 +327,43 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private Button packing;
 
+        private Button Hajimi;
+
         public PotionSetting(BrewPotionState brewPotionState)
         {
-            PotionCraftState = brewPotionState;
             Width.Set(384f, 0);
-            Height.Set(212f, 0);
+            Height.Set(300f, 0);
+            
+            BG = new();
+            BG.Width.Set(384, 0);
+            BG.Height.Set(224, 0);
+            Append(BG);
+
+            PotionCraftState = brewPotionState;
             delete = new Button(UITexture("Delete"), Color.White, "Delete");
             delete.Height.Set(34, 0);
             delete.Width.Set(96, 0);
             delete.Left.Set(50, 0);
             delete.Top.Set(170, 0);
-            Append(delete);
+            BG.Append(delete);
 
             brew = new Button(UITexture("Brew"), Color.White, "Brew");
             brew.Height.Set(34, 0);
             brew.Width.Set(96, 0);
             brew.Left.Set(250, 0);
             brew.Top.Set(170, 0);
-            Append(brew);
+            BG.Append(brew);
 
-            slider = new Slider(brewPotionState);
+            slider = new Slider(brewPotionState,"数量");
             slider.Left.Set(90, 0);
-            slider.Top.Set(122, 0);
-            Append(slider);
+            slider.Top.Set(112, 0);
+            slider.text.TextColor = Deafult;
+            BG.Append(slider);
 
             autouse = new Button(Assets.UI.Icon, Color.White, new Rectangle(40,0,18,18));
             autouse.Height.Set(18, 0);
             autouse.Width.Set(18, 0);
-            autouse.Left.Set(122, 0);
+            autouse.Left.Set(116, 0);
             autouse.Top.Set(46, 0);
             autouse.Iconcolor = Deafult;
             autouse.Value = brewPotionState.CreatPotion.AutoUse;
@@ -312,20 +372,26 @@ namespace PotionCraft.Content.UI.CraftUI
                 autouse.Value = !autouse.Value;
                 brewPotionState.CreatPotion.AutoUse = !autouse.Value;;
             };
-            Append(autouse);
+            BG.Append(autouse);
 
-            potionlock = new Button(Assets.UI.Icon, Color.White, new Rectangle(40, 0, 18, 18));
+            potionlock = new Button(Assets.UI.Icon, Color.White, new Rectangle(62, 0, 18, 18));
             potionlock.Height.Set(18, 0);
             potionlock.Width.Set(18, 0);
-            potionlock.Left.Set(100, 0);
+            potionlock.Left.Set(40, 0);
             potionlock.Top.Set(46, 0);
             potionlock.Iconcolor = Deafult;
-            Append(potionlock);
+            potionlock.OnClike = () =>
+            {
+                potionlock.Value = !potionlock.Value;
+                brewPotionState.CreatPotion.IsPackage = !potionlock.Value;
+                potionlock.Rectangle = potionlock.Value ? new Rectangle(62, 0, 18, 18) : new Rectangle(80, 0, 18, 18); ;
+            };
+            BG.Append(potionlock);
 
             packing = new Button(Assets.UI.Icon, Color.White, new Rectangle(20, 0, 18, 18));
             packing.Height.Set(18, 0);
             packing.Width.Set(18, 0);
-            packing.Left.Set(26, 0);
+            packing.Left.Set(76, 0);
             packing.Top.Set(46, 0);
             packing.Iconcolor = Deafult;
             packing.OnClike = () =>
@@ -334,8 +400,15 @@ namespace PotionCraft.Content.UI.CraftUI
                 brewPotionState.CreatPotion.IsPackage = !packing.Value;
                 packing.Rectangle = packing.Value ? new Rectangle(0, 0, 18, 18) : new Rectangle(20, 0, 18, 18); ;
             };
-            Append(packing);
+            BG.Append(packing);
 
+            Hajimi = new(Assets.UI.HajimiIcon, Color.White);
+            Hajimi.Width.Set(40, 0);
+            Hajimi.Height.Set(34, 0);
+            Hajimi.Top.Set(240, 0);
+            Hajimi.Left.Set(300, 0);
+            Hajimi.HoverTexture = Assets.UI.HajimiIconHover;
+            Append(Hajimi);
         }
 
         public override void Update(GameTime gameTime)
@@ -344,9 +417,17 @@ namespace PotionCraft.Content.UI.CraftUI
             slider.Update(gameTime);
         }
 
+        public override void MouseOver(UIMouseEvent evt)
+        {
+            base.MouseOver(evt);
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Assets.UI.UI4, GetDimensions().ToRectangle(), Color.White);
+            spriteBatch.Draw(Assets.UI.UI4, BG.GetDimensions().ToRectangle(), Color.White);
+            Utils.DrawBorderString(spriteBatch, "花费:", GetDimensions().Position() + new Vector2(40, 80), Deafult, 1f);
+            BrewPotionState.DrawCost(spriteBatch, slider.value*1000, GetDimensions().Position()+new Vector2(90,80));
+            ItemSlot.DrawSavings(spriteBatch, GetDimensions().X, GetDimensions().Y+200);
             base.Draw(spriteBatch);
         }
 

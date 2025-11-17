@@ -6,6 +6,7 @@ using PotionCraft.Content.Items;
 using static PotionCraft.Assets;
 using static PotionCraft.Content.System.LanguageHelper;
 using Terraria.GameContent.UI.Elements;
+using System;
 
 namespace PotionCraft.Content.UI.CraftUI
 {
@@ -14,6 +15,10 @@ namespace PotionCraft.Content.UI.CraftUI
         private BrewPotionState _brewPotionState;
         
         private Button coloreelectorbutton;
+
+        private Button _coloreelectorbutton;
+
+        private Button _inputbutton;
 
         private Input _potionname;
 
@@ -25,6 +30,7 @@ namespace PotionCraft.Content.UI.CraftUI
             PotionCraftState = brewPotionState;
             Width.Set(342, 0);
             Height.Set(414, 0);
+
             coloreelectorbutton = new(Assets.UI.ColorSelector, Color.White);
             coloreelectorbutton.Width.Set(18, 0);
             coloreelectorbutton.Height.Set(18, 0);
@@ -34,8 +40,31 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 brewPotionState?.colorSelector.TransitionAnimation?.Invoke();
             };
-            
             Append(coloreelectorbutton);
+
+            _coloreelectorbutton = new(Assets.UI.ColorSelector, Color.White);
+            _coloreelectorbutton.Width.Set(18, 0);
+            _coloreelectorbutton.Height.Set(18, 0);
+            _coloreelectorbutton.Top.Set(216, 0);
+            _coloreelectorbutton.Left.Set(298, 0);
+            _coloreelectorbutton.OnClike = () =>
+            { 
+                brewPotionState?.colorSelector.TransitionAnimation?.Invoke();
+            };
+
+            Append(_coloreelectorbutton);
+
+            _inputbutton = new(Assets.UI.Input, Color.White);
+            _inputbutton.Width.Set(18, 0);
+            _inputbutton.Height.Set(18, 0);
+            _inputbutton.Top.Set(238, 0);
+            _inputbutton.Left.Set(298, 0);
+            _inputbutton.OnClike = () =>
+            {
+                //_coloreelectorbutton.Active = !_coloreelectorbutton.Active;
+            };
+            Append(_inputbutton);
+
             _potionname = new(brewPotionState);
             _potionname.Onchange = () =>
             {
@@ -64,6 +93,7 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             base.Update(gameTime);
             _potionremarks?.Update(gameTime);
+            //_coloreelectorbutton?.Update(gameTime);
         }
 
         public void SynopsisUpdate()

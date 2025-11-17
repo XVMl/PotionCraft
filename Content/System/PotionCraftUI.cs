@@ -88,6 +88,10 @@ namespace PotionCraft.Content.System
     {
         public T PotionCraftState;
 
+        public bool Active=true;
+
+        public float A=1f;
+
         public static readonly int PurifyingCountMax = 12;
 
         public static readonly int MashUpCountMax = 14;
@@ -204,8 +208,11 @@ namespace PotionCraft.Content.System
             if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
 
+            A = MathHelper.Lerp(A, Active ? 1 : 0, .05f);
+
             if (SourcePotion.Equals(Vector2.Zero))
                 return;
+
 
             var pos = GetDimensions().ToRectangle();
             var 
