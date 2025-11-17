@@ -8,6 +8,7 @@ using PotionCraft.Content.System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameInput;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace PotionCraft.Content.UI.CraftUI;
@@ -17,10 +18,10 @@ public class Input:PotionElement<BrewPotionState>
     private BrewPotionState _brewPotionState;
     
     public bool Canedit;
-
-    private bool Inputting;
-
-    private string Currentvalue;
+        
+    public bool Inputting;
+        
+    public string Currentvalue="";
         
     public List<(string,string)> Recordvalue=new();
         
@@ -53,7 +54,7 @@ public class Input:PotionElement<BrewPotionState>
         if(!Canedit)
             return;
         Inputting = true;
-        Main.blockInput= true;
+        Main.blockInput = true;
     }
 
     private void HandleInputText()
@@ -73,11 +74,13 @@ public class Input:PotionElement<BrewPotionState>
 
     private void EndInputText()
     {
+        if (!Inputting)
+            return;
         Main.blockInput = false;
         Inputting = false;
-        foreach (var word in Currentvalue)
-           Recordvalue.Add((SelectColor, word.ToString()));
-           
+        if(!string.IsNullOrEmpty(Currentvalue))
+            Recordvalue.Add((SelectColor, Currentvalue));
+        Currentvalue = "";
         Showstring = string.Join("", Recordvalue.Select(s=>string.IsNullOrEmpty(s.Item1) ? LanguageHelper.Deafult_Hex : s.Item1.Insert(10,s.Item2)));
         Onchange?.Invoke();
     }
@@ -86,7 +89,6 @@ public class Input:PotionElement<BrewPotionState>
     {
         if (!PotionCraftState.Active())
             return;
-       
         if (Main.mouseLeft && !IsMouseHovering)
             EndInputText();
         
@@ -109,7 +111,6 @@ public class Input:PotionElement<BrewPotionState>
 
     public override void LeftClick(UIMouseEvent evt)
     {
-        base.LeftClick(evt);
         if (!PotionCraftState.Active())
             return;
         InputText();
@@ -117,19 +118,23 @@ public class Input:PotionElement<BrewPotionState>
 
     protected override void DrawSelf(SpriteBatch spriteBatch)
     {
+        spriteBatch.Draw(Assets.UI.UI1,GetDimensions().ToRectangle(),new Rectangle(46,276,246,106),Color.White);
+        
         Utils.DrawBorderString(spriteBatch, Showstring, GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
-        var vector2 = GetDimensions().Position() + 
-                      FontAssets.MouseText.Value.MeasureString(string.Join("",Recordvalue.Select(s=>s.Item2))) ;
-        if (Inputting)
-        {
-            spriteBatch.Draw(Assets.UI.PanelGrayscale, GetDimensions().ToRectangle(), new Color(49, 84, 141));
-            Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
-            Utils.DrawBorderString(spriteBatch, Currentvalue, vector2,
-                LanguageHelper.HexToColor(SelectColor), 0.75f, 0f, 0f, -1);
-        }
+        var vector2 = GetDimensions().Position() +
+                      FontAssets.MouseText.Value.MeasureString(string.Join("", Recordvalue.Select(s => s.Item2)));
+
+        if (!Inputting)
+            return;
+
+        HandleInputText();
+        //spriteBatch.Draw(Assets.UI.PanelGrayscale, GetDimensions().ToRectangle(), new Color(49, 84, 141));
+        Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
+        Utils.DrawBorderString(spriteBatch, Currentvalue, vector2,
+            LanguageHelper.HexToColor(SelectColor), 0.75f, 0f, 0f, -1);
         if (Main.GameUpdateCount % 20U >= 10U)
             return;
-        Utils.DrawBorderString(spriteBatch, "|", vector2+FontAssets.MouseText.Value.MeasureString(Currentvalue), Color.White, 0.75f, 0.0f, 0.0f, -1);
+        Utils.DrawBorderString(spriteBatch, "|", vector2 + FontAssets.MouseText.Value.MeasureString(Currentvalue), Color.White, 0.75f, 0.0f, 0.0f, -1);
     }
-        
+
 }

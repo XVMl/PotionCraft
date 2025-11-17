@@ -29,11 +29,6 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private Vector2 mousedata;
 
-        public static bool Active;
-
-        private float alapha;
-
-        private float targetalpha;
         
         private float R = 1;
         private float G = 0;
@@ -43,11 +38,11 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             PotionCraftState = brewPotionState;
             Width.Set(342f, 0);
-            Height.Set(188f, 0);
+            Height.Set(224f, 0);
             palette = new UIElement()
             {
                 HAlign = 0.5f,
-                VAlign = 0.5f,
+                VAlign = 0.4f,
             };
             palette.Width.Set(300, 0);
             palette.Height.Set(150, 0);
@@ -61,12 +56,12 @@ namespace PotionCraft.Content.UI.CraftUI
             select = new UIElement()
             {
                 HAlign = 0.5f,
-                VAlign = 1f,
+                VAlign = .9f,
             };
-            select.Width.Set(400, 0);
+            select.Width.Set(300, 0);
             select.Height.Set(8, 0);
             selectprogress = new(new Color(R, G, B));
-            selectprogress.VAlign = .5f;
+            selectprogress.VAlign = .4f;
             
             Append(select);
             Append(palette);
@@ -76,7 +71,6 @@ namespace PotionCraft.Content.UI.CraftUI
             TransitionAnimation = () =>
             {
                 Active = !Active;
-                targetalpha = Active ? 1 : 0;
             };
         }
 
@@ -92,6 +86,8 @@ namespace PotionCraft.Content.UI.CraftUI
                 return;
             palettemouseLeft = false;
             selectmouseLeft = false;
+
+            base.Update(gameTime);
         }
 
         private void SelectColor()
@@ -144,20 +140,21 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             if (!Active || !PotionCraftState.Active())
                 return;
-            alapha = MathHelper.Lerp(alapha, targetalpha, .1f);
-            spriteBatch.Draw(UITexture("ColorUI").Value, GetDimensions().ToRectangle().TopLeft(), Color.White * alapha);
+            spriteBatch.Draw(UITexture("ColorUI").Value, GetDimensions().ToRectangle().TopLeft(), Color.White * A);
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone,null, Main.UIScaleMatrix);
             shader.TrySetParameter("R", R);
             shader.TrySetParameter("G", G);
             shader.TrySetParameter("B", B);
+            shader.TrySetParameter("alapha", A);
             shader.Apply();
-            Main.spriteBatch.Draw(UITexture("ColorUI").Value, palette.GetDimensions().ToRectangle(),  Color.White * alapha);
+            Main.spriteBatch.Draw(UITexture("ColorUI").Value, palette.GetDimensions().ToRectangle(),  Color.White * A);
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
             var color = ShaderManager.GetShader("PotionCraft.ColorVariation");
+            color.TrySetParameter("alapha", A);
             color.Apply();
-            Main.spriteBatch.Draw(UITexture("ColorUI").Value, select.GetDimensions().ToRectangle(), Color.White * alapha);
+            Main.spriteBatch.Draw(UITexture("ColorUI").Value, select.GetDimensions().ToRectangle(), Color.White * A);
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
             base.Draw(spriteBatch);

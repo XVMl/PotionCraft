@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework;
 using PotionCraft.Content.Items;
 using static PotionCraft.Assets;
 using static PotionCraft.Content.System.LanguageHelper;
+using Terraria.GameContent.UI.Elements;
+using System;
 
 namespace PotionCraft.Content.UI.CraftUI
 {
@@ -14,16 +16,21 @@ namespace PotionCraft.Content.UI.CraftUI
         
         private Button coloreelectorbutton;
 
+        private Button _coloreelectorbutton;
+
+        private Button _inputbutton;
+
         private Input _potionname;
 
         private Input _potionremarks;
-        
+
         public PotionSynopsis(BrewPotionState brewPotionState)
         {
             _brewPotionState = brewPotionState;
             PotionCraftState = brewPotionState;
             Width.Set(342, 0);
             Height.Set(414, 0);
+
             coloreelectorbutton = new(Assets.UI.ColorSelector, Color.White);
             coloreelectorbutton.Width.Set(18, 0);
             coloreelectorbutton.Height.Set(18, 0);
@@ -33,8 +40,31 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 brewPotionState?.colorSelector.TransitionAnimation?.Invoke();
             };
-            
             Append(coloreelectorbutton);
+
+            _coloreelectorbutton = new(Assets.UI.ColorSelector, Color.White);
+            _coloreelectorbutton.Width.Set(18, 0);
+            _coloreelectorbutton.Height.Set(18, 0);
+            _coloreelectorbutton.Top.Set(216, 0);
+            _coloreelectorbutton.Left.Set(298, 0);
+            _coloreelectorbutton.OnClike = () =>
+            { 
+                brewPotionState?.colorSelector.TransitionAnimation?.Invoke();
+            };
+
+            Append(_coloreelectorbutton);
+
+            _inputbutton = new(Assets.UI.Input, Color.White);
+            _inputbutton.Width.Set(18, 0);
+            _inputbutton.Height.Set(18, 0);
+            _inputbutton.Top.Set(238, 0);
+            _inputbutton.Left.Set(298, 0);
+            _inputbutton.OnClike = () =>
+            {
+                //_coloreelectorbutton.Active = !_coloreelectorbutton.Active;
+            };
+            Append(_inputbutton);
+
             _potionname = new(brewPotionState);
             _potionname.Onchange = () =>
             {
@@ -42,7 +72,7 @@ namespace PotionCraft.Content.UI.CraftUI
             };
             _potionname.Left.Set(30, 0);
             _potionname.Top.Set(100,0);
-            Append(_potionname);
+
 
             _potionremarks = new(brewPotionState)
             {
@@ -52,9 +82,18 @@ namespace PotionCraft.Content.UI.CraftUI
                     _brewPotionState.CreatPotion.Signatures = _potionremarks.Showstring;
                 }
             };
-            _potionremarks.Left.Set(30, 0);
-            _potionremarks.Top.Set(300, 0);
+            _potionremarks.Width.Set(246, 0);
+            _potionremarks.Height.Set(106, 0);
+            _potionremarks.Left.Set(46, 0);
+            _potionremarks.Top.Set(276, 0);
             Append(_potionremarks);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            _potionremarks?.Update(gameTime);
+            //_coloreelectorbutton?.Update(gameTime);
         }
 
         public void SynopsisUpdate()
@@ -62,6 +101,7 @@ namespace PotionCraft.Content.UI.CraftUI
             var potion = _brewPotionState.PreviewPotion.ModItem as BasePotion;
             _potionname.Recordvalue = potion.CanCustomName ? ParseText(potion.CustomName) : ParseText(potion?.PotionName);
             _potionremarks.Recordvalue = ParseText(potion.Signatures);
+            
         }
         
         public override void Draw(SpriteBatch spriteBatch)

@@ -5,15 +5,18 @@ using static PotionCraft.Assets;
 using Terraria.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
+using Terraria.GameContent.UI.Elements;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class Slider : PotionElement<BrewPotionState>
     {
-        private int value;
+        public int value=1000;
 
         private float maxvalue=199;
 
         private bool mouseLeft;
+
+        public UIText text;
 
         public Action onChange;
 
@@ -22,6 +25,19 @@ namespace PotionCraft.Content.UI.CraftUI
             Width.Set(width, 0);
             Height.Set(22f, 0);
             PotionCraftState = brewPotionState;
+        }
+
+        public Slider(BrewPotionState brewPotionState, string text, int width = 220)
+        {
+            Width.Set(width, 0);
+            Height.Set(22f, 0);
+            PotionCraftState = brewPotionState;
+            this.text= new UIText(text) 
+            { 
+                VAlign=.5f
+            };
+            this.text.Left.Set(-50, 0);
+            Append(this.text);
         }
 
         public override void LeftClick(UIMouseEvent evt)
@@ -33,7 +49,7 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             if (!mouseLeft)
                 return;
-            //maxvalue = Utils.Clamp((int)(CaculateMoney(Main.LocalPlayer) / 1000), 1, 999);
+            maxvalue = Utils.Clamp((int)(CaculateMoney(Main.LocalPlayer) / 1000), 1, 999);
             value = Utils.Clamp((int)((Main.MouseScreen.X - GetDimensions().X) *maxvalue/Width.Pixels), 0, (int)maxvalue);
             onChange?.Invoke();
             if (!Main.mouseLeft)
@@ -60,8 +76,9 @@ namespace PotionCraft.Content.UI.CraftUI
             var num2 = Utils.CoinsCount(out _, player.bank2.item);
             var num3 = Utils.CoinsCount(out _, player.bank3.item);
             var num4 = Utils.CoinsCount(out _, player.bank4.item);
-            var num5 = Utils.CoinsCombineStacks(out _, num, num2, num3, num4);
-            return num5;
+            var num5 = Utils.CoinsCount(out _, player.inventory, 58, 57, 56, 55, 54);
+            var num6 = Utils.CoinsCombineStacks(out _, num, num2, num3, num4,num5);
+            return num6;
         }
     }
     
