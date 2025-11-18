@@ -15,7 +15,7 @@ public class LoaderPotionOrMaterial:ModSystem
     
     public static readonly Dictionary<string,(bool,int)> BuffsList = [];
 
-    public static readonly Dictionary<Item, int> PotionList = [];
+    public static readonly Dictionary<string, int> PotionList = [];
     
     public static List<string> Terrariabuffs = [];
     
@@ -42,9 +42,10 @@ public class LoaderPotionOrMaterial:ModSystem
             item.SetDefaults(i);
             if (!IsFood(item) && item.consumable && item.buffType is not 0)
             {
-                PotionList.TryAdd(item,item.buffType);
+                PotionList.TryAdd(item.Name,item.buffType);
             }
         }
+        Mod.Logger.Debug(PotionList);
     }
 
 }

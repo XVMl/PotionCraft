@@ -4,21 +4,17 @@ using PotionCraft.Content.System;
 using System;
 using System.Reflection;
 using Terraria.ModLoader;
-using static PotionCraft.Assets;
 using Terraria.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
-using static PotionCraft.Content.System.LanguageHelper;
 using PotionCraft.Content.UI.PotionTooltip;
 using Steamworks;
 using Terraria.ID;
 using static System.Net.Mime.MediaTypeNames;
 using Terraria.GameContent;
 using Terraria.UI.Chat;
-using Terraria.Map;
-using Terraria.GameContent.UI.Elements;
-using Terraria.GameInput;
+
 
 namespace PotionCraft.Content.UI.CraftUI
 {
@@ -28,7 +24,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override bool Isload() => true;
 
-        public static readonly MethodInfo SetModItem = typeof(Item).GetProperty(nameof(Item.ModItem))!.GetSetMethod();
+        public static readonly MethodInfo SetModItem = typeof(Item).GetProperty(nameof(Item.ModItem))!.GetSetMethod(true);
         
         public override string LayersFindIndex => "Vanilla: Mouse Text";
         
@@ -52,10 +48,17 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private PotionSetting potionSetting;
 
+        private PotionCrucible potionCrucible;
+
         public ColorSelector colorSelector;
 
         public override void OnInitialize()
         {
+            potionCrucible = new PotionCrucible(this);
+            potionCrucible.HAlign = .5f;
+            potionCrucible.Top.Set(100f, 0);
+            Append(potionCrucible);
+
             potionSetting = new PotionSetting(this)
             {
                 HAlign = .5f,
@@ -66,19 +69,36 @@ namespace PotionCraft.Content.UI.CraftUI
             PotionSynopsis = new PotionSynopsis(this);
             PotionSynopsis.Top.Set(300, 0);
             PotionSynopsis.Left.Set(370, 0);
+            //PotionSynopsis.IdelAnimation = () =>
+            //{
+            //    PotionSynopsis.Top.Set(PotionSynopsis.Top.Pixels +
+            //        (float)(.51 * Math.Sin(Math.PI / 150 * Main.time)), 0);
+            //};
             //PotionSynopsis.SourcePotion = new Vector2(PotionSynopsis.Left.Pixels, PotionSynopsis.Top.Pixels);
             Append(PotionSynopsis);
 
             colorSelector = new(this);
             colorSelector.Top.Set(300, 0);
             colorSelector.Left.Set(20, 0);
+            colorSelector.Active = false;
+            colorSelector.TransitionAnimation = () =>
+            {
+                var top = MathHelper.Lerp(colorSelector.Top.Pixels, colorSelector.Active ? 300 : 270,.05f);
+                colorSelector.Top.Set(top, 0);
+            };
             Append(colorSelector);
 
             potionComponent = new PotionComponent(this);
             potionComponent.Top.Set(228, 0);
             potionComponent.Left.Set(1150, 0);
+            //potionComponent.IdelAnimation = () =>
+            //{
+            //    potionComponent.Top.Set(potionComponent.Top.Pixels +
+            //        (float)(.41 * Math.Sin(Math.PI / 154 * Main.time)), 0);
+            //};
             Append(potionComponent);
 
+            
         }
 
         #region 操作具体方法
@@ -90,25 +110,19 @@ namespace PotionCraft.Content.UI.CraftUI
             return AsPotion(item1)._Name == item2._Name;
         }
         
-        private void AddPotion(Item item)
+        public void AddPotion(Item item)
         {
-            if (PotionList.ContainsKey(item) && item.ModItem is not BasePotion)
-                return;
+            Craft?.Invoke(CreatPotion,currentItem);
 
-            Craft.Invoke(CreatPotion,currentItem);
             ConflitCraft =  false;
             currentItem = item;
             if (item.type == ModContent.ItemType<MagicPanacea>())
-            {
                 Craft = Putify;
-                return; 
-            } 
+             
             if (!QuicklyCheckPotion(item, CreatPotion) )
-            {
-                Craft =MashUp;
-                return;
-            }
-            ConflitCraft = true;
+                Craft = MashUp;
+
+            //ConflitCraft = true;
             Refresh();
         }
         
@@ -249,11 +263,15 @@ namespace PotionCraft.Content.UI.CraftUI
             PreviewPotion.SetDefaults(ModContent.ItemType<BasePotion>());
             var preview = TransExp<BasePotion, BasePotion>.Trans(CreatPotion);
             Craft.Invoke(preview, currentItem);
+            SetModItem.Invoke(PreviewPotion, [CreatPotion]);
             potionComponent.ComponentUpdate();
             PotionSynopsis.SynopsisUpdate();
-            SetModItem.Invoke(PreviewPotion.ModItem, [preview]);
+            Mod instance = ModContent.GetInstance<PotionCraft>();
+
+            instance.Logger.Debug((preview).PotionDictionary);
+
         }
-        
+
         private void ClearAll()
         {
             CreatPotion = ModContent.GetInstance<BasePotion>();
@@ -309,131 +327,56 @@ namespace PotionCraft.Content.UI.CraftUI
         
         public override void Draw(SpriteBatch spriteBatch)
         {
-            base.Draw(spriteBatch);
             spriteBatch.Draw(Assets.UI.UI2, GetDimensions().Position(), Color.White);
-        }
-    }
-
-    public class PotionSetting : PotionElement<BrewPotionState>
-    {
-        private UIElement BG;
-
-        private Button delete;
-
-        public Button brew;
-
-        private Slider slider;
-
-        private Button autouse;
-
-        private Button potionlock;
-
-        private Button packing;
-
-        private Button Hajimi;
-
-        public PotionSetting(BrewPotionState brewPotionState)
-        {
-            Width.Set(384f, 0);
-            Height.Set(300f, 0);
-            
-            BG = new();
-            BG.Width.Set(384, 0);
-            BG.Height.Set(224, 0);
-            Append(BG);
-
-            PotionCraftState = brewPotionState;
-            delete = new Button(UITexture("Delete"), Color.White, "Delete");
-            delete.Height.Set(34, 0);
-            delete.Width.Set(96, 0);
-            delete.Left.Set(50, 0);
-            delete.Top.Set(170, 0);
-            BG.Append(delete);
-
-            brew = new Button(UITexture("Brew"), Color.White, "Brew");
-            brew.Height.Set(34, 0);
-            brew.Width.Set(96, 0);
-            brew.Left.Set(250, 0);
-            brew.Top.Set(170, 0);
-            BG.Append(brew);
-
-            slider = new Slider(brewPotionState,"数量");
-            slider.Left.Set(90, 0);
-            slider.Top.Set(112, 0);
-            slider.text.TextColor = Deafult;
-            BG.Append(slider);
-
-            autouse = new Button(Assets.UI.Icon, Color.White, new Rectangle(40,0,18,18));
-            autouse.Height.Set(18, 0);
-            autouse.Width.Set(18, 0);
-            autouse.Left.Set(116, 0);
-            autouse.Top.Set(46, 0);
-            autouse.Iconcolor = Deafult;
-            autouse.Value = brewPotionState.CreatPotion.AutoUse;
-            autouse.OnClike = () =>
-            {
-                autouse.Value = !autouse.Value;
-                brewPotionState.CreatPotion.AutoUse = !autouse.Value;;
-            };
-            BG.Append(autouse);
-
-            potionlock = new Button(Assets.UI.Icon, Color.White, new Rectangle(62, 0, 18, 18));
-            potionlock.Height.Set(18, 0);
-            potionlock.Width.Set(18, 0);
-            potionlock.Left.Set(40, 0);
-            potionlock.Top.Set(46, 0);
-            potionlock.Iconcolor = Deafult;
-            potionlock.OnClike = () =>
-            {
-                potionlock.Value = !potionlock.Value;
-                brewPotionState.CreatPotion.IsPackage = !potionlock.Value;
-                potionlock.Rectangle = potionlock.Value ? new Rectangle(62, 0, 18, 18) : new Rectangle(80, 0, 18, 18); ;
-            };
-            BG.Append(potionlock);
-
-            packing = new Button(Assets.UI.Icon, Color.White, new Rectangle(20, 0, 18, 18));
-            packing.Height.Set(18, 0);
-            packing.Width.Set(18, 0);
-            packing.Left.Set(76, 0);
-            packing.Top.Set(46, 0);
-            packing.Iconcolor = Deafult;
-            packing.OnClike = () =>
-            {
-                packing.Value = !packing.Value;
-                brewPotionState.CreatPotion.IsPackage = !packing.Value;
-                packing.Rectangle = packing.Value ? new Rectangle(0, 0, 18, 18) : new Rectangle(20, 0, 18, 18); ;
-            };
-            BG.Append(packing);
-
-            Hajimi = new(Assets.UI.HajimiIcon, Color.White);
-            Hajimi.Width.Set(40, 0);
-            Hajimi.Height.Set(34, 0);
-            Hajimi.Top.Set(240, 0);
-            Hajimi.Left.Set(300, 0);
-            Hajimi.HoverTexture = Assets.UI.HajimiIconHover;
-            Append(Hajimi);
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-            slider.Update(gameTime);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(Assets.UI.UI4, BG.GetDimensions().ToRectangle(), Color.White);
-            Utils.DrawBorderString(spriteBatch, "花费:", GetDimensions().Position() + new Vector2(40, 80), Deafult, 1f);
-            BrewPotionState.DrawCost(spriteBatch, slider.value*1000, GetDimensions().Position()+new Vector2(90,80));
-            ItemSlot.DrawSavings(spriteBatch, GetDimensions().X, GetDimensions().Y+200);
             base.Draw(spriteBatch);
         }
-
     }
 
     public class PotionCrucible : PotionElement<BrewPotionState>
     {
-                
+        private UIElement Crucible;
+
+        private BrewPotionState BrewPotionState;
+        public PotionCrucible(BrewPotionState brewPotionState)
+        {
+            BrewPotionState = brewPotionState;
+            PotionCraftState = brewPotionState;
+            Height.Set(400, 0);
+            Width.Set(400, 0);
+            Crucible = new UIElement();
+            Crucible.Width.Set(384, 0);
+            Crucible.Height.Set(234, 0);
+            Crucible.Top.Set(200, 0);
+            Crucible.HAlign = .5f;
+            Append(Crucible);
+
+        }
+
+        public override void LeftClick(UIMouseEvent evt)
+        {
+            if (!PotionCraftState.Active()) return;
+            if (Main.mouseItem.IsAir)
+                return;
+
+            //if (!PotionList.ContainsKey(Main.mouseItem) && Main.mouseItem.ModItem is not BasePotion)
+            //    return;
+            if (!PotionList.ContainsKey(Main.mouseItem.Name))
+                return;
+
+            BrewPotionState.AddPotion(Main.mouseItem);
+            Main.LocalPlayer.HeldItem.TurnToAir();
+            Main.mouseItem.TurnToAir();
+            
+        }
+
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+            spriteBatch.Draw(Assets.UI.Crucible, Crucible.GetDimensions().ToRectangle(), Color.White);
+
+        }
+
     }
 
     public class BrewPotionButton : PotionElement<BrewPotionState>

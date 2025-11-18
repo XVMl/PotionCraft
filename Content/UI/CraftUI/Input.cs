@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net.Repository.Hierarchy;
+using Microsoft.Build.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,6 +12,7 @@ using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.UI;
+using static PotionCraft.Content.System.LanguageHelper;
 
 namespace PotionCraft.Content.UI.CraftUI;
 
@@ -27,9 +30,11 @@ public class Input:PotionElement<BrewPotionState>
         
     public string Showstring="";
     
-    private string SelectColor => LanguageHelper.RGBToHex(_brewPotionState.colorSelector.Color);
+    private Color SelectColor => _brewPotionState.colorSelector.Color;
 
-    private string TempColor;
+    private string TempColor="";
+
+    private string TempText="";
     
     public Action Onchange;
     public Input(BrewPotionState brewPotionState,string currentValue=null)
@@ -38,14 +43,14 @@ public class Input:PotionElement<BrewPotionState>
         PotionCraftState = brewPotionState;
         Width.Set(180f, 0f);
         Height.Set(50f, 0f);
-        Recordvalue = LanguageHelper.ParseText(currentValue);
+        Recordvalue = ParseText(currentValue);
     }
 
     public Input(Action onchange, BrewPotionState brewPotionState,string currentvalue=null )
     {
         _brewPotionState = brewPotionState;
         PotionCraftState = brewPotionState;
-        Recordvalue = LanguageHelper.ParseText(currentvalue);
+        Recordvalue = ParseText(currentvalue);
         Onchange = onchange;
     }
         
@@ -66,8 +71,8 @@ public class Input:PotionElement<BrewPotionState>
 
         PlayerInput.WritingText = true;
         Main.instance.HandleIME();
-        if (string.IsNullOrEmpty(Currentvalue) && Main.inputText.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Back))
-            Recordvalue.Remove(Recordvalue.Last());
+        if (string.IsNullOrEmpty(Currentvalue)&&Recordvalue.Count!=0)
+            StListText();
         
         Currentvalue = Main.GetInputText(Currentvalue);
     }
@@ -78,10 +83,18 @@ public class Input:PotionElement<BrewPotionState>
             return;
         Main.blockInput = false;
         Inputting = false;
-        if(!string.IsNullOrEmpty(Currentvalue))
-            Recordvalue.Add((SelectColor, Currentvalue));
+        var original = GetUnmodfiedPart(TempText, ref Currentvalue);
+        if(!string.IsNullOrEmpty(original))
+            Recordvalue.Add((TempColor,original));
+
+        if (!string.IsNullOrEmpty(Currentvalue))
+            Recordvalue.Add(($"[c/{LanguageHelper.RGBToHex(SelectColor)}:]" , Currentvalue));
+
         Currentvalue = "";
+        TempColor = "";
+        TempColor = "";
         Showstring = string.Join("", Recordvalue.Select(s=>string.IsNullOrEmpty(s.Item1) ? LanguageHelper.Deafult_Hex : s.Item1.Insert(10,s.Item2)));
+        Showstring = WrapTextWithColors(Showstring, 160).Item1;
         Onchange?.Invoke();
     }
 
@@ -99,14 +112,30 @@ public class Input:PotionElement<BrewPotionState>
             HandleMouseScroll();
     }
 
-    private string StListText()
+    private void StListText()
     {
         if (Recordvalue.Count == 0)
-            return "";
-        var text = Recordvalue.Last().Item2;
+            return ;
+        Currentvalue = Recordvalue.Last().Item2;
+        TempText = Currentvalue;
         TempColor = Recordvalue.Last().Item1;
         Recordvalue.Remove(Recordvalue.Last());
-        return text;
+    }
+
+    public static string GetUnmodfiedPart(string original,ref string modified)
+    {
+        var minLength =Math.Min(original.Length, modified.Length);
+        for (int i = 0;i< minLength; i++)
+        {
+            if (original[i] == modified[i])
+                continue;
+            
+            modified = modified[i..];
+            return original[..i];
+        }
+
+        modified = modified[minLength..];
+        return original[..minLength];
     }
 
     public override void LeftClick(UIMouseEvent evt)
@@ -120,18 +149,17 @@ public class Input:PotionElement<BrewPotionState>
     {
         spriteBatch.Draw(Assets.UI.UI1,GetDimensions().ToRectangle(),new Rectangle(46,276,246,106),Color.White);
         
-        Utils.DrawBorderString(spriteBatch, Showstring, GetDimensions().Position(), Color.White, 0.75f, 0f, 0f, -1);
-        var vector2 = GetDimensions().Position() +
-                      FontAssets.MouseText.Value.MeasureString(string.Join("", Recordvalue.Select(s => s.Item2)));
+        Utils.DrawBorderString(spriteBatch, Showstring, GetDimensions().Position(), Color.White, 1f, 0f, 0f, -1);
+        var vector2 = GetDimensions().Position() + 
+                      FontAssets.MouseText.Value.MeasureString(DeleteTextColor_SaveString(WrapTextWithColors(Showstring).Item1));
 
         if (!Inputting)
             return;
 
         HandleInputText();
-        //spriteBatch.Draw(Assets.UI.PanelGrayscale, GetDimensions().ToRectangle(), new Color(49, 84, 141));
-        Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
+         Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
         Utils.DrawBorderString(spriteBatch, Currentvalue, vector2,
-            LanguageHelper.HexToColor(SelectColor), 0.75f, 0f, 0f, -1);
+            Color.White, 1f, 0f, 0f, -1);
         if (Main.GameUpdateCount % 20U >= 10U)
             return;
         Utils.DrawBorderString(spriteBatch, "|", vector2 + FontAssets.MouseText.Value.MeasureString(Currentvalue), Color.White, 0.75f, 0.0f, 0.0f, -1);

@@ -34,18 +34,20 @@ public class Button : PotionElement<BrewPotionState>
     public Color Color;
 
     public Color Iconcolor = Color.White;
-    public Button(Asset<Texture2D> texture2D ,Color color,string text ="",float scale=1)
+    public Button(Asset<Texture2D> texture2D ,Color color, BrewPotionState brewPotionState, string text ="",float scale=1)
     {
         Texture  = texture2D;
+        PotionCraftState = brewPotionState;
         this.Text = text;
         this.Color = color;
         this.Scale = scale;
         _asset = texture2D;
     }
-    public Button(Asset<Texture2D> texture2D, Color color, Rectangle rectangle, string text = "", float scale = 1)
+    public Button(Asset<Texture2D> texture2D, Color color, Rectangle rectangle, BrewPotionState brewPotionState, string text = "", float scale = 1)
     {
         Texture = texture2D;
         Rectangle = rectangle;
+        PotionCraftState = brewPotionState;
         this.Text = text;
         this.Color = color;
         this.Scale = scale;
@@ -55,6 +57,11 @@ public class Button : PotionElement<BrewPotionState>
     {
         base.LeftClick(evt);
         OnClike?.Invoke();
+    }
+
+    public override void Update(GameTime gameTime)
+    {
+        base.Update(gameTime);
     }
 
     public override void MouseOver(UIMouseEvent evt)

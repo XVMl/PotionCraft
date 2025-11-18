@@ -24,7 +24,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         public PotionIngredients(AutoUIState potionCraftState)
         {
-            PotionCraftState = null;
+            PotionCraftState = potionCraftState;
             UIgrid = new UIGrid()
             {
                 OverflowHidden = true,
@@ -53,6 +53,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             if (PotionCraftState is null) return;
             foreach (var ingredientElement in potion.PotionDictionary.Select(ingredient => new IngredientElement(ingredient.Value.BuffId, ingredient.Value.ItemId,ingredient.Value.Counts)))
             {
+                ingredientElement.Displaye = true;
                 UIgrid.Add(ingredientElement);
                 UIgrid.RecalculateChildren();
             }
@@ -75,6 +76,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
         private float LeftOffset;
 
         private UIElement Area;
+
+        public bool Displaye;
         public IngredientElement(int BuffId, int ingredientType,int count)
         {
             Width.Set(150, 0);
@@ -106,7 +109,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         protected override void DrawChildren(SpriteBatch spriteBatch)
         {
-            if (!PotionCraftModPlayer.PotionCraftKeybind.Current)
+            if (!PotionCraftModPlayer.PotionCraftKeybind.Current && !Displaye)
             {
                 LeftOffset = 0;
                 return;

@@ -68,10 +68,6 @@ namespace PotionCraft.Content.UI.CraftUI
             palette.Append(paletteprogress);
             select.Append(selectprogress);
 
-            TransitionAnimation = () =>
-            {
-                Active = !Active;
-            };
         }
 
         public override void Update(GameTime gameTime)

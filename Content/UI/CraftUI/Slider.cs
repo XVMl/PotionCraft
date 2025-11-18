@@ -10,7 +10,7 @@ namespace PotionCraft.Content.UI.CraftUI
 {
     public class Slider : PotionElement<BrewPotionState>
     {
-        public int value=1000;
+        public int value=0;
 
         private float maxvalue=199;
 

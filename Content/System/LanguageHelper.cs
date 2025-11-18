@@ -157,6 +157,38 @@ namespace PotionCraft.Content.System
             }
             return (string.Join("\n", lines), linecount);
         }
+        /// <summary>
+        /// 智能换行，会截断单词
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static string SubstringAndWrapTextWithColors(string text, float length)
+        {
+            var parsedParts = ParseText(text);
+            var lines = new List<string>();
+            var currentLine = new StringBuilder();
+            float currentWidth = 0;
+            var linecount = 1;
+            foreach (var (colorCode, partText) in parsedParts)
+            {
+                var partWidth = CalculateWidth(partText);
+                if (currentWidth + partWidth > length)
+                {
+                    lines.Add(currentLine.ToString().Trim());
+                    currentLine.Clear();
+                    currentWidth = 0;
+                    linecount++;
+                }
+                currentLine.Append($"[c/{colorCode}:{partText}]");
+                currentWidth += partWidth;
+            }
+            if (currentLine.Length > 0)
+            {
+                lines.Add(currentLine.ToString().Trim());
+            }
+            return string.Join("\n", lines);
+        }
 
         public static string DeleteTextColor(string msg)
         {
@@ -206,7 +238,7 @@ namespace PotionCraft.Content.System
             return string.Join("", experssion);
         }
         
-        public static (string,int) WrapText(string text)
+        public static (string,int) WrapTextWithColors(string text)
         {
             string[] parts = text.Split(' ');
             return (text.Replace(" ", "\n"), parts.Length);

@@ -31,37 +31,46 @@ namespace PotionCraft.Content.UI.CraftUI
             Width.Set(342, 0);
             Height.Set(414, 0);
 
-            coloreelectorbutton = new(Assets.UI.ColorSelector, Color.White);
+            coloreelectorbutton = new(Assets.UI.ColorSelector, Color.White,brewPotionState);
             coloreelectorbutton.Width.Set(18, 0);
             coloreelectorbutton.Height.Set(18, 0);
             coloreelectorbutton.Top.Set(290, 0);
             coloreelectorbutton.Left.Set(26, 0);
             coloreelectorbutton.OnClike = () =>
             {
+                brewPotionState.colorSelector.Active = !brewPotionState.colorSelector.Active;
                 brewPotionState?.colorSelector.TransitionAnimation?.Invoke();
             };
             Append(coloreelectorbutton);
 
-            _coloreelectorbutton = new(Assets.UI.ColorSelector, Color.White);
+            _coloreelectorbutton = new(Assets.UI.ColorSelector, Color.White,brewPotionState);
             _coloreelectorbutton.Width.Set(18, 0);
             _coloreelectorbutton.Height.Set(18, 0);
             _coloreelectorbutton.Top.Set(216, 0);
             _coloreelectorbutton.Left.Set(298, 0);
-            _coloreelectorbutton.OnClike = () =>
+            _coloreelectorbutton.TransitionAnimation = () =>
             { 
+                var top = MathHelper.Lerp(_coloreelectorbutton.Top.Pixels, _coloreelectorbutton.Active ? 216 : 186, .05f);
+                _coloreelectorbutton.Top.Set(top, 0);
+            };
+            _coloreelectorbutton.OnClike = () =>
+            {
+                if (!_coloreelectorbutton.Active) return;
+                brewPotionState.colorSelector.Active = !brewPotionState.colorSelector.Active;
                 brewPotionState?.colorSelector.TransitionAnimation?.Invoke();
             };
 
             Append(_coloreelectorbutton);
 
-            _inputbutton = new(Assets.UI.Input, Color.White);
+            _inputbutton = new(Assets.UI.Input, Color.White,brewPotionState);
             _inputbutton.Width.Set(18, 0);
             _inputbutton.Height.Set(18, 0);
             _inputbutton.Top.Set(238, 0);
             _inputbutton.Left.Set(298, 0);
+            
             _inputbutton.OnClike = () =>
             {
-                //_coloreelectorbutton.Active = !_coloreelectorbutton.Active;
+                _coloreelectorbutton.Active = !_coloreelectorbutton.Active;
             };
             Append(_inputbutton);
 
@@ -93,7 +102,7 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             base.Update(gameTime);
             _potionremarks?.Update(gameTime);
-            //_coloreelectorbutton?.Update(gameTime);
+            _coloreelectorbutton?.Update(gameTime);
         }
 
         public void SynopsisUpdate()
