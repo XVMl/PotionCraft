@@ -15,6 +15,8 @@ using Microsoft.Xna.Framework;
 using Terraria.GameContent;
 using Terraria.ID;
 using System.Reflection;
+using static ReLogic.Graphics.DynamicSpriteFont;
+using ReLogic.Graphics;
 
 namespace PotionCraft.Content.System
 {
@@ -220,7 +222,51 @@ namespace PotionCraft.Content.System
                 _ => throw new ArgumentException("Invalid hex color string.")
             };
         }
-        
+        public Vector2 MeasureString(string text, DynamicSpriteFont dynamicSpriteFont)
+        {
+            if (text.Length == 0)
+                return Vector2.Zero;
+
+            Vector2 zero = Vector2.Zero;
+            zero.Y = dynamicSpriteFont.LineSpacing;
+            float val = 0f;
+            int num = 0;
+            float num2 = 0f;
+            bool flag = true;
+            foreach (char c in text)
+            {
+                switch (c)
+                {
+                    case '\n':
+                        val = Math.Max(zero.X + Math.Max(num2, 0f), val);
+                        num2 = 0f;
+                        zero = Vector2.Zero;
+                        zero.Y = dynamicSpriteFont.LineSpacing;
+                        flag = true;
+                        num++;
+                        continue;
+                    case '\r':
+                        continue;
+                }
+
+                SpriteCharacterData characterData = dynamicSpriteFont.DefaultCharacterData;
+                Vector3 kerning = characterData.Kerning;
+                if (flag)
+                    kerning.X = Math.Max(kerning.X, 0f);
+                else
+                    zero.X += dynamicSpriteFont.CharacterSpacing + num2;
+
+                zero.X += kerning.X + kerning.Y;
+                num2 = kerning.Z;
+                zero.Y = Math.Max(zero.Y, characterData.Padding.Height);
+                flag = false;
+            }
+
+            zero.X += Math.Max(num2, 0f);
+            zero.Y += num * dynamicSpriteFont.LineSpacing;
+            zero.X = Math.Max(zero.X, val);
+            return zero;
+        }
         public static string CreatQuestion(int level)
         {
             List<string> experssion = [];

@@ -45,7 +45,6 @@ public class LoaderPotionOrMaterial:ModSystem
                 PotionList.TryAdd(item.Name,item.buffType);
             }
         }
-        Mod.Logger.Debug(PotionList);
     }
 
 }

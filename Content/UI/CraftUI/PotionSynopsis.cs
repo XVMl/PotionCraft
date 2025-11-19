@@ -7,6 +7,9 @@ using static PotionCraft.Assets;
 using static PotionCraft.Content.System.LanguageHelper;
 using Terraria.GameContent.UI.Elements;
 using System;
+using Terraria.UI;
+using Terraria.ModLoader;
+using System.Runtime.CompilerServices;
 
 namespace PotionCraft.Content.UI.CraftUI
 {
@@ -24,12 +27,23 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private Input _potionremarks;
 
+        private ItemIcon _potionicon;
+
         public PotionSynopsis(BrewPotionState brewPotionState)
         {
             _brewPotionState = brewPotionState;
             PotionCraftState = brewPotionState;
             Width.Set(342, 0);
             Height.Set(414, 0);
+
+            _potionicon = new(brewPotionState, brewPotionState.PreviewPotion);
+            _potionicon.Top.Set(38, 0);
+            _potionicon.Left.Set(124, 0);
+            _potionicon.OnClick = () =>
+            {
+                Main.NewText("CD");
+            };
+            Append(_potionicon);
 
             coloreelectorbutton = new(Assets.UI.ColorSelector, Color.White,brewPotionState);
             coloreelectorbutton.Width.Set(18, 0);
@@ -75,13 +89,16 @@ namespace PotionCraft.Content.UI.CraftUI
             Append(_inputbutton);
 
             _potionname = new(brewPotionState);
+            _potionname.Canedit = false;
+            _potionname.Width.Set(246, 0);
+            _potionname.Height.Set(90, 0);
             _potionname.Onchange = () =>
             {
                 _brewPotionState.CreatPotion.CustomName = _potionname.Showstring;
             };
-            _potionname.Left.Set(30, 0);
-            _potionname.Top.Set(100,0);
-
+            _potionname.Left.Set(46, 0);
+            _potionname.Top.Set(170,0);
+            Append(_potionname);
 
             _potionremarks = new(brewPotionState)
             {
@@ -108,9 +125,11 @@ namespace PotionCraft.Content.UI.CraftUI
         public void SynopsisUpdate()
         {
             var potion = _brewPotionState.PreviewPotion.ModItem as BasePotion;
-            _potionname.Recordvalue = potion.CanCustomName ? ParseText(potion.CustomName) : ParseText(potion?.PotionName);
+            _potionname.Recordvalue = potion.CanCustomName ? ParseText(potion.CustomName) : ParseText(potion.PotionName);
             _potionremarks.Recordvalue = ParseText(potion.Signatures);
-            
+            _potionname.Refresh();
+            _potionremarks.Refresh();
+            _potionicon.Item = _brewPotionState.PreviewPotion;
         }
         
         public override void Draw(SpriteBatch spriteBatch)
@@ -122,5 +141,52 @@ namespace PotionCraft.Content.UI.CraftUI
 
     }
     
-    
+    public class ItemIcon : PotionElement<BrewPotionState>
+    {
+        public Item Item;
+
+        private BrewPotionState BrewPotionState;
+
+        public Action OnClick;
+        public ItemIcon(BrewPotionState brewPotionState,Item item) 
+        { 
+            PotionCraftState = brewPotionState;
+            BrewPotionState = brewPotionState;
+            Width.Set(102f, 0f);
+            Height.Set(104f, 0f);
+            Item = item;
+        }
+
+        public override void LeftClick(UIMouseEvent evt)
+        {
+            base.LeftClick(evt);
+            OnClick?.Invoke();
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Assets.UI.UI1.Value, GetDimensions().ToRectangle(),new Rectangle(124,38,102,104), Color.White);
+            if (Item is null)
+                return;
+            Main.inventoryScale = 2.30f;
+            ItemSlot.Draw(spriteBatch, ref Item, 21, GetDimensions().Position());
+
+            //spriteBatch.Draw(tex, GetDimensions().ToRectangle().TopLeft(), Color.White);
+            //if (PotionCraftState.Potion.IsAir) return;
+            //if (!IsMouseHovering) return;
+            //Main.LocalPlayer.mouseInterface = true;
+            //Main.HoverItem = PotionCraftState.Potion.Clone();
+        }
+    }
+
+    public class SelectIcon : PotionElement<BrewPotionState>
+    {
+        public SelectIcon()
+        {
+            Width.Set(342, 0);
+            Height.Set(224, 0);
+            
+        }
+    }
+
 }

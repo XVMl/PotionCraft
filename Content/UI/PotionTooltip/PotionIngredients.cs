@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
     public class PotionIngredients:PotionElement<AutoUIState>
     {
         public UIGrid UIgrid;
+
+        public Asset<Texture2D> BG;
 
         public PotionIngredients(AutoUIState potionCraftState)
         {
@@ -57,8 +60,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 UIgrid.Add(ingredientElement);
                 UIgrid.RecalculateChildren();
             }
-
         }
+
     }
 
     public class IngredientElement:UIElement
@@ -68,8 +71,6 @@ namespace PotionCraft.Content.UI.PotionTooltip
         private int Count;
 
         private UIText IngredientName;
-
-        private int IngredientId;
 
         private int overlenght;
 
@@ -100,9 +101,9 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 TextColor = Deafult
             };
             IngredientName.Top.Set(10f, 0);
-            Main.instance.LoadItem(IngredientType);
             IngredientName.Width.Set(100, 0);
             IngredientName.Height.Set(50, 0);
+            Main.instance.LoadItem(IngredientType);
             overlenght = (int)FontAssets.MouseText.Value.MeasureString(buffname).X-100;
             Area.Append(IngredientName);
         }

@@ -14,6 +14,7 @@ using Terraria.ID;
 using static System.Net.Mime.MediaTypeNames;
 using Terraria.GameContent;
 using Terraria.UI.Chat;
+using static PotionCraft.Assets;
 
 
 namespace PotionCraft.Content.UI.CraftUI
@@ -54,6 +55,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void OnInitialize()
         {
+            
             potionCrucible = new PotionCrucible(this);
             potionCrucible.HAlign = .5f;
             potionCrucible.Top.Set(100f, 0);
@@ -115,13 +117,10 @@ namespace PotionCraft.Content.UI.CraftUI
             Craft?.Invoke(CreatPotion,currentItem);
 
             ConflitCraft =  false;
-            currentItem = item;
-            if (item.type == ModContent.ItemType<MagicPanacea>())
-                Craft = Putify;
-             
-            if (!QuicklyCheckPotion(item, CreatPotion) )
-                Craft = MashUp;
-
+            currentItem = item.Clone();
+            Craft = item.type == ModContent.ItemType<MagicPanacea>() || QuicklyCheckPotion(item, CreatPotion) ?
+                Putify : MashUp;
+            
             //ConflitCraft = true;
             Refresh();
         }
@@ -266,9 +265,9 @@ namespace PotionCraft.Content.UI.CraftUI
             SetModItem.Invoke(PreviewPotion, [CreatPotion]);
             potionComponent.ComponentUpdate();
             PotionSynopsis.SynopsisUpdate();
-            Mod instance = ModContent.GetInstance<PotionCraft>();
+            //Mod instance = ModContent.GetInstance<PotionCraft>();
 
-            instance.Logger.Debug((preview).PotionDictionary);
+            //instance.Logger.Debug((preview).PotionDictionary);
 
         }
 
@@ -309,11 +308,10 @@ namespace PotionCraft.Content.UI.CraftUI
             _brewPotionState = brewPotionState;
             Width.Set(346f, 0);
             Height.Set(486f, 0);
+
             _potionIngredients = new PotionIngredients(brewPotionState);
-            _potionIngredients.Top.Set(30, 0);
-            _potionIngredients.Left.Set(0, 0);
             _potionIngredients.Width.Set(350, 0);
-            _potionIngredients.Height.Set(500, 0);
+            _potionIngredients.Height.Set(250, 0);
             Append(_potionIngredients);
             
         }
@@ -328,8 +326,23 @@ namespace PotionCraft.Content.UI.CraftUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Assets.UI.UI2, GetDimensions().Position(), Color.White);
+            
             base.Draw(spriteBatch);
         }
+
+        private class Ingredients : PotionElement<BrewPotionState>
+        {
+            private PotionIngredients _potionIngredients;
+
+            public Ingredients(BrewPotionState brewPotionState)
+            {
+                PotionCraftState = brewPotionState;
+                _potionIngredients = new(brewPotionState);
+
+
+            }
+        }
+
     }
 
     public class PotionCrucible : PotionElement<BrewPotionState>
@@ -346,7 +359,7 @@ namespace PotionCraft.Content.UI.CraftUI
             Crucible = new UIElement();
             Crucible.Width.Set(384, 0);
             Crucible.Height.Set(234, 0);
-            Crucible.Top.Set(200, 0);
+            Crucible.Top.Set(250, 0);
             Crucible.HAlign = .5f;
             Append(Crucible);
 
