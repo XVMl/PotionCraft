@@ -154,7 +154,21 @@ public class Input:PotionElement<BrewPotionState>
             return;
         InputText();
     }
+    
+    public static string GetUnmodifiedPart(string original, string modified)
+    {
+        var minLength = Math.Min(original.Length, modified.Length);
+        for (var i = 0; i < minLength; i++)
+        {
+            if (original[i] != modified[i])
+            {
+                return original[..i];
+            }
+        }
 
+        return original == modified ? original : original[..minLength];
+    }
+    
     protected override void DrawSelf(SpriteBatch spriteBatch)
     {
         if(Asset is not null)
@@ -173,7 +187,7 @@ public class Input:PotionElement<BrewPotionState>
             Color.White, 1f, 0f, 0f, -1);
         if (Main.GameUpdateCount % 20U >= 10U)
             return;
-        Utils.DrawBorderString(spriteBatch, "|", vector2 + FontAssets.MouseText.Value.MeasureString(Currentvalue), Color.White, 0.75f, 0.0f, 0.0f, -1);
+        Utils.DrawBorderString(spriteBatch, "|", vector2+FontAssets.MouseText.Value.MeasureString(Currentvalue), Color.White, 0.75f, 0.0f, 0.0f, -1);
     }
-
+        
 }

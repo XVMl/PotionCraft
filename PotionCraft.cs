@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Terraria.ModLoader;
 
 namespace PotionCraft
@@ -52,6 +53,21 @@ namespace PotionCraft
 		}
 	}
 
+	public static class DeepCopyHelper
+	{
+		public static T DeepCopyByJsonNet<T>(this T source)
+		{
+			if (source == null)
+				return default;
+
+			// 序列化时可配置：支持循环引用（ReferenceLoopHandling.Ignore）
+			var json = JsonConvert.SerializeObject(source, new JsonSerializerSettings
+			{
+				ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+			});
+			return JsonConvert.DeserializeObject<T>(json);
+		}
+	}
 	
 	public class PotionCraft : Mod
 	{

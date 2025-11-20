@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ using Microsoft.Xna.Framework;
 using Terraria.GameContent;
 using Terraria.ID;
 using System.Reflection;
+using ReLogic.Graphics;
 using static ReLogic.Graphics.DynamicSpriteFont;
 using ReLogic.Graphics;
 
@@ -125,6 +127,22 @@ namespace PotionCraft.Content.System
             }
             return parts;
         }
+        public static Stack<(string colorCode, string text)> ParseText_Stack(string text)
+        {
+            var parts = new Stack<(string colorCode, string text)>();
+            if(string.IsNullOrEmpty(text))
+                return parts;
+            var regex = new Regex(@"\[c/(\w{6}):([^]]+)\]");
+            var matches = regex.Matches(text);
+            foreach (Match match in matches)
+            {
+                var colorCode = match.Groups[1].Value;
+                var partText = match.Groups[2].Value;
+                parts.Push((colorCode, partText));
+            }
+            return parts;
+        }
+        
         private static float CalculateWidth(string text) => FontAssets.MouseText.Value.MeasureString(DeleteTextColor_SaveString(text)).X;
          
         /// <summary>
@@ -159,37 +177,106 @@ namespace PotionCraft.Content.System
             }
             return (string.Join("\n", lines), linecount);
         }
+
         /// <summary>
-        /// 智能换行，会截断单词
+        /// 智能换行
         /// </summary>
         /// <param name="text"></param>
         /// <param name="length"></param>
-        /// <returns></returns>
-        public static string SubstringAndWrapTextWithColors(string text, float length)
+        /// <param name="font"></param>
+        /// <returns>Item1:包含颜色的字符串；Item2：总行数</returns>
+        public static (string, int) WrapTextWithColors_ComPact(string text, float length,DynamicSpriteFont font = null)
         {
             var parsedParts = ParseText(text);
             var lines = new List<string>();
             var currentLine = new StringBuilder();
-            float currentWidth = 0;
             var linecount = 1;
+            font ??= FontAssets.MouseText.Value;
+            var zero = 0f;
+            var num2 = 0f;
+            var flag = true;
+            var characterData = font.DefaultCharacterData;
+            var kerning = characterData.Kerning;
+
             foreach (var (colorCode, partText) in parsedParts)
             {
-                var partWidth = CalculateWidth(partText);
-                if (currentWidth + partWidth > length)
+                var substring = partText;
+                var pos = 0;
+                for (var index = 0; index < partText.Length; index++,pos++)
                 {
+                    start:
+                    if (flag)
+                        kerning.X = Math.Max(kerning.X, 0f);
+                    else
+                        zero += font.CharacterSpacing + num2;
+
+                    zero += kerning.X + kerning.Y;
+                    num2 = kerning.Z;
+                    flag = false;
+                
+                    if (zero <= length) 
+                        continue;
+                
+                    currentLine.Append($"[c/{colorCode}:{substring[..pos]}]");
                     lines.Add(currentLine.ToString().Trim());
+                    substring=substring[pos..];
                     currentLine.Clear();
-                    currentWidth = 0;
                     linecount++;
+                    num2 = 0f;
+                    zero = 0f;
+                    pos = 0;
+                    flag = true;
+                
+                    goto start;
                 }
-                currentLine.Append($"[c/{colorCode}:{partText}]");
-                currentWidth += partWidth;
+                currentLine.Append($"[c/{colorCode}:{substring}]");
             }
             if (currentLine.Length > 0)
             {
                 lines.Add(currentLine.ToString().Trim());
             }
-            return string.Join("\n", lines);
+            return (string.Join("\n", lines), linecount);
+        }
+
+        public Vector2 MeasureString(string text,DynamicSpriteFont font)
+        {
+            if (text.Length == 0)
+                return Vector2.Zero;
+
+            var zero = Vector2.Zero;
+            zero.Y = font.LineSpacing;
+            var num = 0;
+            var num2 = 0f;
+            var flag = true;
+            foreach (var c in text) {
+                switch (c) {
+                    case '\n':
+                        num2 = 0f;
+                        zero = Vector2.Zero;
+                        zero.Y = font.LineSpacing;
+                        flag = true;
+                        num++;
+                        continue;
+                    case '\r':
+                        continue;
+                }
+
+                var characterData =font.DefaultCharacterData;
+                var kerning = characterData.Kerning;
+                if (flag)
+                    kerning.X = Math.Max(kerning.X, 0f);
+                else
+                    zero.X += font.CharacterSpacing + num2;
+
+                zero.X += kerning.X + kerning.Y;
+                num2 = kerning.Z;
+                zero.Y = Math.Max(zero.Y, characterData.Padding.Height);
+                flag = false;
+            }
+
+            zero.X += Math.Max(num2, 0f);
+            zero.Y += num * font.LineSpacing;
+            return zero;
         }
 
         public static string DeleteTextColor(string msg)
@@ -222,51 +309,7 @@ namespace PotionCraft.Content.System
                 _ => throw new ArgumentException("Invalid hex color string.")
             };
         }
-        public Vector2 MeasureString(string text, DynamicSpriteFont dynamicSpriteFont)
-        {
-            if (text.Length == 0)
-                return Vector2.Zero;
-
-            Vector2 zero = Vector2.Zero;
-            zero.Y = dynamicSpriteFont.LineSpacing;
-            float val = 0f;
-            int num = 0;
-            float num2 = 0f;
-            bool flag = true;
-            foreach (char c in text)
-            {
-                switch (c)
-                {
-                    case '\n':
-                        val = Math.Max(zero.X + Math.Max(num2, 0f), val);
-                        num2 = 0f;
-                        zero = Vector2.Zero;
-                        zero.Y = dynamicSpriteFont.LineSpacing;
-                        flag = true;
-                        num++;
-                        continue;
-                    case '\r':
-                        continue;
-                }
-
-                SpriteCharacterData characterData = dynamicSpriteFont.DefaultCharacterData;
-                Vector3 kerning = characterData.Kerning;
-                if (flag)
-                    kerning.X = Math.Max(kerning.X, 0f);
-                else
-                    zero.X += dynamicSpriteFont.CharacterSpacing + num2;
-
-                zero.X += kerning.X + kerning.Y;
-                num2 = kerning.Z;
-                zero.Y = Math.Max(zero.Y, characterData.Padding.Height);
-                flag = false;
-            }
-
-            zero.X += Math.Max(num2, 0f);
-            zero.Y += num * dynamicSpriteFont.LineSpacing;
-            zero.X = Math.Max(zero.X, val);
-            return zero;
-        }
+        
         public static string CreatQuestion(int level)
         {
             List<string> experssion = [];

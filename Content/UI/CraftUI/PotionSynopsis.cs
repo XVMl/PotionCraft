@@ -7,6 +7,7 @@ using static PotionCraft.Assets;
 using static PotionCraft.Content.System.LanguageHelper;
 using Terraria.GameContent.UI.Elements;
 using System;
+using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using Terraria.ModLoader;
 using System.Runtime.CompilerServices;

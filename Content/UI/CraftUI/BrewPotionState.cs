@@ -17,6 +17,9 @@ using Terraria.UI.Chat;
 using static PotionCraft.Assets;
 
 
+using Terraria.GameInput;
+using Terraria.ModLoader.UI.Elements;
+using Terraria.GameContent.UI.Elements;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
