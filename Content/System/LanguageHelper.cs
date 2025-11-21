@@ -144,38 +144,60 @@ namespace PotionCraft.Content.System
         }
         
         private static float CalculateWidth(string text) => FontAssets.MouseText.Value.MeasureString(DeleteTextColor_SaveString(text)).X;
-         
+
         /// <summary>
         /// 智能换行
         /// </summary>
         /// <param name="text"></param>
         /// <param name="length"></param>
+        /// <param name="font"></param>
         /// <returns>Item1:包含颜色的字符串；Item2：总行数</returns>
-        public static (string, int) WrapTextWithColors(string text, float length)
+        public static (string, int) WrapTextWithColors(string text, float length,DynamicSpriteFont font = null)
         {
             var parsedParts = ParseText(text);
             var lines = new List<string>();
             var currentLine = new StringBuilder();
-            float currentWidth = 0;
-            var linecount = 1;
+            var lineNumber = 1;
+            font ??= FontAssets.MouseText.Value;
+            var zero = 0f;
+            var num2 = 0f;
+            var flag = true;
+            var characterData = font.DefaultCharacterData;
+            var kerning = characterData.Kerning;
+
             foreach (var (colorCode, partText) in parsedParts)
             {
-                var partWidth = CalculateWidth(partText);
-                if (currentWidth + partWidth > length)
+                for (var index = 0; index < partText.Length; index++)
                 {
+                    start:
+                    if (flag)
+                        kerning.X = Math.Max(kerning.X, 0f);
+                    else
+                        zero += font.CharacterSpacing + num2;
+
+                    zero += kerning.X + kerning.Y;
+                    num2 = kerning.Z;
+                    flag = false;
+                
+                    if (zero <= length) 
+                        continue;
+                
                     lines.Add(currentLine.ToString().Trim());
                     currentLine.Clear();
-                    currentWidth = 0;
-                    linecount++;
+                    lineNumber++;
+                    num2 = 0f;
+                    zero = 0f;
+                    flag = true;
+                
+                    goto start;
                 }
                 currentLine.Append($"[c/{colorCode}:{partText}]");
-                currentWidth += partWidth;
             }
             if (currentLine.Length > 0)
             {
                 lines.Add(currentLine.ToString().Trim());
             }
-            return (string.Join("\n", lines), linecount);
+            return (string.Join("\n", lines), lineNumber);
         }
 
         /// <summary>
@@ -190,7 +212,7 @@ namespace PotionCraft.Content.System
             var parsedParts = ParseText(text);
             var lines = new List<string>();
             var currentLine = new StringBuilder();
-            var linecount = 1;
+            var lineNumber = 1;
             font ??= FontAssets.MouseText.Value;
             var zero = 0f;
             var num2 = 0f;
@@ -221,7 +243,7 @@ namespace PotionCraft.Content.System
                     lines.Add(currentLine.ToString().Trim());
                     substring=substring[pos..];
                     currentLine.Clear();
-                    linecount++;
+                    lineNumber++;
                     num2 = 0f;
                     zero = 0f;
                     pos = 0;
@@ -235,15 +257,16 @@ namespace PotionCraft.Content.System
             {
                 lines.Add(currentLine.ToString().Trim());
             }
-            return (string.Join("\n", lines), linecount);
+            return (string.Join("\n", lines), lineNumber);
         }
 
-        public Vector2 MeasureString(string text,DynamicSpriteFont font)
+        public static Vector2 MeasureString_Cursor(string text,DynamicSpriteFont font =null)
         {
             if (text.Length == 0)
                 return Vector2.Zero;
 
             var zero = Vector2.Zero;
+            font ??= FontAssets.MouseText.Value;
             zero.Y = font.LineSpacing;
             var num = 0;
             var num2 = 0f;
@@ -275,7 +298,7 @@ namespace PotionCraft.Content.System
             }
 
             zero.X += Math.Max(num2, 0f);
-            zero.Y += num * font.LineSpacing;
+            zero.Y = num * font.LineSpacing;
             return zero;
         }
 
@@ -325,19 +348,6 @@ namespace PotionCraft.Content.System
                 experssion.Insert(random.Next(1, experssion.Count + 1), "@ ");
             
             return string.Join("", experssion);
-        }
-        
-        public static (string,int) WrapTextWithColors(string text)
-        {
-            string[] parts = text.Split(' ');
-            return (text.Replace(" ", "\n"), parts.Length);
-        }
-
-        public static string ColorTextToEdtingText(string text)
-        {
-            var parsedParts = ParseText(text);
-            var result = parsedParts.Aggregate("", (current, part) => current + $"{part.colorCode}:{part.text}");
-            return result;
         }
         
         public static string LocationTranslate(string _name, bool bracket = true)

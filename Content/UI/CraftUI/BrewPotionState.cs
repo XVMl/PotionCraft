@@ -202,14 +202,14 @@ namespace PotionCraft.Content.UI.CraftUI
         
         public static void DrawCost(SpriteBatch spriteBatch,int cost,Vector2 pos)
         {
-            string text2 = "";
-            int num59 = 0;
-            int num60 = 0;
-            int num61 = 0;
-            int num62 = 0;
-            int num63 = cost;
+            var text2 = "";
+            var num59 = 0;
+            var num60 = 0;
+            var num61 = 0;
+            var num62 = 0;
+            var num63 = cost;
             if (num63 < 1)
-                num63 = 1;
+                num63 = 0;
 
             if (num63 >= 1000000)
             {
@@ -244,13 +244,17 @@ namespace PotionCraft.Content.UI.CraftUI
             if (num62 > 0)
                 text2 = text2 + "[c/" + Colors.AlphaDarken(Colors.CoinCopper).Hex3() + ":" + num62 + " " + Lang.inter[18].Value + "] ";
             
+            if (num63 == 0)
+                text2 = $"[c/{Colors.AlphaDarken(Colors.RarityTrash).Hex3()}:未知]";
             ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text2, new Vector2(pos.X , pos.Y),Color.White, 0f, Vector2.Zero, Vector2.One);
 
         }
 
-        private void BrewPotion(Item potion)
+        public void BrewPotion()
         {
-            Craft.Invoke(CreatPotion,currentItem);
+            if (potionSetting.slider.value==0)
+                return;
+            Craft?.Invoke(CreatPotion,currentItem);
             Potion.SetDefaults(ModContent.ItemType<BasePotion>());
             SetModItem.Invoke(Potion, [CreatPotion]);
             Potion.stack = PotionStack;
@@ -268,10 +272,6 @@ namespace PotionCraft.Content.UI.CraftUI
             SetModItem.Invoke(PreviewPotion, [CreatPotion]);
             potionComponent.ComponentUpdate();
             PotionSynopsis.SynopsisUpdate();
-            //Mod instance = ModContent.GetInstance<PotionCraft>();
-
-            //instance.Logger.Debug((preview).PotionDictionary);
-
         }
 
         private void ClearAll()

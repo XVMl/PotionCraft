@@ -130,6 +130,7 @@ public class Input:PotionElement<BrewPotionState>
         TempText = Currentvalue;
         TempColor = Recordvalue.Last().Item1;
         Recordvalue.Remove(Recordvalue.Last());
+        Refresh();
     }
 
     public static string GetUnmodfiedPart(string original,ref string modified)
@@ -175,9 +176,9 @@ public class Input:PotionElement<BrewPotionState>
             spriteBatch.Draw(Asset.Value,GetDimensions().ToRectangle(),new Rectangle(46,276,246,106),Color.White);
         
         Utils.DrawBorderString(spriteBatch, Showstring, GetDimensions().Position(), Color.White, 1f, 0f, 0f, -1);
-        var vector2 = GetDimensions().Position() + 
-                      FontAssets.MouseText.Value.MeasureString(DeleteTextColor_SaveString(WrapTextWithColors(Showstring).Item1));
-
+        var vector2 = GetDimensions().Position() +
+                      // FontAssets.MouseText.Value.MeasureString(DeleteTextColor_SaveString(WrapTextWithColors(Showstring).Item1));
+                      MeasureString_Cursor(DeleteTextColor_SaveString(Showstring));
         if (!Inputting)
             return;
 

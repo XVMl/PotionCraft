@@ -17,7 +17,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public Button brew;
 
-        private Slider slider;
+        public Slider slider;
 
         private Button autouse;
 
@@ -50,6 +50,7 @@ namespace PotionCraft.Content.UI.CraftUI
             brew.Width.Set(96, 0);
             brew.Left.Set(250, 0);
             brew.Top.Set(170, 0);
+            brew.OnClike = brewPotionState.BrewPotion;
             BG.Append(brew);
 
             slider = new Slider(brewPotionState,"数量");
