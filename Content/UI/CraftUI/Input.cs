@@ -92,19 +92,18 @@ public class Input:PotionElement<BrewPotionState>
             Recordvalue.Add((TempColor,original));
 
         if (!string.IsNullOrEmpty(Currentvalue))
-            Recordvalue.Add(($"[c/{LanguageHelper.RGBToHex(SelectColor)}:]" , Currentvalue));
+            Recordvalue.Add((RGBToHex(SelectColor), Currentvalue));
 
         Currentvalue = "";
         TempColor = "";
         TempColor = "";
-        Showstring = string.Join("", Recordvalue.Select(s=>string.IsNullOrEmpty(s.Item1) ? LanguageHelper.Deafult_Hex : s.Item1.Insert(10,s.Item2)));
-        Showstring = WrapTextWithColors(Showstring, 160).Item1;
+        Refresh();
         Onchange?.Invoke();
     }
 
     public void Refresh()
     {
-        Showstring = string.Join("", Recordvalue.Select(s => string.IsNullOrEmpty(s.Item1) ? Deafult_Hex : $"[c/{s.Item1}:]".Insert(10, s.Item2)));
+        Showstring = string.Join("", Recordvalue.Select(s => string.IsNullOrEmpty(s.Item1) ? Deafult_Hex.Insert(10,s.Item2) : $"[c/{s.Item1}:{s.Item2}]"));
         Showstring = WrapTextWithColors(Showstring, 180).Item1;
     }
 
@@ -177,8 +176,7 @@ public class Input:PotionElement<BrewPotionState>
         
         Utils.DrawBorderString(spriteBatch, Showstring, GetDimensions().Position(), Color.White, 1f, 0f, 0f, -1);
         var vector2 = GetDimensions().Position() +
-                      // FontAssets.MouseText.Value.MeasureString(DeleteTextColor_SaveString(WrapTextWithColors(Showstring).Item1));
-                      MeasureString_Cursor(DeleteTextColor_SaveString(Showstring));
+                       MeasureString_Cursor(DeleteTextColor_SaveString(Showstring));
         if (!Inputting)
             return;
 
@@ -188,7 +186,7 @@ public class Input:PotionElement<BrewPotionState>
             Color.White, 1f, 0f, 0f, -1);
         if (Main.GameUpdateCount % 20U >= 10U)
             return;
-        Utils.DrawBorderString(spriteBatch, "|", vector2+FontAssets.MouseText.Value.MeasureString(Currentvalue), Color.White, 0.75f, 0.0f, 0.0f, -1);
+        Utils.DrawBorderString(spriteBatch, "|", vector2+ new Vector2(FontAssets.MouseText.Value.MeasureString(Currentvalue).X,0), Color.White, 1f, 0.0f, 0.0f, -1);
     }
         
 }

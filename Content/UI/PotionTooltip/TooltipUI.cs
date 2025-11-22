@@ -5,6 +5,7 @@ using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
 using ReLogic.Graphics;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -44,6 +45,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         private UIText PotionName;
 
+        private UIText PotionMarks;
+
         public override void OnInitialize()
         {
             Area = new();
@@ -57,7 +60,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Append(Area);
             PotionIngredients = new(this);
             PotionIngredients.Top.Set(30, 0);
-            PotionIngredients.Left.Set(0, 0);
+            PotionIngredients.Left.Set(50, 0);
             PotionIngredients.Width.Set(350, 0);
             PotionIngredients.Height.Set(500, 0);
             Area.Append(PotionIngredients);
@@ -65,6 +68,10 @@ namespace PotionCraft.Content.UI.PotionTooltip
             PotionName.Left.Set(25, 0);
             PotionName.Top.Set(40, 0);
             NameArea.Append(PotionName);
+            PotionMarks = new("");
+            PotionMarks.Top.Set(50, 0);
+            PotionMarks.Left.Set(25 , 0);
+            NameArea.Append(PotionMarks);
         }
         /// <summary>
         /// 检查两瓶药水是否完全相同，是则返回true
@@ -121,20 +128,23 @@ namespace PotionCraft.Content.UI.PotionTooltip
         {
             var linetextnum = LanguageManager.Instance.ActiveCulture.Name switch
             {
-                "zh-Hans" => 300,
-                "en-US" => 300,
-                _ => 300,
+                "zh-Hans" => 320,
+                "en-US" => 320,
+                _ => 320,
             };
-            var data = WrapTextWithColors(ShowBasePotion.PotionName, linetextnum);
+            //var data = WrapTextWithColors(ShowBasePotion.PotionName, linetextnum);
+            var data = WrapTextWithColors_ComPact(ShowBasePotion.PotionName, linetextnum);
+            var marks= WrapTextWithColors_ComPact(ShowBasePotion.Signatures, linetextnum);
             PotionName.SetText(data.Item1);
-            var height = NameArea.Height.Pixels;
+            PotionMarks.SetText(marks.Item1);
             var textheight= FontAssets.MouseText.Value.MeasureString(data.Item1).Y;
-            NameArea.Height.Set(textheight + 45, 0);
+            var marksheight = FontAssets.MouseText.Value.MeasureString(marks.Item1).Y;
+            PotionMarks.Top.Set(textheight+56, 0);
+            NameArea.Height.Set(textheight+marksheight + 75, 0);
             var count = ShowBasePotion.PotionDictionary.Count/2+1;
             Area.Height.Set(count * 50 + 90, 0);
             PotionIngredients.Height.Set(count*50+70, 0);
             PotionIngredients.UIgrid.Height.Set(count * 50 + 70, 0);
-            var v3 = FontAssets.MouseText.Value.DefaultCharacterData.Kerning;
         }
 
         public static (string,bool) GetKeybind(ModKeybind key)
@@ -154,7 +164,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             if (!ShowToolTip) return;
-            var nametex = Assets.UITexture("ToolName").Value;
+            var nametex = UITexture("ToolName").Value;
             var namearea = NameArea.GetDimensions().ToRectangle();
             var nameheight = namearea.Height-36;
             spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y, 360, 18), new(0, 0, 360, 18), Color.White);
@@ -173,8 +183,12 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 }
                 if (nameheight <= 0) break;
             }
+
+            spriteBatch.Draw(nametex, new Vector2(0, PotionMarks.Top.Pixels-20)+namearea.TopLeft(), new(0, 132, 360, 20), Color.White);
             spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + namearea.Height - 18, 360, 18), new(0, 176, 360, 18), Color.White);
             var data = GetKeybind(PotionCraftModPlayer.PotionCraftKeybind);
+
+
             if (!data.Item2)
                 Utils.DrawBorderString(spriteBatch,$"{TryGetLanguagValue("KeybindsTips", data.Item1)}", namearea.TopLeft()+new Vector2(0, namearea.Height), Color.White);
             
@@ -199,6 +213,17 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 if (height == 0) break;
             }
             spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y + AreaRectangle.Height-48, 360, 48), new(0, 488, 360, 48), Color.White);
+            
+            var lock_rectangle= ShowBasePotion.CanEditor ? new Rectangle(62, 0, 18, 18) : new Rectangle(80, 0, 18, 18);
+            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft()+new Vector2(60,AreaRectangle.Height-68), lock_rectangle, Deafult);
+
+            var auto_rotation =  ShowBasePotion.AutoUse ? Main.time * .03f : 0;
+            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(129, AreaRectangle.Height - 58), new Rectangle(40, 0, 18, 18), Deafult, (float)auto_rotation, new Vector2(18,18)/2, 1, SpriteEffects.None, 0);
+
+            var packing_rectangle = ShowBasePotion.IsPackage ? new Rectangle(0, 0, 18, 18) : new Rectangle(20, 0, 18, 18); 
+            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(90, AreaRectangle.Height-68), packing_rectangle, Deafult);
+
+
         }
     }
 }

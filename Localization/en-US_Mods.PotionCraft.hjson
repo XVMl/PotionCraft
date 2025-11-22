@@ -93,12 +93,12 @@ CustomMaterials: {
 	}
 }
 
-Dialogue:{
-    Prompt:{
-        None:This is a tip
-        ColorSelector:Click this to chang selected color
-        InputButton:Click to get power to efit potion`s custom name
-    }
+Dialogue: {
+	Prompt: {
+		None: This is a tip
+		ColorSelector: Click this to chang selected color
+		InputButton: Click to get power to efit potion`s custom name
+	}
 }
 
 BaseName.0: Potion

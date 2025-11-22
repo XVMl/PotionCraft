@@ -7,7 +7,6 @@ using static PotionCraft.Assets;
 using static PotionCraft.Content.System.LanguageHelper;
 using Terraria.GameContent.UI.Elements;
 using System;
-using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using Terraria.ModLoader;
 using System.Runtime.CompilerServices;
@@ -113,6 +112,10 @@ namespace PotionCraft.Content.UI.CraftUI
             _potionremarks.Height.Set(106, 0);
             _potionremarks.Left.Set(46, 0);
             _potionremarks.Top.Set(276, 0);
+            _potionremarks.Onchange = () =>
+            {
+                _brewPotionState.CreatPotion.Signatures = _potionremarks.Showstring;
+            };
             Append(_potionremarks);
         }
 
@@ -169,14 +172,11 @@ namespace PotionCraft.Content.UI.CraftUI
             spriteBatch.Draw(Assets.UI.UI1.Value, GetDimensions().ToRectangle(),new Rectangle(124,38,102,104), Color.White);
             if (Item is null)
                 return;
-            Main.inventoryScale = 2.30f;
+            Main.inventoryScale = 2.030f;
             ItemSlot.Draw(spriteBatch, ref Item, 21, GetDimensions().Position());
-
-            //spriteBatch.Draw(tex, GetDimensions().ToRectangle().TopLeft(), Color.White);
-            //if (PotionCraftState.Potion.IsAir) return;
-            //if (!IsMouseHovering) return;
-            //Main.LocalPlayer.mouseInterface = true;
-            //Main.HoverItem = PotionCraftState.Potion.Clone();
+            if (!IsMouseHovering) return;
+            Main.LocalPlayer.mouseInterface = true;
+            Main.HoverItem = Item;
         }
     }
 

@@ -19,6 +19,7 @@ using System.Reflection;
 using ReLogic.Graphics;
 using static ReLogic.Graphics.DynamicSpriteFont;
 using ReLogic.Graphics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PotionCraft.Content.System
 {
@@ -106,11 +107,6 @@ namespace PotionCraft.Content.System
             .Insert(10, bracket);
         }
 
-        // 判断是否为中文字符
-        private static bool IsChineseCharacter(char c)
-        {
-            return c >= 0x4E00 && c <= 0x9FA5;
-        }
         // 解析字符串并计算每个部分的宽度
         public static List<(string colorCode, string text)> ParseText(string text)
         {
@@ -127,22 +123,7 @@ namespace PotionCraft.Content.System
             }
             return parts;
         }
-        public static Stack<(string colorCode, string text)> ParseText_Stack(string text)
-        {
-            var parts = new Stack<(string colorCode, string text)>();
-            if(string.IsNullOrEmpty(text))
-                return parts;
-            var regex = new Regex(@"\[c/(\w{6}):([^]]+)\]");
-            var matches = regex.Matches(text);
-            foreach (Match match in matches)
-            {
-                var colorCode = match.Groups[1].Value;
-                var partText = match.Groups[2].Value;
-                parts.Push((colorCode, partText));
-            }
-            return parts;
-        }
-        
+
         private static float CalculateWidth(string text) => FontAssets.MouseText.Value.MeasureString(DeleteTextColor_SaveString(text)).X;
 
         /// <summary>
@@ -235,21 +216,28 @@ namespace PotionCraft.Content.System
                     zero += kerning.X + kerning.Y;
                     num2 = kerning.Z;
                     flag = false;
-                
+
                     if (zero <= length) 
                         continue;
-                
-                    currentLine.Append($"[c/{colorCode}:{substring[..pos]}]");
+                    
+                    if(!string.IsNullOrEmpty(substring[..pos]))
+                        currentLine.Append($"[c/{colorCode}:{substring[..pos]}]");
+                    
+                    if (index!=0 && index!=partText.Length-1 && char.IsLetter(partText[index-1])&& char.IsLetter(partText[index])&&char.IsLetter(partText[index+1]))
+                        currentLine.Append($"[c/{colorCode}:-]");
+                    
                     lines.Add(currentLine.ToString().Trim());
                     substring=substring[pos..];
+                    
+
                     currentLine.Clear();
                     lineNumber++;
                     num2 = 0f;
                     zero = 0f;
                     pos = 0;
                     flag = true;
-                
-                    goto start;
+                    if (partText[index]!=' ')
+                        goto start;
                 }
                 currentLine.Append($"[c/{colorCode}:{substring}]");
             }

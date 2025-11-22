@@ -58,6 +58,8 @@ namespace PotionCraft
             public static Asset<Texture2D> UI1 => UITexture("UI1");
 
             public static Texture2D UI2 => UITexture("UI2").Value;
+            
+            public static Texture2D UI5 => UITexture("UI5").Value;
 
             public static Texture2D Circular => UITexture("Circular").Value;
 

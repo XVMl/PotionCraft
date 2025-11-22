@@ -16,13 +16,13 @@ using static PotionCraft.Content.System.LanguageHelper;
 using Terraria.Localization;
 using Terraria.Audio;
 using Newtonsoft.Json.Linq;
+using Microsoft.CodeAnalysis;
 
 namespace PotionCraft.Content.Items
 {
     public class BasePotion : ModItem
     {
         public override string Texture => Path.Items + "Style1";
-
         /// <summary>
         /// 将会显示的药剂名
         /// </summary>
@@ -114,6 +114,8 @@ namespace PotionCraft.Content.Items
         /// 用于记录可以编辑的玩家名称
         /// </summary>
         public string EditorName;
+        
+        public bool CanEditor;
 
         public static readonly MethodInfo ItemSound = typeof(SoundID).GetMethod("ItemSound", BindingFlags.NonPublic | BindingFlags.Static, [typeof(int)]);
 
@@ -158,6 +160,7 @@ namespace PotionCraft.Content.Items
             tag["IconID"] = IconID;
             tag["CanCustomName"] = CanCustomName;
             tag["_Name"] = _Name;
+            tag["CanEditor"] = CanEditor;
         }
 
         public override void LoadData(TagCompound tag)
@@ -186,6 +189,7 @@ namespace PotionCraft.Content.Items
             CanCustomName = tag.Get<bool>("CanCustomName");
             IconID = tag.Get<int>("IconID");
             _Name = tag.GetString("_Name");
+            CanEditor= tag.GetBool("CanEditor");
             if (IconID == -1) IconID = Item.type;
             if (PotionUseSounds == 0) PotionUseSounds = 1;
             Item.UseSound = (SoundStyle)ItemSound.Invoke(null, [PotionUseSounds]);

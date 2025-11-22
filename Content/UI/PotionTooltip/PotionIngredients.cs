@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Luminance.Common.Utilities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
@@ -32,10 +33,12 @@ namespace PotionCraft.Content.UI.PotionTooltip
             {
                 OverflowHidden = true,
             };
-            UIgrid.Width.Set(350, 0);
+            UIgrid.Width.Set(275, 0);
             UIgrid.Height.Set(320, 0);
-            UIgrid.PaddingLeft = 30;
-            UIgrid.PaddingTop = 10;
+            UIgrid.PaddingLeft = 0;
+            UIgrid.PaddingRight = 0;
+            UIgrid.MarginLeft= 0;
+            UIgrid.MarginRight= 0;
             Append(UIgrid);
         }
 
@@ -51,6 +54,13 @@ namespace PotionCraft.Content.UI.PotionTooltip
             }
 
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            HandleMouseScroll();
+        }
+
         public void SetPotionCraftState(BasePotion potion)
         {
             if (PotionCraftState is null) return;
@@ -60,6 +70,11 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 UIgrid.Add(ingredientElement);
                 UIgrid.RecalculateChildren();
             }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
         }
 
     }
@@ -81,7 +96,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
         public bool Displaye;
         public IngredientElement(int BuffId, int ingredientType,int count)
         {
-            Width.Set(150, 0);
+            Width.Set(125, 0);
             Height.Set(50, 0);
             IngredientType = ingredientType;
             Count = count;
@@ -89,9 +104,9 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
             OverflowHidden = true;
             Area = new();
-            Area.Left.Set(50, 0);
+            Area.Left.Set(40, 0);
             Area.Top.Set(10, 0);
-            Area.Width.Set(100, 0);
+            Area.Width.Set(80, 0);
             Area.Height.Set(50, 0);
             Area.OverflowHidden = true;
             Append(Area);

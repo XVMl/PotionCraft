@@ -22,6 +22,7 @@ public class BaseCustomMaterials : ModItem
         Materialdata = materialData;
     }
 
+
     public override string Name => Materialdata.Name;
 
     public override string Texture => Path.Items + Materialdata.Name;

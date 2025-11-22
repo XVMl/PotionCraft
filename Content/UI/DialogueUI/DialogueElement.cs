@@ -17,7 +17,7 @@ public class DialogueElement:PotionElement<DialogueState>
 {
     private Text<DialogueState> _dialogue;
     
-    private string _currentElement;
+    private string _currentElement="";
     
     public DialogueElement(DialogueState dialogueState)
     {

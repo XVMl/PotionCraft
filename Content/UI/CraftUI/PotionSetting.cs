@@ -43,6 +43,7 @@ namespace PotionCraft.Content.UI.CraftUI
             delete.Width.Set(96, 0);
             delete.Left.Set(50, 0);
             delete.Top.Set(170, 0);
+            delete.OnClike = brewPotionState.ClearAll;
             BG.Append(delete);
 
             brew = new Button(UITexture("Brew"), Color.White,brewPotionState, "Brew");
@@ -57,6 +58,10 @@ namespace PotionCraft.Content.UI.CraftUI
             slider.Left.Set(90, 0);
             slider.Top.Set(112, 0);
             slider.text.TextColor = Deafult;
+            slider.onChange = () =>
+            {
+                brewPotionState.PreviewPotion.stack = slider.value;
+            };
             BG.Append(slider);
 
             autouse = new Button(Assets.UI.Icon, Color.White, new Rectangle(40,0,18,18),brewPotionState);
@@ -69,7 +74,7 @@ namespace PotionCraft.Content.UI.CraftUI
             autouse.OnClike = () =>
             {
                 autouse.Value = !autouse.Value;
-                brewPotionState.CreatPotion.AutoUse = !autouse.Value;;
+                brewPotionState.CreatPotion.AutoUse = !autouse.Value;
             };
             BG.Append(autouse);
 
@@ -83,7 +88,7 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 potionlock.Value = !potionlock.Value;
                 brewPotionState.CreatPotion.IsPackage = !potionlock.Value;
-                potionlock.Rectangle = potionlock.Value ? new Rectangle(62, 0, 18, 18) : new Rectangle(80, 0, 18, 18); ;
+                potionlock.Rectangle = potionlock.Value ? new Rectangle(62, 0, 18, 18) : new Rectangle(80, 0, 18, 18); 
             };
             BG.Append(potionlock);
 
@@ -97,7 +102,7 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 packing.Value = !packing.Value;
                 brewPotionState.CreatPotion.IsPackage = !packing.Value;
-                packing.Rectangle = packing.Value ? new Rectangle(0, 0, 18, 18) : new Rectangle(20, 0, 18, 18); ;
+                packing.Rectangle = packing.Value ? new Rectangle(0, 0, 18, 18) : new Rectangle(20, 0, 18, 18); 
             };
             BG.Append(packing);
 

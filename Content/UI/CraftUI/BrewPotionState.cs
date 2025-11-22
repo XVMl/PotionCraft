@@ -8,16 +8,12 @@ using Terraria.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
-using PotionCraft.Content.UI.PotionTooltip;
 using Steamworks;
 using Terraria.ID;
 using static System.Net.Mime.MediaTypeNames;
 using Terraria.GameContent;
 using Terraria.UI.Chat;
 using static PotionCraft.Assets;
-
-
-using Terraria.GameInput;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.GameContent.UI.Elements;
 namespace PotionCraft.Content.UI.CraftUI
@@ -34,11 +30,11 @@ namespace PotionCraft.Content.UI.CraftUI
         
         private Item currentItem;
 
-        public int PotionStack = 20;
+        public Item PreviewPotion;
+        
+        public Item PotionMaterial;
 
         public BasePotion CreatPotion = ModContent.GetInstance<BasePotion>();
-        
-        public Item PreviewPotion;
         
         public BaseCustomMaterials CustomMaterials =  ModContent.GetInstance<BaseCustomMaterials>();
         
@@ -117,14 +113,19 @@ namespace PotionCraft.Content.UI.CraftUI
         
         public void AddPotion(Item item)
         {
-            Craft?.Invoke(CreatPotion,currentItem);
+            if(CreatPotion is not null && currentItem is not null)
+                Craft?.Invoke(CreatPotion,currentItem);
 
             ConflitCraft =  false;
             currentItem = item.Clone();
             Craft = item.type == ModContent.ItemType<MagicPanacea>() || QuicklyCheckPotion(item, CreatPotion) ?
                 Putify : MashUp;
-            
-            //ConflitCraft = true;
+
+            PotionMaterial = new Item();
+            PotionMaterial.SetDefaults(ModContent.ItemType<BasePotion>());
+
+            Craft.Invoke(AsPotion(PotionMaterial), currentItem);
+
             Refresh();
         }
         
@@ -209,7 +210,7 @@ namespace PotionCraft.Content.UI.CraftUI
             var num62 = 0;
             var num63 = cost;
             if (num63 < 1)
-                num63 = 0;
+                num63 = 1;
 
             if (num63 >= 1000000)
             {
@@ -244,7 +245,7 @@ namespace PotionCraft.Content.UI.CraftUI
             if (num62 > 0)
                 text2 = text2 + "[c/" + Colors.AlphaDarken(Colors.CoinCopper).Hex3() + ":" + num62 + " " + Lang.inter[18].Value + "] ";
             
-            if (num63 == 0)
+            if (cost == 0)
                 text2 = $"[c/{Colors.AlphaDarken(Colors.RarityTrash).Hex3()}:未知]";
             ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text2, new Vector2(pos.X , pos.Y),Color.White, 0f, Vector2.Zero, Vector2.One);
 
@@ -254,32 +255,37 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             if (potionSetting.slider.value==0)
                 return;
-            Craft?.Invoke(CreatPotion,currentItem);
+            Craft?.Invoke(AsPotion(PreviewPotion),currentItem);
+            Potion = new();
             Potion.SetDefaults(ModContent.ItemType<BasePotion>());
-            SetModItem.Invoke(Potion, [CreatPotion]);
-            Potion.stack = PotionStack;
-            Main.LocalPlayer.GetItem(Main.LocalPlayer.whoAmI, PreviewPotion, GetItemSettings.ItemCreatedFromItemUsage);
-            Main.LocalPlayer.BuyItem(50 * PotionStack);
+            SetModItem.Invoke(Potion, [PreviewPotion.ModItem]);
+            Potion.stack = potionSetting.slider.value;
+            Main.LocalPlayer.GetItem(Main.LocalPlayer.whoAmI,Potion, GetItemSettings.ItemCreatedFromItemUsage);
+            Main.LocalPlayer.BuyItem(1000 * potionSetting.slider.value);
             ClearAll();
         }
 
         private void Refresh()
         {
-            PreviewPotion = new Item();
-            PreviewPotion.SetDefaults(ModContent.ItemType<BasePotion>());
-            var preview = TransExp<BasePotion, BasePotion>.Trans(CreatPotion);
-            Craft.Invoke(preview, currentItem);
+            if(PreviewPotion is null)
+            {
+                PreviewPotion = new Item();
+                PreviewPotion.SetDefaults(ModContent.ItemType<BasePotion>());
+                CreatPotion = PreviewPotion.ModItem as BasePotion;
+            }
             SetModItem.Invoke(PreviewPotion, [CreatPotion]);
             potionComponent.ComponentUpdate();
             PotionSynopsis.SynopsisUpdate();
         }
 
-        private void ClearAll()
+        public void ClearAll()
         {
-            CreatPotion = ModContent.GetInstance<BasePotion>();
+            PreviewPotion = new();
+            PreviewPotion.SetDefaults(ModContent.ItemType<BasePotion>());
+            CreatPotion = PreviewPotion.ModItem as BasePotion;
+            PotionMaterial = null;
             Craft = null;
-            Potion = new Item();
-            Potion.SetDefaults(ModContent.ItemType<BasePotion>());
+            Refresh();
         }
 
         public override void Update(GameTime gameTime)
@@ -288,62 +294,12 @@ namespace PotionCraft.Content.UI.CraftUI
             PotionSynopsis.Update(gameTime);
             potionSetting.Update(gameTime);
             colorSelector.Update(gameTime);
-
+            potionComponent.Update(gameTime);
         }
         
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             base.DrawSelf(spriteBatch);
-            //ItemSlot.DrawSavings(spriteBatch, 600, 400);
-        }
-
-    }
-
-    public class PotionComponent : PotionElement<BrewPotionState>
-    {
-        private PotionIngredients _potionIngredients;
-
-        private BrewPotionState _brewPotionState;
-        
-        public PotionComponent(BrewPotionState brewPotionState)
-        {
-            PotionCraftState = brewPotionState;
-            _brewPotionState = brewPotionState;
-            Width.Set(346f, 0);
-            Height.Set(486f, 0);
-
-            _potionIngredients = new PotionIngredients(brewPotionState);
-            _potionIngredients.Width.Set(350, 0);
-            _potionIngredients.Height.Set(250, 0);
-            Append(_potionIngredients);
-            
-        }
-
-        public void ComponentUpdate()
-        {
-            var potion = _brewPotionState.PreviewPotion.ModItem as BasePotion;
-            _potionIngredients.UIgrid.Clear();
-            _potionIngredients.SetPotionCraftState(potion);
-        }
-        
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(Assets.UI.UI2, GetDimensions().Position(), Color.White);
-            
-            base.Draw(spriteBatch);
-        }
-
-        private class Ingredients : PotionElement<BrewPotionState>
-        {
-            private PotionIngredients _potionIngredients;
-
-            public Ingredients(BrewPotionState brewPotionState)
-            {
-                PotionCraftState = brewPotionState;
-                _potionIngredients = new(brewPotionState);
-
-
-            }
         }
 
     }
@@ -395,37 +351,4 @@ namespace PotionCraft.Content.UI.CraftUI
 
     }
 
-    public class BrewPotionButton : PotionElement<BrewPotionState>
-    {
-        public BrewPotionButton(BrewPotionState brewPotionState)
-        {
-            PotionCraftState = brewPotionState;
-            Width.Set(100f, 0);
-            Height.Set(32f, 0);
-        }
-
-        // private void BrewPotion(Item potion)
-        // {
-        //     if (PotionCraftState.Crafts.Count != 0)
-        //         foreach (var craft in PotionCraftState.Crafts) craft.Invoke();
-        //     
-        //     SetModItem.Invoke(PotionCraftState.Potion, [PotionCraftState.CreatPotion]);
-        //     Main.LocalPlayer.BuyItem(50 * PotionCraftState.PotionCount);
-        // }
-
-        public override void LeftClick(UIMouseEvent evt)
-        {
-            base.LeftClick(evt);
-            if (PotionCraftState.Potion.IsAir) return;
-            // BrewPotion((PotionCraftState.Potion));
-        }
-
-        protected override void DrawSelf(SpriteBatch spriteBatch)
-        {
-            var rectangle = GetDimensions().ToRectangle();
-            spriteBatch.Draw(Assets.UI.Button, rectangle, Color.White);
-            ItemSlot.DrawSavings(spriteBatch,rectangle.X, rectangle.Y);
-        }
-
-    }
 }

@@ -5,7 +5,9 @@ namespace PotionCraft.Content.UI.DialogueUI;
 
 public class DialogueState:AutoUIState
 {
-    public override bool Active() => ActiveState && CraftState == CraftUiState.BrewPotion;
+    public override bool Active() => Activity;
+
+    public bool Activity;
 
     public override bool Isload() => true;
     

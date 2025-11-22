@@ -97,7 +97,7 @@ namespace PotionCraft.Content.System
 
         public static readonly int MashUpCountMax = 14;
 
-        public static string CurrentElement;
+        public static string CurrentElement="";
 
         public Vector2 SourcePotion = Vector2.Zero;
 
@@ -240,11 +240,27 @@ namespace PotionCraft.Content.System
 
         protected void HandleMouseScroll()
         {
-            if (Parent is null || Parent.Height.Pixels > Height.Pixels)
-                return;
-            var value = PlayerInput.ScrollWheelValueOld - PlayerInput.ScrollWheelValue;
-            var offset = Utils.Clamp(value,  Parent.Height.Pixels- Height.Pixels,0 );
-            Top.Set(offset,0);
+            //if (Parent is null || Parent.Height.Pixels > Height.Pixels)
+            //    return;
+            
+            
+            //var value = PlayerInput.ScrollWheelValueOld - PlayerInput.ScrollWheelValue;
+            //var offset = Utils.Clamp(value,  Parent.Height.Pixels- Height.Pixels,0 );
+            //if(offset!=0)
+            //{
+            //    Main.NewText(value);
+            //    Main.NewText(offset);
+            //    Top.Set(Height.Pixels + offset*.1f,0);
+            //}
+
+            //var value = PlayerInput.ScrollWheelValueOld - PlayerInput.ScrollWheelValue;
+            //if (value!=0)
+            //{
+            //    Main.NewText(value * .1f);
+            //    Top.Set(Height.Pixels + value * .1f, 0);
+
+            //}
+
         }
 
     }
