@@ -41,7 +41,7 @@ namespace PotionCraft.Content.UI.CraftUI
             _potionicon.Left.Set(124, 0);
             _potionicon.OnClick = () =>
             {
-                Main.NewText("CD");
+                //Main.NewText("CD");
             };
             Append(_potionicon);
 
@@ -58,6 +58,7 @@ namespace PotionCraft.Content.UI.CraftUI
             Append(coloreelectorbutton);
 
             _coloreelectorbutton = new(Assets.UI.ColorSelector, Color.White,brewPotionState);
+            _coloreelectorbutton.Active = false;
             _coloreelectorbutton.Width.Set(18, 0);
             _coloreelectorbutton.Height.Set(18, 0);
             _coloreelectorbutton.Top.Set(216, 0);
@@ -65,6 +66,7 @@ namespace PotionCraft.Content.UI.CraftUI
             _coloreelectorbutton.TransitionAnimation = () =>
             { 
                 var top = MathHelper.Lerp(_coloreelectorbutton.Top.Pixels, _coloreelectorbutton.Active ? 216 : 186, .05f);
+                _coloreelectorbutton.A = MathHelper.Lerp(_coloreelectorbutton.A, _coloreelectorbutton.Active ? 1 : 0, .05f);
                 _coloreelectorbutton.Top.Set(top, 0);
             };
             _coloreelectorbutton.OnClike = () =>
@@ -150,6 +152,8 @@ namespace PotionCraft.Content.UI.CraftUI
         public Item Item;
 
         private BrewPotionState BrewPotionState;
+
+        public bool ExtraInformation;
 
         public Action OnClick;
         public ItemIcon(BrewPotionState brewPotionState,Item item) 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using MonoMod.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -18,6 +19,8 @@ public class JsonLoader:ModSystem
 {
     public static Dictionary<string,Dictionary<string,string>> ColorfulTexts = new();
     
+    public static List<Type> Materials = new ();
+
     private string FileStreamText(string filename)
     {
         using var reader = new StreamReader(Mod.GetFileStream(filename));
@@ -32,6 +35,17 @@ public class JsonLoader:ModSystem
             var data = JsonConvert.DeserializeObject<MaterialData>(item.ToString());
             Mod.AddContent(new BaseCustomMaterials(data));
         }
+        //Materials = Mod.Code.GetTypes().Where(type => type.BaseType == typeof(ModItem)
+        //&& type.GetCustomAttribute<Material>() != null);
+        //Mod.Logger.Debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        //foreach (var item in Mod.Code.GetTypes())
+        //{
+        //    if (item.GetCustomAttribute<Material>() != null)
+        //    {
+        //        Materials.Add(item);
+        //    }
+        //}
+        //Mod.Logger.Debug(Materials);
     }
     
     private void JsonToDictionary(string filetext,ref Dictionary<string, Dictionary<string, string>> dict)

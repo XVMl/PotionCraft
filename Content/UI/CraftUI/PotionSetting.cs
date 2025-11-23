@@ -5,6 +5,11 @@ using Terraria.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
 using static PotionCraft.Content.System.LanguageHelper;
+using PotionCraft.Content.UI.DialogueUI;
+using Terraria.ModLoader.UI.Elements;
+using Terraria.ModLoader;
+using System;
+using PotionCraft.Content.Items;
 
 
 namespace PotionCraft.Content.UI.CraftUI
@@ -26,6 +31,8 @@ namespace PotionCraft.Content.UI.CraftUI
         private Button packing;
 
         private Button Hajimi;
+
+        private Button help;
 
         public PotionSetting(BrewPotionState brewPotionState)
         {
@@ -60,6 +67,7 @@ namespace PotionCraft.Content.UI.CraftUI
             slider.text.TextColor = Deafult;
             slider.onChange = () =>
             {
+                if(brewPotionState.PreviewPotion is not null)
                 brewPotionState.PreviewPotion.stack = slider.value;
             };
             BG.Append(slider);
@@ -87,7 +95,7 @@ namespace PotionCraft.Content.UI.CraftUI
             potionlock.OnClike = () =>
             {
                 potionlock.Value = !potionlock.Value;
-                brewPotionState.CreatPotion.IsPackage = !potionlock.Value;
+                brewPotionState.CreatPotion.CanEditor = !potionlock.Value;
                 potionlock.Rectangle = potionlock.Value ? new Rectangle(62, 0, 18, 18) : new Rectangle(80, 0, 18, 18); 
             };
             BG.Append(potionlock);
@@ -106,13 +114,18 @@ namespace PotionCraft.Content.UI.CraftUI
             };
             BG.Append(packing);
 
-            Hajimi = new(Assets.UI.HajimiIcon, Color.White,brewPotionState);
-            Hajimi.Width.Set(40, 0);
-            Hajimi.Height.Set(34, 0);
-            Hajimi.Top.Set(240, 0);
-            Hajimi.Left.Set(300, 0);
-            Hajimi.HoverTexture = Assets.UI.HajimiIconHover;
-            Append(Hajimi);
+            help = new(Assets.UI.HelpIcon, Color.White,brewPotionState);
+            help.Width.Set(32, 0);
+            help.Height.Set(32, 0);
+            help.Top.Set(240, 0);
+            help.Left.Set(360, 0);
+            help.OnClike = () =>
+            {
+                help.Value = !help.Value;
+                DialogueState.Activity = help.Value;
+            };
+            help.HoverTexture = Assets.UI.HelpIconActive;
+            Append(help);
         }
 
         public override void Update(GameTime gameTime)
@@ -131,4 +144,47 @@ namespace PotionCraft.Content.UI.CraftUI
         }
 
     }
+
+    public class PotionBaseSelect : PotionElement<BrewPotionState>
+    {
+        private UIGrid List;
+
+        public PotionBaseSelect(BrewPotionState brewPotionState)
+        {
+            PotionCraftState = brewPotionState;
+            List = new UIGrid();
+            Width.Set(342f, 0);
+            Height.Set(400f, 0);
+            List.Width.Set(342, 0);
+            List.Height.Set(360, 0);
+            Append(List);
+        }
+
+        public void Init(BrewPotionState BrewPotionState)
+        {
+            if (List.Count != 0) return;
+            var item = new Item();
+            item.SetDefaults(ModContent.ItemType<BasePotion>()+10);
+            List.Add(new ItemIcon(BrewPotionState, item) { 
+                OnClick = () =>
+                {
+                    Main.NewText("!!!");
+                    BrewPotionState.CreatPotion.texture = item.ModItem.Texture;
+                    Main.NewText(BrewPotionState.CreatPotion.texture);
+                    BrewPotionState.Refresh();
+                }
+            });
+            ModContent.GetInstance<PotionCraft>().Logger.Debug(item);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().ToRectangle(), new Rectangle(0, 12, 342, 12), Color.White*A);
+            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().Position(), new Rectangle(0,0,342,12),Color.White*A);
+            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().Position() + new Vector2(0,400), new Rectangle(0, 212, 342, 12), Color.White * A);
+            base.Draw(spriteBatch);
+        }
+
+    }
+
 }

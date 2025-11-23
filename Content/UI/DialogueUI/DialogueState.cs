@@ -7,7 +7,7 @@ public class DialogueState:AutoUIState
 {
     public override bool Active() => Activity;
 
-    public bool Activity;
+    public static bool Activity;
 
     public override bool Isload() => true;
     
@@ -17,6 +17,10 @@ public class DialogueState:AutoUIState
     
     public override void OnInitialize()
     {
+        Width.Set(500, 0);
+        Height.Set(200, 0);
+        HAlign = .5f;
+        Top.Set(100, 0);
         dialogueElement = new(this);
         Append(dialogueElement);
     }

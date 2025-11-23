@@ -12,6 +12,7 @@ using static PotionCraft.Assets;
 
 namespace PotionCraft.Content.Items;
 [Autoload(false)]
+[Material("Material")]
 public class BaseCustomMaterials : ModItem
 {
     

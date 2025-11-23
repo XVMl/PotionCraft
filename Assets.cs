@@ -61,6 +61,8 @@ namespace PotionCraft
             
             public static Texture2D UI5 => UITexture("UI5").Value;
 
+            public static Texture2D ColorUI => UITexture("ColorUI").Value;
+
             public static Texture2D Circular => UITexture("Circular").Value;
 
             public static Texture2D Crucible => UITexture("Crucible").Value;
@@ -75,6 +77,12 @@ namespace PotionCraft
             
             public static Asset<Texture2D> HajimiIconHover = UITexture("HajimiIconHover");
             
+            public static Asset<Texture2D> HelpIcon=>UITexture("HelpIcon");
+
+            public static Asset<Texture2D> HelpIconActive => UITexture("HelpIconActive");
+            
+            public static Asset<Texture2D> Dialogue => UITexture("Dialogue");
+
             public static string PotionCraftBG => Path.UI + "PotionCraftBG";
         }
         public class Items

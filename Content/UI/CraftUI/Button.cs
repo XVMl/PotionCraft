@@ -55,6 +55,8 @@ public class Button : PotionElement<BrewPotionState>
     }
     public override void LeftClick(UIMouseEvent evt)
     {
+        if (!Active)
+            return;
         base.LeftClick(evt);
         OnClike?.Invoke();
     }
@@ -69,7 +71,7 @@ public class Button : PotionElement<BrewPotionState>
         base.MouseOver(evt);
         SoundEngine.PlaySound(SoundID.MenuClose);
 
-        if (HoverTexture is not null)
+        if (HoverTexture is not null && Active)
             _asset = HoverTexture;
     }
 

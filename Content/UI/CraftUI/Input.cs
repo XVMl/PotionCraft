@@ -75,7 +75,7 @@ public class Input:PotionElement<BrewPotionState>
 
         PlayerInput.WritingText = true;
         Main.instance.HandleIME();
-        if (string.IsNullOrEmpty(Currentvalue)&&Recordvalue.Count!=0)
+        if (string.IsNullOrEmpty(Currentvalue) && Recordvalue.Count!=0 && Main.inputText.IsKeyDown(Keys.Back))
             StListText();
         
         Currentvalue = Main.GetInputText(Currentvalue);
@@ -105,6 +105,11 @@ public class Input:PotionElement<BrewPotionState>
     {
         Showstring = string.Join("", Recordvalue.Select(s => string.IsNullOrEmpty(s.Item1) ? Deafult_Hex.Insert(10,s.Item2) : $"[c/{s.Item1}:{s.Item2}]"));
         Showstring = WrapTextWithColors(Showstring, 180).Item1;
+        Mod instance = ModContent.GetInstance<PotionCraft>();
+        instance.Logger.Debug(Showstring);
+        instance.Logger.Debug(DeleteTextColor_SaveString(Showstring)); 
+        instance.Logger.Debug(MeasureString_Cursor(DeleteTextColor_SaveString(Showstring)));
+        
     }
 
     public override void Update(GameTime gameTime)
@@ -176,10 +181,11 @@ public class Input:PotionElement<BrewPotionState>
         
         Utils.DrawBorderString(spriteBatch, Showstring, GetDimensions().Position(), Color.White, 1f, 0f, 0f, -1);
         var vector2 = GetDimensions().Position() +
-                       MeasureString_Cursor(DeleteTextColor_SaveString(Showstring));
+        //FontAssets.MouseText.Value.MeasureString(DeleteTextColor_SaveString(Showstring));
+        MeasureString_Cursor(DeleteTextColor_SaveString(Showstring));
         if (!Inputting)
             return;
-
+        
         HandleInputText();
          Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
         Utils.DrawBorderString(spriteBatch, Currentvalue, vector2,

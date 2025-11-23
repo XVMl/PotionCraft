@@ -22,7 +22,9 @@ namespace PotionCraft.Content.Items
 {
     public class BasePotion : ModItem
     {
-        public override string Texture => Path.Items + "Style1";
+        public override string Texture =>texture;
+
+        public string texture = Path.Items + "Style1";
         /// <summary>
         /// 将会显示的药剂名
         /// </summary>

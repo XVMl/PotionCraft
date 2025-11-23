@@ -211,7 +211,7 @@ namespace PotionCraft.Content.System
             if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
 
-            A = MathHelper.Lerp(A, Active ? 1 : 0, .05f);
+            
             TransitionAnimation?.Invoke();
             IdelAnimation?.Invoke();
 

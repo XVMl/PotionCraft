@@ -1,25 +1,19 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using static PotionCraft.Content.System.ColorfulText.OperatorColorText;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 using static PotionCraft.Content.System.AutoLoaderSystem.JsonLoader;
-using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent;
 using Terraria.ID;
 using System.Reflection;
 using ReLogic.Graphics;
 using static ReLogic.Graphics.DynamicSpriteFont;
-using ReLogic.Graphics;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PotionCraft.Content.System
 {
@@ -29,6 +23,7 @@ namespace PotionCraft.Content.System
 
         public static readonly string Deafult_Hex = "[c/D7C193:]";
 
+        public static readonly MethodInfo GetCharacterData = typeof(DynamicSpriteFont).GetMethod("GetCharacterData", BindingFlags.Instance | BindingFlags.NonPublic); 
         public static float Scale_location
         {
             get
@@ -197,10 +192,8 @@ namespace PotionCraft.Content.System
             font ??= FontAssets.MouseText.Value;
             var zero = 0f;
             var num2 = 0f;
-            var flag = true;
-            var characterData = font.DefaultCharacterData;
-            var kerning = characterData.Kerning;
-
+            var flag = true; 
+            
             foreach (var (colorCode, partText) in parsedParts)
             {
                 var substring = partText;
@@ -208,6 +201,9 @@ namespace PotionCraft.Content.System
                 for (var index = 0; index < partText.Length; index++,pos++)
                 {
                     start:
+                    var characterData = (SpriteCharacterData)GetCharacterData.Invoke(font, [partText[index]]);
+                    var kerning = characterData.Kerning;
+
                     if (flag)
                         kerning.X = Math.Max(kerning.X, 0f);
                     else
@@ -229,7 +225,6 @@ namespace PotionCraft.Content.System
                     lines.Add(currentLine.ToString().Trim());
                     substring=substring[pos..];
                     
-
                     currentLine.Clear();
                     lineNumber++;
                     num2 = 0f;
@@ -253,9 +248,9 @@ namespace PotionCraft.Content.System
             if (text.Length == 0)
                 return Vector2.Zero;
 
-            var zero = Vector2.Zero;
             font ??= FontAssets.MouseText.Value;
-            zero.Y = font.LineSpacing;
+            var zero = Vector2.Zero;
+            zero.Y = FontAssets.MouseText.Value.LineSpacing;
             var num = 0;
             var num2 = 0f;
             var flag = true;
@@ -264,7 +259,7 @@ namespace PotionCraft.Content.System
                     case '\n':
                         num2 = 0f;
                         zero = Vector2.Zero;
-                        zero.Y = font.LineSpacing;
+                        zero.Y = FontAssets.MouseText.Value.LineSpacing;
                         flag = true;
                         num++;
                         continue;
@@ -272,21 +267,20 @@ namespace PotionCraft.Content.System
                         continue;
                 }
 
-                var characterData =font.DefaultCharacterData;
+                var characterData = (SpriteCharacterData)GetCharacterData.Invoke(FontAssets.MouseText.Value, [c]);
                 var kerning = characterData.Kerning;
                 if (flag)
                     kerning.X = Math.Max(kerning.X, 0f);
                 else
-                    zero.X += font.CharacterSpacing + num2;
+                    zero.X += FontAssets.MouseText.Value.CharacterSpacing + num2;
 
-                zero.X += kerning.X + kerning.Y;
+                zero.X += kerning.X + kerning.Y+ kerning.Z;
                 num2 = kerning.Z;
                 zero.Y = Math.Max(zero.Y, characterData.Padding.Height);
                 flag = false;
             }
-
             zero.X += Math.Max(num2, 0f);
-            zero.Y = num * font.LineSpacing;
+            zero.Y = num * FontAssets.MouseText.Value.LineSpacing;
             return zero;
         }
 
