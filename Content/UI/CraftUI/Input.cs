@@ -35,7 +35,7 @@ public class Input:PotionElement<BrewPotionState>
     
     private Color SelectColor => _brewPotionState.colorSelector.Color;
 
-    private string TempColor="";
+    private string TempColor ="FFFFFF";
 
     private string TempText="";
     
@@ -87,7 +87,7 @@ public class Input:PotionElement<BrewPotionState>
             return;
         Main.blockInput = false;
         Inputting = false;
-        var original = GetUnmodfiedPart(TempText, ref Currentvalue);
+        var original = GetUnmodifiedPart(TempText, ref Currentvalue);
         if(!string.IsNullOrEmpty(original))
             Recordvalue.Add((TempColor,original));
 
@@ -96,7 +96,7 @@ public class Input:PotionElement<BrewPotionState>
 
         Currentvalue = "";
         TempColor = "";
-        TempColor = "";
+        TempColor = Deafult_Hex;
         Refresh();
         Onchange?.Invoke();
     }
@@ -104,11 +104,11 @@ public class Input:PotionElement<BrewPotionState>
     public void Refresh()
     {
         Showstring = string.Join("", Recordvalue.Select(s => string.IsNullOrEmpty(s.Item1) ? Deafult_Hex.Insert(10,s.Item2) : $"[c/{s.Item1}:{s.Item2}]"));
-        Showstring = WrapTextWithColors(Showstring, 180).Item1;
-        Mod instance = ModContent.GetInstance<PotionCraft>();
-        instance.Logger.Debug(Showstring);
-        instance.Logger.Debug(DeleteTextColor_SaveString(Showstring)); 
-        instance.Logger.Debug(MeasureString_Cursor(DeleteTextColor_SaveString(Showstring)));
+        Showstring = WrapTextWithColors_ComPact(Showstring, 180).Item1;
+        // Mod instance = ModContent.GetInstance<PotionCraft>();
+        // instance.Logger.Debug(Showstring);
+        // instance.Logger.Debug(DeleteTextColor_SaveString(Showstring)); 
+        // instance.Logger.Debug(MeasureString_Cursor());
         
     }
 
@@ -118,6 +118,9 @@ public class Input:PotionElement<BrewPotionState>
             return;
         if (Main.mouseLeft && !IsMouseHovering)
             EndInputText();
+
+        if (!string.IsNullOrEmpty(TempText))
+            TempText = GetUnmodifiedPart(TempText, Currentvalue);
         
         if (Inputting)
             HandleInputText();
@@ -137,10 +140,10 @@ public class Input:PotionElement<BrewPotionState>
         Refresh();
     }
 
-    public static string GetUnmodfiedPart(string original,ref string modified)
+    public static string GetUnmodifiedPart(string original,ref string modified)
     {
         var minLength =Math.Min(original.Length, modified.Length);
-        for (int i = 0;i< minLength; i++)
+        for (var i = 0;i< minLength; i++)
         {
             if (original[i] == modified[i])
                 continue;
@@ -153,6 +156,19 @@ public class Input:PotionElement<BrewPotionState>
         return original[..minLength];
     }
 
+    public static string GetUnmodifiedPart(string original,string modified)
+    {
+        var minLength =Math.Min(original.Length, modified.Length);
+        for (var i = 0;i< minLength; i++)
+        {
+            if (original[i] == modified[i])
+                continue;
+
+            return original[..i];
+        }
+
+        return original[..minLength];
+    }
     public override void LeftClick(UIMouseEvent evt)
     {
         if (!PotionCraftState.Active())
@@ -160,19 +176,6 @@ public class Input:PotionElement<BrewPotionState>
         InputText();
     }
     
-    public static string GetUnmodifiedPart(string original, string modified)
-    {
-        var minLength = Math.Min(original.Length, modified.Length);
-        for (var i = 0; i < minLength; i++)
-        {
-            if (original[i] != modified[i])
-            {
-                return original[..i];
-            }
-        }
-
-        return original == modified ? original : original[..minLength];
-    }
     
     protected override void DrawSelf(SpriteBatch spriteBatch)
     {
@@ -180,19 +183,24 @@ public class Input:PotionElement<BrewPotionState>
             spriteBatch.Draw(Asset.Value,GetDimensions().ToRectangle(),new Rectangle(46,276,246,106),Color.White);
         
         Utils.DrawBorderString(spriteBatch, Showstring, GetDimensions().Position(), Color.White, 1f, 0f, 0f, -1);
-        var vector2 = GetDimensions().Position() +
-        //FontAssets.MouseText.Value.MeasureString(DeleteTextColor_SaveString(Showstring));
-        MeasureString_Cursor(DeleteTextColor_SaveString(Showstring));
+        var vector2 = GetDimensions().Position() + MeasureString_Cursor(Showstring);
         if (!Inputting)
             return;
         
         HandleInputText();
-         Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
-        Utils.DrawBorderString(spriteBatch, Currentvalue, vector2,
-            Color.White, 1f, 0f, 0f, -1);
+
+        var show = "";
+        
+        if (!string.IsNullOrEmpty(TempText))
+            show +=$"[c/{TempText}:"+ GetUnmodifiedPart(TempText, Currentvalue)+"]";
+
+        show += $"[c/{RGBToHex(SelectColor)}:{Currentvalue}]";
+        Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
+        Utils.DrawBorderString(spriteBatch,WrapTextWithColors_ComPact(show,180,vector2.X).Item1, vector2,
+            Color.White);
         if (Main.GameUpdateCount % 20U >= 10U)
             return;
-        Utils.DrawBorderString(spriteBatch, "|", vector2+ new Vector2(FontAssets.MouseText.Value.MeasureString(Currentvalue).X,0), Color.White, 1f, 0.0f, 0.0f, -1);
+        Utils.DrawBorderString(spriteBatch, "|", vector2 + MeasureString_Cursor(Currentvalue), Color.White, 1f, 0.0f, 0.0f, -1);
     }
         
 }

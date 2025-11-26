@@ -1,22 +1,13 @@
-﻿using Luminance.Common.Utilities;
-using Luminance.Core.Graphics;
+﻿using System.Reflection;
 using Luminance.Core.Hooking;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;
 using PotionCraft.Content.Items;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.ModLoader;
 
-namespace PotionCraft.Content.System.ThiuDialogue
+namespace PotionCraft.Content.System.PotionILHook
 {
     /// <summary>
     /// 此Hook用于修改物品提示栏背景

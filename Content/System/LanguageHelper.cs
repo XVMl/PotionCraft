@@ -13,6 +13,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using System.Reflection;
 using ReLogic.Graphics;
+using Terraria.UI.Chat;
 using static ReLogic.Graphics.DynamicSpriteFont;
 
 namespace PotionCraft.Content.System
@@ -183,14 +184,14 @@ namespace PotionCraft.Content.System
         /// <param name="length"></param>
         /// <param name="font"></param>
         /// <returns>Item1:包含颜色的字符串；Item2：总行数</returns>
-        public static (string, int) WrapTextWithColors_ComPact(string text, float length,DynamicSpriteFont font = null)
+        public static (string, int) WrapTextWithColors_ComPact(string text, float length,float left=0, DynamicSpriteFont font = null)
         {
             var parsedParts = ParseText(text);
             var lines = new List<string>();
             var currentLine = new StringBuilder();
             var lineNumber = 1;
             font ??= FontAssets.MouseText.Value;
-            var zero = 0f;
+            var zero = 0f + left;
             var num2 = 0f;
             var flag = true; 
             
@@ -245,45 +246,79 @@ namespace PotionCraft.Content.System
 
         public static Vector2 MeasureString_Cursor(string text,DynamicSpriteFont font =null)
         {
-            if (text.Length == 0)
-                return Vector2.Zero;
+            var res = Vector2.Zero;
+            res += DrawColorCodedStringWithShadow(FontAssets.MouseText.Value, text, res,Color.White, Vector2.One);
+            return res;
+        }
+        
+        private static Vector2 DrawColorCodedString(DynamicSpriteFont font,
+            TextSnippet[] snippets, Vector2 position, Vector2 baseScale)
+        {
+            var vector = position;
+            var result = vector;
+            var x = font.MeasureString(" ").X;
+            var num2 = 1f;
+            var num3 = 0f;
+            for (var i = 0; i < snippets.Length; i++)
+            {
+                var textSnippet = snippets[i];
+                textSnippet.Update();
+                
+                textSnippet.GetVisibleColor();
 
-            font ??= FontAssets.MouseText.Value;
-            var zero = Vector2.Zero;
-            zero.Y = FontAssets.MouseText.Value.LineSpacing;
-            var num = 0;
-            var num2 = 0f;
-            var flag = true;
-            foreach (var c in text) {
-                switch (c) {
-                    case '\n':
-                        num2 = 0f;
-                        zero = Vector2.Zero;
-                        zero.Y = FontAssets.MouseText.Value.LineSpacing;
-                        flag = true;
-                        num++;
+                num2 = textSnippet.Scale;
+
+                var array = Regex.Split(textSnippet.Text, "(\n)");
+                var flag = true;
+                foreach (var text in array)
+                {
+                    var array2 = text.Split(' ');
+                    if (text == "\n")
+                    {
+                        vector.Y += font.LineSpacing * num3 * baseScale.Y;
+                        vector.X = position.X;
+                        result.Y = Math.Max(result.Y, vector.Y);
+                        num3 = 0f;
+                        flag = false;
                         continue;
-                    case '\r':
-                        continue;
+                    }
+
+                    for (var k = 0; k < array2.Length; k++)
+                    {
+                        if (k != 0)
+                            vector.X += x * baseScale.X * num2;
+
+                        if (num3 < num2)
+                            num3 = num2;
+
+                        var vector2 = font.MeasureString(array2[k]);
+
+                        vector.X += vector2.X * baseScale.X * num2;
+                        result.X = Math.Max(result.X, vector.X);
+                    }
+
+                    if (array.Length > 1 && flag)
+                    {
+                        vector.Y += font.LineSpacing * num3 * baseScale.Y;
+                        vector.X = position.X;
+                        result.Y = Math.Max(result.Y, vector.Y);
+                        num3 = 0f;
+                    }
+
+                    flag = true;
                 }
-
-                var characterData = (SpriteCharacterData)GetCharacterData.Invoke(FontAssets.MouseText.Value, [c]);
-                var kerning = characterData.Kerning;
-                if (flag)
-                    kerning.X = Math.Max(kerning.X, 0f);
-                else
-                    zero.X += FontAssets.MouseText.Value.CharacterSpacing + num2;
-
-                zero.X += kerning.X + kerning.Y+ kerning.Z;
-                num2 = kerning.Z;
-                zero.Y = Math.Max(zero.Y, characterData.Padding.Height);
-                flag = false;
             }
-            zero.X += Math.Max(num2, 0f);
-            zero.Y = num * FontAssets.MouseText.Value.LineSpacing;
-            return zero;
+
+            return result;
         }
 
+        private static Vector2 DrawColorCodedStringWithShadow(DynamicSpriteFont font, string text, Vector2 position, Color baseColor, Vector2 baseScale)
+        {
+            var snippets =ChatManager.ParseMessage(text, baseColor).ToArray();
+            ChatManager.ConvertNormalSnippets(snippets);
+            return DrawColorCodedString(font, snippets, position, baseScale);
+        }
+        
         public static string DeleteTextColor(string msg)
         {
             string pattern = @"\[c/[^:]+:([^]]+)\]";

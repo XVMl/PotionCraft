@@ -10,6 +10,8 @@ using Terraria.ModLoader.UI.Elements;
 using Terraria.ModLoader;
 using System;
 using PotionCraft.Content.Items;
+using PotionCraft.Content.System.AutoLoaderSystem;
+using Terraria.GameContent;
 
 
 namespace PotionCraft.Content.UI.CraftUI
@@ -68,7 +70,7 @@ namespace PotionCraft.Content.UI.CraftUI
             slider.onChange = () =>
             {
                 if(brewPotionState.PreviewPotion is not null)
-                brewPotionState.PreviewPotion.stack = slider.value;
+                    brewPotionState.PreviewPotion.stack = slider.value;
             };
             BG.Append(slider);
 
@@ -168,15 +170,25 @@ namespace PotionCraft.Content.UI.CraftUI
             List.Add(new ItemIcon(BrewPotionState, item) { 
                 OnClick = () =>
                 {
-                    Main.NewText("!!!");
-                    BrewPotionState.CreatPotion.texture = item.ModItem.Texture;
-                    Main.NewText(BrewPotionState.CreatPotion.texture);
+                    BrewPotionState.CreatPotion.IconID = item.type;
                     BrewPotionState.Refresh();
                 }
             });
             ModContent.GetInstance<PotionCraft>().Logger.Debug(item);
         }
 
+        public void Init(BrewPotionState BrewPotionState,Item item)
+        {
+            if (LoaderPotionOrMaterial.PotionList.ContainsValue(item.type))
+            {
+                var data = new MaterialData(item.Name, "", Base.Magic, 1);
+                BrewPotionState.CreatPotion.Item.useStyle = data.UseStyle;
+                BrewPotionState.CreatPotion.IconID = item.type;
+            }
+            
+            
+        }
+        
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().ToRectangle(), new Rectangle(0, 12, 342, 12), Color.White*A);
