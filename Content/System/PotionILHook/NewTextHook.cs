@@ -15,6 +15,10 @@ using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace PotionCraft.Content.System.PotionILHook;
+
+/// <summary>
+/// 这个钩子用于弹出文本
+/// </summary>
 public class NewTextHook:ModSystem
 {
     public override void PostSetupContent()

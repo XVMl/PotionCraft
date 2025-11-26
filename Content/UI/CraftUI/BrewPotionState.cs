@@ -20,8 +20,6 @@ namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
     {
-        public override bool Active() => ActiveState && CraftState == CraftUiState.BrewPotion;
-
         public override bool Isload() => true;
 
         public static readonly MethodInfo SetModItem = typeof(Item).GetProperty(nameof(Item.ModItem))!.GetSetMethod(true);
@@ -48,9 +46,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private PotionCrucible potionCrucible;
 
-        public ColorSelector colorSelector;
-
-        private PotionBaseSelect potionBaseSelect;
+        //private PotionBaseSelect potionBaseSelect;
 
         public override void OnInitialize()
         {
@@ -78,29 +74,30 @@ namespace PotionCraft.Content.UI.CraftUI
             //PotionSynopsis.SourcePotion = new Vector2(PotionSynopsis.Left.Pixels, PotionSynopsis.Top.Pixels);
             Append(PotionSynopsis);
 
-            colorSelector = new(this);
-            colorSelector.Top.Set(300, 0);
-            colorSelector.Left.Set(20, 0);
-            colorSelector.Active = false;
-            colorSelector.TransitionAnimation = () =>
-            {
-                var top = MathHelper.Lerp(colorSelector.Top.Pixels, colorSelector.Active ? 300 : 270,.05f);
-                colorSelector.Top.Set(top, 0);
-            };
-            Append(colorSelector);
+            //colorSelector = new();
+            //colorSelector.Top.Set(300, 0);
+            //colorSelector.Left.Set(20, 0);
+            //colorSelector.Active = false;
+            //colorSelector.TransitionAnimation = () =>
+            //{
+            //    var top = MathHelper.Lerp(colorSelector.Top.Pixels, colorSelector.Active? 300 : 270,.05f);
+            //    colorSelector.Top.Set(top, 0);
+            //};
+            //Append(colorSelector);
 
-            potionBaseSelect = new(this);
-            potionBaseSelect.Top.Set(300, 0);
-            potionBaseSelect.Left.Set(20, 0);
+            //potionBaseSelect = new(this);
+            //potionBaseSelect.Top.Set(300, 0);
+            //potionBaseSelect.Left.Set(20, 0);
             //potionBaseSelect.Active = false;
-            potionBaseSelect.TransitionAnimation = () =>
-            {
-                potionBaseSelect.Init(this);
-                var top = MathHelper.Lerp(potionBaseSelect.Top.Pixels, potionBaseSelect.Active ? 300 : 270, .05f);
-                potionBaseSelect.A = MathHelper.Lerp(potionBaseSelect.A, potionBaseSelect.Active ? 1 : 0, .05f);
-                potionBaseSelect.Top.Set(top, 0);
-            };
-            Append(potionBaseSelect);
+            //potionBaseSelect.A = 0;
+            //potionBaseSelect.TransitionAnimation = () =>
+            //{
+            //    potionBaseSelect.Init(this);
+            //    var top = MathHelper.Lerp(potionBaseSelect.Top.Pixels, potionBaseSelect.Active ? 300 : 270, .05f);
+            //    potionBaseSelect.A = MathHelper.Lerp(potionBaseSelect.A, potionBaseSelect.Active ? 1 : 0, .05f);
+            //    potionBaseSelect.Top.Set(top, 0);
+            //};
+            //Append(potionBaseSelect);
 
             potionComponent = new PotionComponent(this);
             potionComponent.Top.Set(228, 0);
@@ -310,10 +307,9 @@ namespace PotionCraft.Content.UI.CraftUI
             base.Update(gameTime);
             PotionSynopsis.Update(gameTime);
             potionSetting.Update(gameTime);
-            colorSelector.Update(gameTime);
             potionComponent.Update(gameTime);
             potionCrucible.Update(gameTime);
-            potionBaseSelect.Update(gameTime);
+            //potionBaseSelect.Update(gameTime);
         }
         
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -400,7 +396,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            if (!PotionCraftState.Active()) return;
+            if (!PotionCraftState.Active) return;
             if (Main.mouseItem.IsAir)
                 return;
 

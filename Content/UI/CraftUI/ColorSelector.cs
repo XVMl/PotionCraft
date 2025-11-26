@@ -9,8 +9,12 @@ using System;
 using Newtonsoft.Json.Linq;
 namespace PotionCraft.Content.UI.CraftUI
 {
-    public class ColorSelector : PotionElement<BrewPotionState>
+    public class ColorSelector : AutoUIState
     {
+        public override string LayersFindIndex => "Vanilla: Mouse Text";
+
+        public override bool Isload() => true;
+
         private UIElement palette;
 
         private ColorSelectorProgess paletteprogress;
@@ -19,26 +23,26 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private ColorSelectorProgess selectprogress;
 
-        static ManagedShader shader = ShaderManager.GetShader("PotionCraft.ColorSelector");
+        static ManagedShader shader;
 
         private bool palettemouseLeft;
 
         private bool selectmouseLeft;
 
-        public Color Color = Color.White;
+        public static Color Color = Color.White;
 
         private Vector2 mousedata;
 
-        
         private float R = 1;
         private float G = 0;
         private float B = 0;
 
-        public ColorSelector(BrewPotionState brewPotionState)
+        public override void OnInitialize()
         {
-            PotionCraftState = brewPotionState;
             Width.Set(342f, 0);
             Height.Set(224f, 0);
+            Top.Set(300, 0);
+            Left.Set(20, 0);
             palette = new UIElement()
             {
                 HAlign = 0.5f,
@@ -62,7 +66,12 @@ namespace PotionCraft.Content.UI.CraftUI
             select.Height.Set(8, 0);
             selectprogress = new(new Color(R, G, B));
             selectprogress.VAlign = .4f;
-            
+            TransitionAnimation = () =>
+            {
+                var top = MathHelper.Lerp(Top.Pixels, Active ? 300 : 270, .1f);
+                A = MathHelper.Lerp(A, Active ? 1 : 0, .05f);
+                Top.Set(top, 0);
+            };
             Append(select);
             Append(palette);
             palette.Append(paletteprogress);
@@ -72,6 +81,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void Update(GameTime gameTime)
         {
+
             if (palettemouseLeft)
                 SelectColor();
 
@@ -119,7 +129,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftMouseDown(UIMouseEvent evt) 
         {
-            if (!Active || !PotionCraftState.Active())
+            if (!Active)
                 return;
 
             if (Main.MouseScreen.X > palette.GetDimensions().Position().X && Main.MouseScreen.Y > palette.GetDimensions().Position().Y
@@ -134,8 +144,9 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (!Active || !PotionCraftState.Active())
+            if (!Active)
                 return;
+            shader ??= ShaderManager.GetShader("PotionCraft.ColorSelector");
             spriteBatch.Draw(UITexture("ColorUI").Value, GetDimensions().ToRectangle().TopLeft(), Color.White * A);
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone,null, Main.UIScaleMatrix);

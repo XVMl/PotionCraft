@@ -27,7 +27,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private Input _potionremarks;
 
-        private ItemIcon _potionicon;
+        private ItemIcon<BrewPotionState> _potionicon;
 
         public PotionSynopsis(BrewPotionState brewPotionState)
         {
@@ -41,7 +41,8 @@ namespace PotionCraft.Content.UI.CraftUI
             _potionicon.Left.Set(124, 0);
             _potionicon.OnClick = () =>
             {
-                //Main.NewText("CD");
+                PotionCraftUI.UIstate.TryGetValue(nameof(PotionBaseSelect), out var state);
+                state.Active = !state.Active;
             };
             Append(_potionicon);
 
@@ -52,13 +53,16 @@ namespace PotionCraft.Content.UI.CraftUI
             coloreelectorbutton.Left.Set(26, 0);
             coloreelectorbutton.OnClike = () =>
             {
-                brewPotionState.colorSelector.Active = !brewPotionState.colorSelector.Active;
-                brewPotionState?.colorSelector.TransitionAnimation?.Invoke();
+                PotionCraftUI.UIstate.TryGetValue(nameof(ColorSelector), out var state);
+                state.A = 0;
+                state.Top.Set(270, 0);
+                state.Active = !state.Active;
             };
             Append(coloreelectorbutton);
 
             _coloreelectorbutton = new(Assets.UI.ColorSelector, Color.White,brewPotionState);
             _coloreelectorbutton.Active = false;
+            _coloreelectorbutton.A = 0f;
             _coloreelectorbutton.Width.Set(18, 0);
             _coloreelectorbutton.Height.Set(18, 0);
             _coloreelectorbutton.Top.Set(216, 0);
@@ -72,8 +76,10 @@ namespace PotionCraft.Content.UI.CraftUI
             _coloreelectorbutton.OnClike = () =>
             {
                 if (!_coloreelectorbutton.Active) return;
-                brewPotionState.colorSelector.Active = !brewPotionState.colorSelector.Active;
-                brewPotionState?.colorSelector.TransitionAnimation?.Invoke();
+                PotionCraftUI.UIstate.TryGetValue(nameof(ColorSelector), out var state);
+                state.A = 0;
+                state.Top.Set(270, 0);
+                state.Active = !state.Active;
             };
 
             Append(_coloreelectorbutton);
@@ -86,6 +92,11 @@ namespace PotionCraft.Content.UI.CraftUI
             
             _inputbutton.OnClike = () =>
             {
+                //if(_coloreelectorbutton.Active)
+                //{
+                //    _coloreelectorbutton.Parent.RemoveChild(_coloreelectorbutton);
+                //    Main.NewText("!!!!!");
+                //}
                 _coloreelectorbutton.Active = !_coloreelectorbutton.Active;
             };
             Append(_inputbutton);
@@ -147,19 +158,18 @@ namespace PotionCraft.Content.UI.CraftUI
 
     }
     
-    public class ItemIcon : PotionElement<BrewPotionState>
+    public class ItemIcon<T> : PotionElement<T> where T : AutoUIState
     {
         public Item Item;
 
-        private BrewPotionState BrewPotionState;
+        //private BrewPotionState BrewPotionState;
 
         public bool ExtraInformation;
 
         public Action OnClick;
-        public ItemIcon(BrewPotionState brewPotionState,Item item) 
+        public ItemIcon(T state,Item item) 
         { 
-            PotionCraftState = brewPotionState;
-            BrewPotionState = brewPotionState;
+            PotionCraftState = state;
             Width.Set(102f, 0f);
             Height.Set(104f, 0f);
             Item = item;

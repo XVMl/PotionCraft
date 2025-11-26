@@ -22,7 +22,7 @@ namespace PotionCraft.Content.UI.CraftUI
     public delegate void SlotChange();
     public class PotionCraftState : AutoUIState
     {
-        public override bool Active() => ActiveState;
+        public bool Active => ActiveState;
 
         public override string LayersFindIndex => "Vanilla: Interface Logic 3";
 
@@ -41,7 +41,7 @@ namespace PotionCraft.Content.UI.CraftUI
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (!Active())
+            if (!Active)
                 return;
             base.Draw(spriteBatch);
             
@@ -70,7 +70,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            if (!PotionCraftState.Active())   return;
+            if (!PotionCraftState.Active)   return;
             switch (Main.mouseItem.IsAir)
             {
                 case false when PotionCraftState.Potion.IsAir:
@@ -123,7 +123,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            if (!PotionCraftState.Active()) return;
+            if (!PotionCraftState.Active) return;
             switch (Main.mouseItem.IsAir)
             {
                 case false when PotionCraftState.Material.IsAir:
@@ -171,7 +171,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            if (!PotionCraftState.Active()) return;
+            if (!PotionCraftState.Active) return;
             if (!Main.mouseItem.IsAir || PotionCraftState.CreatedPotion.IsAir) return;
             Main.mouseItem = PotionCraftState.CreatedPotion.Clone();
             PotionCraftState.CreatedPotion.TurnToAir();

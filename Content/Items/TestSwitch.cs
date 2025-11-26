@@ -1,11 +1,6 @@
-﻿using Luminance.Assets;
-using Luminance.Common.Utilities;
+﻿using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -41,15 +36,9 @@ namespace PotionCraft.Content.Items
         public override bool? UseItem(Player player)
         {
             player.itemAnimation = Item.useAnimation;
-            //if (player.altFunctionUse==2)
-            //{
-            //    PotionCraftState.CraftState = (CraftUiState)((int)(PotionCraftState.CraftState + 1) % 5);
-            //}
-            //else
-            //{
-            //}
+            PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
+            state.Active = !state.Active;
             ActiveState = !ActiveState;
-            CraftState = CraftUiState.BrewPotion;
             return true;
         }
     }

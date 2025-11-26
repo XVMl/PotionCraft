@@ -22,6 +22,8 @@ namespace PotionCraft.Content.System
     {
         private static Type[] _UIstate = [];
 
+        public static Dictionary<string,AutoUIState> UIstate = new ();
+
         private static Dictionary<AutoUIState, UserInterface> keyValuePairs = new();
 
         private List<UserInterface> _UserInterface = new();
@@ -44,6 +46,7 @@ namespace PotionCraft.Content.System
                     continue;
                 _userInterface.SetState(_state);
                 _UserInterface.Add(_userInterface);
+                UIstate.Add(type.Name,_state);
                 keyValuePairs[_state] = _userInterface;
             }
         }
@@ -52,9 +55,8 @@ namespace PotionCraft.Content.System
         {
             foreach (UserInterface type in _UserInterface)
             {
-                type.Update(gameTime);
-                //UserInterface userInterface = type;
-                //userInterface?.Update(gameTime);
+                if (((AutoUIState)type.CurrentState).Active)
+                    type.Update(gameTime);
             }
         }
 
@@ -62,7 +64,7 @@ namespace PotionCraft.Content.System
         {
             foreach (var item in keyValuePairs)
             {
-                if (!item.Key.Active())
+                if (!item.Key.Active)
                 {
                     continue;
                 }
@@ -110,7 +112,7 @@ namespace PotionCraft.Content.System
         public override void MouseOver(UIMouseEvent evt)
         {
             base.MouseOver(evt);
-            if (PotionCraftState is null || !PotionCraftState.Active())
+            if (PotionCraftState is null || !PotionCraftState.Active)
                 return;
             CurrentElement = GetType().Name;
         }
@@ -118,7 +120,7 @@ namespace PotionCraft.Content.System
         public override void MouseOut(UIMouseEvent evt)
         {
             base.MouseOut(evt);
-            if (PotionCraftState is null || !PotionCraftState.Active())
+            if (PotionCraftState is null || !PotionCraftState.Active)
                 return;
             CurrentElement = string.Empty;
         }
@@ -205,7 +207,7 @@ namespace PotionCraft.Content.System
 
         public override void Update(GameTime gameTime)
         {
-            if (!PotionCraftState.Active())
+            if (!PotionCraftState.Active)
                 return;
 
             if (IsMouseHovering)
@@ -273,8 +275,10 @@ namespace PotionCraft.Content.System
 
         public static bool ActiveState;
 
-        public static CraftUiState CraftState;
+        public float A = 1f;
 
+        public static CraftUiState CraftState;
+        public Action TransitionAnimation;
         public virtual bool Isload() => false;
 
         public Item Potion = new();
@@ -294,9 +298,18 @@ namespace PotionCraft.Content.System
             BrewPotion,
         }
 
-        public virtual bool Active() => true;
+        public bool Active = false;
+
+        public bool Deactive = false;
 
         public abstract string LayersFindIndex { get; }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            TransitionAnimation?.Invoke();
+
+        }
 
         public static BasePotion AsPotion(Item item)
         {

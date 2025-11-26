@@ -15,6 +15,10 @@ using System.Reflection;
 using ReLogic.Graphics;
 using Terraria.UI.Chat;
 using static ReLogic.Graphics.DynamicSpriteFont;
+using Terraria.ModLoader;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria.UI.Chat;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PotionCraft.Content.System
 {
@@ -232,7 +236,7 @@ namespace PotionCraft.Content.System
                     zero = 0f;
                     pos = 0;
                     flag = true;
-                    if (partText[index]!=' ')
+                    //if (partText[index]!=' ')
                         goto start;
                 }
                 currentLine.Append($"[c/{colorCode}:{substring}]");
@@ -263,7 +267,7 @@ namespace PotionCraft.Content.System
             {
                 var textSnippet = snippets[i];
                 textSnippet.Update();
-                
+
                 textSnippet.GetVisibleColor();
 
                 num2 = textSnippet.Scale;
@@ -277,6 +281,7 @@ namespace PotionCraft.Content.System
                     {
                         vector.Y += font.LineSpacing * num3 * baseScale.Y;
                         vector.X = position.X;
+                        result.X = position.X;
                         result.Y = Math.Max(result.Y, vector.Y);
                         num3 = 0f;
                         flag = false;
@@ -390,7 +395,7 @@ namespace PotionCraft.Content.System
                         stack.Push($"{TryGetPurifyText(purifycount++)} {stack.Pop()}");
                         break;
                     default:
-                        stack.Push(TryGetBuffName(token));
+                        stack.Push(TryGetBuffName(token.Replace(":", "")));
                         break;
                 }
             }

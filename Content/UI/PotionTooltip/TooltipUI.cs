@@ -28,12 +28,10 @@ namespace PotionCraft.Content.UI.PotionTooltip
     /// </summary>
     public class TooltipUI : AutoUIState
     {
-        public override bool Active() => ShowToolTip;
-
         public override bool Isload()=> true;
         public override string LayersFindIndex => "Vanilla: Mouse Item / NPC Head";
 
-        private bool ShowToolTip;
+        //private bool ShowToolTip;
         
         private UIElement Area;
 
@@ -112,10 +110,10 @@ namespace PotionCraft.Content.UI.PotionTooltip
             }
             Area.Left.Set(pos.X +x, 0); 
             Area.Top.Set(pos.Y + y, 0);
-            ShowToolTip = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
-            if (!ShowToolTip) 
+            Active = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
+            if (!Active) 
                 return;
-            if (CheckPotion(ShowBasePotion, PotionElement<MashUpState>.AsPotion(Main.HoverItem)))
+            if (CheckPotion(ShowBasePotion, AsPotion(Main.HoverItem)))
                 return;
             PotionIngredients.UIgrid.Clear();
             NameArea.Height.Set(123, 0);
@@ -129,8 +127,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
             var linetextnum = LanguageManager.Instance.ActiveCulture.Name switch
             {
                 "zh-Hans" => 320,
-                "en-US" => 320,
-                _ => 320,
+                "en-US" => 300,
+                _ => 300,
             };
             //var data = WrapTextWithColors(ShowBasePotion.PotionName, linetextnum);
             var data = WrapTextWithColors_ComPact(ShowBasePotion.PotionName, linetextnum);
@@ -163,7 +161,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            if (!ShowToolTip) return;
+            if (!Active) return;
             var nametex = UITexture("ToolName").Value;
             var namearea = NameArea.GetDimensions().ToRectangle();
             var nameheight = namearea.Height-36;

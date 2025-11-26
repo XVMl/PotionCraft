@@ -6,11 +6,7 @@ using Terraria;
 using Microsoft.Xna.Framework;
 using static PotionCraft.Content.System.LanguageHelper;
 using PotionCraft.Content.UI.DialogueUI;
-using Terraria.ModLoader.UI.Elements;
-using Terraria.ModLoader;
 using System;
-using PotionCraft.Content.Items;
-using PotionCraft.Content.System.AutoLoaderSystem;
 using Terraria.GameContent;
 
 
@@ -142,58 +138,6 @@ namespace PotionCraft.Content.UI.CraftUI
             Utils.DrawBorderString(spriteBatch, "花费:", GetDimensions().Position() + new Vector2(40, 80), Deafult, 1f);
             BrewPotionState.DrawCost(spriteBatch, slider.value*1000, GetDimensions().Position()+new Vector2(90,80));
             ItemSlot.DrawSavings(spriteBatch, GetDimensions().X, GetDimensions().Y+200);
-            base.Draw(spriteBatch);
-        }
-
-    }
-
-    public class PotionBaseSelect : PotionElement<BrewPotionState>
-    {
-        private UIGrid List;
-
-        public PotionBaseSelect(BrewPotionState brewPotionState)
-        {
-            PotionCraftState = brewPotionState;
-            List = new UIGrid();
-            Width.Set(342f, 0);
-            Height.Set(400f, 0);
-            List.Width.Set(342, 0);
-            List.Height.Set(360, 0);
-            Append(List);
-        }
-
-        public void Init(BrewPotionState BrewPotionState)
-        {
-            if (List.Count != 0) return;
-            var item = new Item();
-            item.SetDefaults(ModContent.ItemType<BasePotion>()+10);
-            List.Add(new ItemIcon(BrewPotionState, item) { 
-                OnClick = () =>
-                {
-                    BrewPotionState.CreatPotion.IconID = item.type;
-                    BrewPotionState.Refresh();
-                }
-            });
-            ModContent.GetInstance<PotionCraft>().Logger.Debug(item);
-        }
-
-        public void Init(BrewPotionState BrewPotionState,Item item)
-        {
-            if (LoaderPotionOrMaterial.PotionList.ContainsValue(item.type))
-            {
-                var data = new MaterialData(item.Name, "", Base.Magic, 1);
-                BrewPotionState.CreatPotion.Item.useStyle = data.UseStyle;
-                BrewPotionState.CreatPotion.IconID = item.type;
-            }
-            
-            
-        }
-        
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().ToRectangle(), new Rectangle(0, 12, 342, 12), Color.White*A);
-            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().Position(), new Rectangle(0,0,342,12),Color.White*A);
-            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().Position() + new Vector2(0,400), new Rectangle(0, 212, 342, 12), Color.White * A);
             base.Draw(spriteBatch);
         }
 

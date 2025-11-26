@@ -23,8 +23,7 @@ namespace PotionCraft.Content.Items
 {
     public class BasePotion : ModItem
     {
-        public override string Texture =>Path.Items + "Style1";
-        
+        public override string Texture => Path.Items + "Style1";
         /// <summary>
         /// 将会显示的药剂名
         /// </summary>
@@ -205,7 +204,7 @@ namespace PotionCraft.Content.Items
             {
                 Main.instance.LoadItem(IconID);
                 var icon = TextureAssets.Item[IconID].Value;
-                spriteBatch.Draw(icon, position, null, Color.White, 0, icon.Size() / 2f, scale*1f, SpriteEffects.None, 0);
+                spriteBatch.Draw(icon, position, null, Color.White, 0, icon.Size() / 2f, scale*1.1f, SpriteEffects.None, 0);
                 return false;
             }
             for (int i = 0; i < DrawPotionList.Count; i++)
@@ -225,7 +224,7 @@ namespace PotionCraft.Content.Items
             {
                 Main.instance.LoadItem(IconID);
                 var icon = TextureAssets.Item[IconID].Value;
-                spriteBatch.Draw(icon, Item.position - Main.screenPosition, null, Color.White, 0, icon.Size() / 2, scale*1f, SpriteEffects.None, 0);
+                spriteBatch.Draw(icon, Item.position - Main.screenPosition, null, Color.White, 0, icon.Size() / 2, scale*1.1f, SpriteEffects.None, 0);
                 return false;
             }
             for (int i = 0; i < DrawPotionList.Count; i++)

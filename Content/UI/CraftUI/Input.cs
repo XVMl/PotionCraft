@@ -8,11 +8,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PotionCraft.Content.System;
 using ReLogic.Content;
+using ReLogic.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.UI;
+using Terraria.UI.Chat;
 using static PotionCraft.Content.System.LanguageHelper;
 
 namespace PotionCraft.Content.UI.CraftUI;
@@ -33,7 +35,7 @@ public class Input:PotionElement<BrewPotionState>
         
     public string Showstring="";
     
-    private Color SelectColor => _brewPotionState.colorSelector.Color;
+    private Color SelectColor => ColorSelector.Color;
 
     private string TempColor ="FFFFFF";
 
@@ -107,14 +109,11 @@ public class Input:PotionElement<BrewPotionState>
         Showstring = WrapTextWithColors_ComPact(Showstring, 180).Item1;
         // Mod instance = ModContent.GetInstance<PotionCraft>();
         // instance.Logger.Debug(Showstring);
-        // instance.Logger.Debug(DeleteTextColor_SaveString(Showstring)); 
-        // instance.Logger.Debug(MeasureString_Cursor());
-        
     }
 
     public override void Update(GameTime gameTime)
     {
-        if (!PotionCraftState.Active())
+        if (!PotionCraftState.Active)
             return;
         if (Main.mouseLeft && !IsMouseHovering)
             EndInputText();
@@ -171,7 +170,7 @@ public class Input:PotionElement<BrewPotionState>
     }
     public override void LeftClick(UIMouseEvent evt)
     {
-        if (!PotionCraftState.Active())
+        if (!PotionCraftState.Active)
             return;
         InputText();
     }
@@ -181,9 +180,10 @@ public class Input:PotionElement<BrewPotionState>
     {
         if(Asset is not null)
             spriteBatch.Draw(Asset.Value,GetDimensions().ToRectangle(),new Rectangle(46,276,246,106),Color.White);
-        
+
         Utils.DrawBorderString(spriteBatch, Showstring, GetDimensions().Position(), Color.White, 1f, 0f, 0f, -1);
         var vector2 = GetDimensions().Position() + MeasureString_Cursor(Showstring);
+
         if (!Inputting)
             return;
         
@@ -193,14 +193,14 @@ public class Input:PotionElement<BrewPotionState>
         
         if (!string.IsNullOrEmpty(TempText))
             show +=$"[c/{TempText}:"+ GetUnmodifiedPart(TempText, Currentvalue)+"]";
-
-        show += $"[c/{RGBToHex(SelectColor)}:{Currentvalue}]";
+        
+        if (!string.IsNullOrEmpty(Currentvalue))
+            show += $"[c/{RGBToHex(SelectColor)}:{Currentvalue}]";
         Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
-        Utils.DrawBorderString(spriteBatch,WrapTextWithColors_ComPact(show,180,vector2.X).Item1, vector2,
-            Color.White);
+        Utils.DrawBorderString(spriteBatch, show, vector2,Color.White);
         if (Main.GameUpdateCount % 20U >= 10U)
             return;
         Utils.DrawBorderString(spriteBatch, "|", vector2 + MeasureString_Cursor(Currentvalue), Color.White, 1f, 0.0f, 0.0f, -1);
     }
-        
+
 }

@@ -17,8 +17,6 @@ public class ShoppingElement:UIElement
     private UIImageButton ReduceButton;
 
     private UIImageButton MaxButton;
-    
-    private BaseFuildInput Input;
 
     private int MaxCount;
 
@@ -30,10 +28,10 @@ public class ShoppingElement:UIElement
         Area = new();
         Area.Width.Set(300,0);
         Area.Height.Set(150,0);
-        Input = new BaseFuildInput(() =>
-        {
-            Count = Convert.ToInt32(Input.Currentvalue);
-        });
+        //Input = new BaseFuildInput(() =>
+        //{
+        //    Count = Convert.ToInt32(Input.Currentvalue);
+        //});
         ReduceButton = new UIImageButton(UITexture(""));
         ReduceButton.OnLeftClick += Reduce;
         AddButton = new UIImageButton(UITexture(""));

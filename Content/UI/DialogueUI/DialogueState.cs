@@ -5,7 +5,7 @@ namespace PotionCraft.Content.UI.DialogueUI;
 
 public class DialogueState:AutoUIState
 {
-    public override bool Active() => Activity;
+    public bool Active => Activity;
 
     public static bool Activity;
 
