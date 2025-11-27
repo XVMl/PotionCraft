@@ -24,6 +24,8 @@ public class DialogueElement:PotionElement<DialogueState>
     
     public DialogueElement(DialogueState dialogueState)
     {
+        Height.Set(176, 0);
+        Width.Set(652, 0);
         PotionCraftState = dialogueState;
         TransitionAnimation = () =>
         { 
@@ -31,6 +33,8 @@ public class DialogueElement:PotionElement<DialogueState>
             Top.Set(top, 0);
         };
         _dialogue =new Text<DialogueState>(dialogueState);
+        _dialogue.SetText("ASDADFMKADFM");
+        Append(_dialogue);
         _dialoguearea = new UIElement();
         _dialoguearea.Width.Set(424, 0);
         _dialoguearea.Height.Set(108, 0);
@@ -41,20 +45,22 @@ public class DialogueElement:PotionElement<DialogueState>
     {
         _dialogue.LeftClick(evt);
     }
-
+    
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);
-        if (!_currentElement.Equals(CurrentElement)) return;
-        var text = TryGetLanguagValue($"Dialogue.{CurrentElement}");
-        _dialogue.SetText(text);
-        _currentElement = CurrentElement;
+        _dialogue.Update(gameTime);
+        if ((_currentElement == AutoUIState.CurrentElement)|| string.IsNullOrEmpty(AutoUIState.CurrentElement))
+            return;
+        var text = TryGetLanguagValue($"Dialogue.Prompt.{AutoUIState.CurrentElement}");
+        _dialogue.SetText(AutoUIState.CurrentElement);
+        _currentElement = AutoUIState.CurrentElement;
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(Assets.UI.Dialogue.Value, _dialoguearea.GetDimensions().Position(),Color.White);
-
+        spriteBatch.Draw(Assets.UI.DialogueUI.Value, GetDimensions().Position(), Color.White);
+        base.Draw(spriteBatch);
         //var offset = (float)Math.Abs(Math.Sin(Main.GameUpdateCount % 10))*2;
         //spriteBatch.Draw(Assets.UI.Dialogue.Value, _dialoguearea.GetDimensions().Position()+ new Vector2(0,offset),null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
     }

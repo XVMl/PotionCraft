@@ -7,15 +7,10 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
-using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
-using Steamworks;
 using Terraria.ID;
-using static System.Net.Mime.MediaTypeNames;
 using Terraria.GameContent;
 using Terraria.UI.Chat;
-using static PotionCraft.Assets;
-using Terraria.ModLoader.UI.Elements;
-using Terraria.GameContent.UI.Elements;
+using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
@@ -50,21 +45,20 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void OnInitialize()
         {
-            
             potionCrucible = new PotionCrucible(this);
             potionCrucible.HAlign = .5f;
-            potionCrucible.Top.Set(100f, 0);
+            potionCrucible.Top.Set(200f, 0);
             Append(potionCrucible);
 
             potionSetting = new PotionSetting(this)
             {
                 HAlign = .5f,
-                VAlign = .7f
+                VAlign = .9f
             };
             Append(potionSetting);
 
             PotionSynopsis = new PotionSynopsis(this);
-            PotionSynopsis.Top.Set(300, 0);
+            PotionSynopsis.Top.Set(320, 0);
             PotionSynopsis.Left.Set(370, 0);
             //PotionSynopsis.IdelAnimation = () =>
             //{
@@ -74,33 +68,8 @@ namespace PotionCraft.Content.UI.CraftUI
             //PotionSynopsis.SourcePotion = new Vector2(PotionSynopsis.Left.Pixels, PotionSynopsis.Top.Pixels);
             Append(PotionSynopsis);
 
-            //colorSelector = new();
-            //colorSelector.Top.Set(300, 0);
-            //colorSelector.Left.Set(20, 0);
-            //colorSelector.Active = false;
-            //colorSelector.TransitionAnimation = () =>
-            //{
-            //    var top = MathHelper.Lerp(colorSelector.Top.Pixels, colorSelector.Active? 300 : 270,.05f);
-            //    colorSelector.Top.Set(top, 0);
-            //};
-            //Append(colorSelector);
-
-            //potionBaseSelect = new(this);
-            //potionBaseSelect.Top.Set(300, 0);
-            //potionBaseSelect.Left.Set(20, 0);
-            //potionBaseSelect.Active = false;
-            //potionBaseSelect.A = 0;
-            //potionBaseSelect.TransitionAnimation = () =>
-            //{
-            //    potionBaseSelect.Init(this);
-            //    var top = MathHelper.Lerp(potionBaseSelect.Top.Pixels, potionBaseSelect.Active ? 300 : 270, .05f);
-            //    potionBaseSelect.A = MathHelper.Lerp(potionBaseSelect.A, potionBaseSelect.Active ? 1 : 0, .05f);
-            //    potionBaseSelect.Top.Set(top, 0);
-            //};
-            //Append(potionBaseSelect);
-
             potionComponent = new PotionComponent(this);
-            potionComponent.Top.Set(228, 0);
+            potionComponent.Top.Set(320, 0);
             potionComponent.Left.Set(1150, 0);
             //potionComponent.IdelAnimation = () =>
             //{
@@ -341,8 +310,11 @@ namespace PotionCraft.Content.UI.CraftUI
             Crucible.HAlign = .5f;
             Append(Crucible);
 
-            MashUp = new(Assets.UI.HelpIcon, Color.White, brewPotionState);
-            MashUp.Active = false;
+            MashUp = new(Assets.UI.HelpIcon, Color.White, brewPotionState)
+            {
+                Name = "MashUp",
+                Active = false
+            };
             MashUp.Width.Set(32, 0);
             MashUp.Height.Set(32, 0);
             MashUp.Top.Set(160, 0);
@@ -363,8 +335,11 @@ namespace PotionCraft.Content.UI.CraftUI
             MashUp.HoverTexture = Assets.UI.HelpIconActive;
             Append(MashUp);
 
-            Putity = new(Assets.UI.HelpIcon, Color.White, brewPotionState);
-            Putity.Active=false;
+            Putity = new(Assets.UI.HelpIcon, Color.White, brewPotionState)
+            {
+                Name = "Putity",
+                Active = false
+            };
             Putity.Width.Set(32, 0);
             Putity.Height.Set(32, 0);
             Putity.Top.Set(200, 0);

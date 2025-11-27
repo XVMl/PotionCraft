@@ -124,8 +124,7 @@ public class Input:PotionElement<BrewPotionState>
         if (Inputting)
             HandleInputText();
         
-        if (GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()))
-            HandleMouseScroll();
+        
     }
 
     private void StListText()

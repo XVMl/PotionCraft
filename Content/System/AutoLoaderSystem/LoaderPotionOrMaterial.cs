@@ -18,6 +18,8 @@ public class LoaderPotionOrMaterial:ModSystem
     public static readonly Dictionary<string, int> PotionList = [];
     
     public static List<string> Terrariabuffs = [];
+
+    public static List<string> Foods = new();
     
     public static bool IsFood(Item item) => item.buffType is 26 or 206 or 207;
     
@@ -40,6 +42,10 @@ public class LoaderPotionOrMaterial:ModSystem
         {
             Item item = new();
             item.SetDefaults(i);
+            if (IsFood(item))
+            {
+                Foods.Add(item.Name);
+            }
             if (!IsFood(item) && item.consumable && item.buffType is not 0)
             {
                 PotionList.TryAdd(item.Name,item.buffType);

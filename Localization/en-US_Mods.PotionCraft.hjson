@@ -24,16 +24,6 @@ Items: {
 		Tooltip: ""
 	}
 
-	Violet: {
-		DisplayName: Violet
-		Tooltip: ""
-	}
-
-	Lily: {
-		DisplayName: Lily
-		Tooltip: ""
-	}
-
 	Style2: {
 		DisplayName: Style2
 		Tooltip: ""
@@ -83,6 +73,66 @@ Items: {
 		Tooltip: ""
 		DisplayName: Gingerbreadman
 	}
+
+	Invitation: {
+		DisplayName: Invitation
+		Tooltip: ""
+	}
+
+	MonsterMeat: {
+		DisplayName: Monster Meat
+		Tooltip: ""
+	}
+
+	PorkoftheSea: {
+		DisplayName: Porkofthe Sea
+		Tooltip: ""
+	}
+
+	ResplendentDessert: {
+		DisplayName: Resplendent Dessert
+		Tooltip: ""
+	}
+
+	SliceofHellCake: {
+		DisplayName: SliceofHellCake
+		Tooltip: ""
+	}
+
+	RegalDelicacy: {
+		DisplayName: Regal Delicacy
+		Tooltip: ""
+	}
+
+	RoyalDelight: {
+		DisplayName: Royal Delight
+		Tooltip: ""
+	}
+
+	SparklingHoney: {
+		DisplayName: Sparkling Honey
+		Tooltip: ""
+	}
+
+	Stardrop: {
+		DisplayName: Stardrop
+		Tooltip: ""
+	}
+
+	Whiskey: {
+		Tooltip: ""
+		DisplayName: Whiskey
+	}
+
+	Yakult: {
+		Tooltip: ""
+		DisplayName: Yakult
+	}
+
+	ChewingGum: {
+		DisplayName: Chewing Gum
+		Tooltip: ""
+	}
 }
 
 CustomMaterials: {
@@ -96,8 +146,23 @@ CustomMaterials: {
 Dialogue: {
 	Prompt: {
 		None: This is a tip
-		ColorSelector: Click this to chang selected color
-		InputButton: Click to get power to efit potion`s custom name
+		Putity: click
+		MashUp: click
+		Marks: click
+		PotionName: click
+		EditName: click
+		NameSelector: click
+		MarksSelector: click
+		SynopsisIcon: click
+		ClearAll: click
+		BrewPotion: click
+		NumberSlider: click
+		AutoUse: click
+		LockPotion: click
+		PackingPotion: click
+		HelpButton: click
+		MaterialList: click
+		PotiomList: click
 	}
 }
 

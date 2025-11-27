@@ -44,6 +44,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
             PotionCraftState = brewPotionState;
             delete = new Button(UITexture("Delete"), Color.White,brewPotionState, "Delete");
+            delete.Name = "ClearAll";
             delete.Height.Set(34, 0);
             delete.Width.Set(96, 0);
             delete.Left.Set(50, 0);
@@ -52,6 +53,7 @@ namespace PotionCraft.Content.UI.CraftUI
             BG.Append(delete);
 
             brew = new Button(UITexture("Brew"), Color.White,brewPotionState, "Brew");
+            brew.Name = "BrewPotion";
             brew.Height.Set(34, 0);
             brew.Width.Set(96, 0);
             brew.Left.Set(250, 0);
@@ -59,18 +61,22 @@ namespace PotionCraft.Content.UI.CraftUI
             brew.OnClike = brewPotionState.BrewPotion;
             BG.Append(brew);
 
-            slider = new Slider(brewPotionState,"数量");
+            slider = new Slider(brewPotionState, "数量")
+            {
+                Name = "NumberSlider",
+                onChange = () =>
+                {
+                    if (brewPotionState.PreviewPotion is not null)
+                        brewPotionState.PreviewPotion.stack = slider.value;
+                }
+            };
+            slider.text.TextColor = Deafult;
             slider.Left.Set(90, 0);
             slider.Top.Set(112, 0);
-            slider.text.TextColor = Deafult;
-            slider.onChange = () =>
-            {
-                if(brewPotionState.PreviewPotion is not null)
-                    brewPotionState.PreviewPotion.stack = slider.value;
-            };
             BG.Append(slider);
 
             autouse = new Button(Assets.UI.Icon, Color.White, new Rectangle(40,0,18,18),brewPotionState);
+            autouse.Name = "AutoUse";
             autouse.Height.Set(18, 0);
             autouse.Width.Set(18, 0);
             autouse.Left.Set(116, 0);
@@ -85,6 +91,7 @@ namespace PotionCraft.Content.UI.CraftUI
             BG.Append(autouse);
 
             potionlock = new Button(Assets.UI.Icon, Color.White, new Rectangle(62, 0, 18, 18),brewPotionState);
+            potionlock.Name = "LockPotion";
             potionlock.Height.Set(18, 0);
             potionlock.Width.Set(18, 0);
             potionlock.Left.Set(40, 0);
@@ -99,6 +106,7 @@ namespace PotionCraft.Content.UI.CraftUI
             BG.Append(potionlock);
 
             packing = new Button(Assets.UI.Icon, Color.White, new Rectangle(20, 0, 18, 18),brewPotionState);
+            packing.Name = "PackingPotion";
             packing.Height.Set(18, 0);
             packing.Width.Set(18, 0);
             packing.Left.Set(76, 0);
@@ -113,6 +121,7 @@ namespace PotionCraft.Content.UI.CraftUI
             BG.Append(packing);
 
             help = new(Assets.UI.HelpIcon, Color.White,brewPotionState);
+            help.Name = "HelpButton";
             help.Width.Set(32, 0);
             help.Height.Set(32, 0);
             help.Top.Set(240, 0);
@@ -120,7 +129,8 @@ namespace PotionCraft.Content.UI.CraftUI
             help.OnClike = () =>
             {
                 help.Value = !help.Value;
-                DialogueState.Activity = help.Value;
+                PotionCraftUI.UIstate.TryGetValue(nameof(DialogueState), out var state);
+                state.Active = !state.Active;
             };
             help.HoverTexture = Assets.UI.HelpIconActive;
             Append(help);
@@ -130,6 +140,7 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             base.Update(gameTime);
             slider.Update(gameTime);
+            brew.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

@@ -58,7 +58,6 @@ namespace PotionCraft.Content.UI.PotionTooltip
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            HandleMouseScroll();
         }
 
         public void SetPotionCraftState(BasePotion potion)

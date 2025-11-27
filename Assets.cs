@@ -69,6 +69,14 @@ namespace PotionCraft
 
             public static Asset<Texture2D> Icon => UITexture("Icon");
 
+            public static Asset<Texture2D> ItemSlot => UITexture("ItemSlot");
+
+            public static Asset<Texture2D> ItemSlotAdd => UITexture("ItemSlotAdd");
+
+            public static Asset<Texture2D> ItemSlotActive => UITexture("ItemSlotActive");
+
+            public static Asset<Texture2D> DialogueUI => UITexture("DialogueUI");
+
             public static Asset<Texture2D> ColorSelector => UITexture("ColorSelector");
 
             public static Asset<Texture2D> Input => UITexture("Input");

@@ -56,11 +56,128 @@
       "PotionUseSound": 2
     },
     {
+      "Name": "Gingerbreadman",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "TangHuLu",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "Yakult",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "Whiskey",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "ChewingGum",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1.1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "Croissant",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "PorkoftheSea",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "ResplendentDessert",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "RoyalDelight",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "RegalDelicacy",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "SliceofHellCake",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "SparklingHoney",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
+      "Name": "Stardrop",
+      "Tooltips": "",
+      "BaseType": 2,
+      "NameColor": "",
+      "ScaleSize": 1,
+      "UseStyle": 5,
+      "PotionUseSound": 2
+    },
+    {
       "Name": "Style2",
       "Tooltips": "",
       "BaseType": 3,
       "NameColor": "",
-      "ScaleSize": 1,
+      "ScaleSize": 1.1,
       "UseStyle": 5,
       "PotionUseSound": 2
     },
@@ -69,7 +186,7 @@
       "Tooltips": "",
       "BaseType": 3,
       "NameColor": "",
-      "ScaleSize": 1,
+      "ScaleSize": 1.1,
       "UseStyle": 5,
       "PotionUseSound": 2
     },
@@ -78,7 +195,7 @@
       "Tooltips": "",
       "BaseType": 3,
       "NameColor": "",
-      "ScaleSize": 1,
+      "ScaleSize": 1.1,
       "UseStyle": 5,
       "PotionUseSound": 2
     }

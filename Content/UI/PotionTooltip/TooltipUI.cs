@@ -110,7 +110,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             }
             Area.Left.Set(pos.X +x, 0); 
             Area.Top.Set(pos.Y + y, 0);
-            Active = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
+            //Active = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
             if (!Active) 
                 return;
             if (CheckPotion(ShowBasePotion, AsPotion(Main.HoverItem)))

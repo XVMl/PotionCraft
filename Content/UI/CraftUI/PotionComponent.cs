@@ -32,11 +32,13 @@ namespace PotionCraft.Content.UI.CraftUI
             Append(Area);
 
             Potion = new(brewPotionState);
+            Potion.Name = "PotiomList";
             Potion.Width.Set(290, 0);
             Potion.Height.Set(400, 0);
             Area.Append(Potion);
 
             Material = new(brewPotionState);
+            Material.Name = "MaterialList";
             Material.Width.Set(290, 0);
             Material.Height.Set(180, 0);
             Area.Append(Material);

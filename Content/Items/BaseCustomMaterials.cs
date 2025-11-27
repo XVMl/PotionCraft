@@ -42,7 +42,7 @@ public class BaseCustomMaterials : ModItem
         Item.maxStack = 9999;
         Item.useAnimation = 45;
         Item.useTime = 45;
-        Item.useStyle = ItemUseStyleID.EatFood;
+        Item.useStyle = ItemUseStyleID.None;
     }
     
     public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -54,9 +54,9 @@ public class BaseCustomMaterials : ModItem
 
     public override bool? UseItem(Player player)
     {
-        Main.NewText(Name);
-        Main.NewText(Materialdata.Name);
-        return true;
+        //    Main.NewText(Name);
+        //    Main.NewText(Materialdata.Name);
+        return false;
     }
 
     public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)

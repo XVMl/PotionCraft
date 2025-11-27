@@ -22,7 +22,7 @@ namespace PotionCraft.Content.System
     {
         private static Type[] _UIstate = [];
 
-        public static Dictionary<string,AutoUIState> UIstate = new ();
+        public static Dictionary<string, AutoUIState> UIstate = new();
 
         private static Dictionary<AutoUIState, UserInterface> keyValuePairs = new();
 
@@ -46,7 +46,7 @@ namespace PotionCraft.Content.System
                     continue;
                 _userInterface.SetState(_state);
                 _UserInterface.Add(_userInterface);
-                UIstate.Add(type.Name,_state);
+                UIstate.Add(type.Name, _state);
                 keyValuePairs[_state] = _userInterface;
             }
         }
@@ -91,19 +91,30 @@ namespace PotionCraft.Content.System
     {
         public T PotionCraftState;
 
-        public bool Active=true;
+        public bool Active = true;
 
-        public float A=1f;
+        public float A = 1f;
+
+        private string _name="";
+        public virtual string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value; 
+            }
+        }
 
         public static readonly int PurifyingCountMax = 12;
 
         public static readonly int MashUpCountMax = 14;
 
-        public static string CurrentElement="";
-
         public Vector2 SourcePotion = Vector2.Zero;
 
-        public Vector2 Range = new (50, 50);
+        public Vector2 Range = new(50, 50);
 
         public Action TransitionAnimation;
 
@@ -114,7 +125,8 @@ namespace PotionCraft.Content.System
             base.MouseOver(evt);
             if (PotionCraftState is null || !PotionCraftState.Active)
                 return;
-            CurrentElement = GetType().Name;
+            AutoUIState.CurrentElement = Name;
+            Main.NewText(AutoUIState.CurrentElement);
         }
 
         public override void MouseOut(UIMouseEvent evt)
@@ -122,7 +134,7 @@ namespace PotionCraft.Content.System
             base.MouseOut(evt);
             if (PotionCraftState is null || !PotionCraftState.Active)
                 return;
-            CurrentElement = string.Empty;
+            AutoUIState.CurrentElement = string.Empty;
         }
 
         public bool IsPotion(Item item)
@@ -167,44 +179,6 @@ namespace PotionCraft.Content.System
             return ModContent.GetInstance<BaseCustomMaterials>();
         }
 
-        public static BasePotion CloneOrCreatPotion<TE>(TE crafetstate, Item soure) where TE : AutoUIState
-        {
-            BasePotion createdPotion;
-            if (IsMaterial(soure) && Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().CanNOBasePotion)
-            {
-                Item item = new();
-                item.SetDefaults(ModContent.GetInstance<BasePotion>().Type);
-                crafetstate.CreatedPotion = item.Clone();
-                createdPotion = AsPotion(crafetstate.CreatedPotion);
-                createdPotion.DrawPotionList.Add(soure.type);
-                createdPotion.DrawCountList.Add(1);
-                createdPotion.PotionDictionary.TryAdd(Lang.GetBuffName(soure.buffType), new PotionData(
-                    Lang.GetBuffName(soure.buffType),
-                    soure.type,
-                    0,
-                    soure.buffTime,
-                    soure.buffType
-                ));
-            }
-            else
-            {
-                crafetstate.CreatedPotion = soure.Clone();
-                createdPotion = AsPotion(crafetstate.CreatedPotion);
-                createdPotion.PotionDictionary = createdPotion.PotionDictionary.ToDictionary(k => k.Key,
-                    v => new PotionData(
-                        v.Value.BuffName,
-                        v.Value.ItemId,
-                        v.Value.Counts,
-                        v.Value.BuffTime,
-                        v.Value.BuffId
-                ));
-                createdPotion.DrawPotionList = [.. createdPotion.DrawPotionList];
-                createdPotion.DrawCountList = [.. createdPotion.DrawCountList];
-            }
-            return createdPotion;
-        }
-
-
         public override void Update(GameTime gameTime)
         {
             if (!PotionCraftState.Active)
@@ -213,7 +187,7 @@ namespace PotionCraft.Content.System
             if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
 
-            
+
             TransitionAnimation?.Invoke();
             IdelAnimation?.Invoke();
 
@@ -222,16 +196,16 @@ namespace PotionCraft.Content.System
 
 
             var pos = GetDimensions().ToRectangle();
-            var 
+            var
             x = (float)(Utils.Lerp(pos.X, SourcePotion.X, 0.03d));
-            var 
+            var
             y = (float)(Utils.Lerp(pos.Y, SourcePotion.Y, 0.03d));
 
             if ((SourcePotion.X - Main.MouseScreen.X < Range.X && SourcePotion.Y - Main.MouseScreen.Y < Range.Y)
                 && (Main.MouseScreen.X - SourcePotion.X - Width.Pixels < Range.X && Main.MouseScreen.Y - SourcePotion.Y - Height.Pixels < Range.Y))
             {
-                var diff = Main.MouseScreen - new Vector2(Width.Pixels/2 , Height.Pixels/2 ) - SourcePotion;
-                var offset = Vector2.Divide(diff, new Vector2(Width.Pixels/2,Height.Pixels/2)+ Range) * Range;
+                var diff = Main.MouseScreen - new Vector2(Width.Pixels / 2, Height.Pixels / 2) - SourcePotion;
+                var offset = Vector2.Divide(diff, new Vector2(Width.Pixels / 2, Height.Pixels / 2) + Range) * Range;
                 x = (float)Utils.Lerp(pos.X, SourcePotion.X + offset.X, 0.03d);
                 y = (float)Utils.Lerp(pos.Y, SourcePotion.Y + offset.Y, 0.03d);
             }
@@ -240,30 +214,6 @@ namespace PotionCraft.Content.System
             Top.Set(y, 0);
         }
 
-        protected void HandleMouseScroll()
-        {
-            //if (Parent is null || Parent.Height.Pixels > Height.Pixels)
-            //    return;
-            
-            
-            //var value = PlayerInput.ScrollWheelValueOld - PlayerInput.ScrollWheelValue;
-            //var offset = Utils.Clamp(value,  Parent.Height.Pixels- Height.Pixels,0 );
-            //if(offset!=0)
-            //{
-            //    Main.NewText(value);
-            //    Main.NewText(offset);
-            //    Top.Set(Height.Pixels + offset*.1f,0);
-            //}
-
-            //var value = PlayerInput.ScrollWheelValueOld - PlayerInput.ScrollWheelValue;
-            //if (value!=0)
-            //{
-            //    Main.NewText(value * .1f);
-            //    Top.Set(Height.Pixels + value * .1f, 0);
-
-            //}
-
-        }
 
     }
     /// <summary>
@@ -275,9 +225,12 @@ namespace PotionCraft.Content.System
 
         public static bool ActiveState;
 
+        public static string CurrentElement = "";
+
         public float A = 1f;
 
         public static CraftUiState CraftState;
+
         public Action TransitionAnimation;
         public virtual bool Isload() => false;
 
@@ -308,7 +261,6 @@ namespace PotionCraft.Content.System
         {
             base.Update(gameTime);
             TransitionAnimation?.Invoke();
-
         }
 
         public static BasePotion AsPotion(Item item)

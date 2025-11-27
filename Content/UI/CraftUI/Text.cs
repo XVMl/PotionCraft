@@ -16,15 +16,22 @@ public class Text<T>:PotionElement<T> where T : AutoUIState
     
     private UIText _text;
 
-    private string _currentText;
+    private string _currentText="";
     
-    private string _showText;
+    private string _showText="";
 
     private int _pos;
+
+    private int count;
     public Text(T potionCraftState)
     {
         PotionCraftState = potionCraftState;
-        _text = new("");
+        _text = new("",1.2f);
+        //_text.TextColor = Color.Black;
+        _text.Left.Set(50, 0);
+        _text.Top.Set(40, 0);
+        _text.VAlign = .5f;
+        Append(_text);
         Width.Set(400,0);
         Height.Set(100,0);
     }
@@ -38,6 +45,8 @@ public class Text<T>:PotionElement<T> where T : AutoUIState
 
     public override void LeftClick(UIMouseEvent evt)
     {
+        if (_currentText.Equals(_showText)) 
+            return;
         _currentText = _showText;
         _pos = _showText.Length;
     }
@@ -45,15 +54,15 @@ public class Text<T>:PotionElement<T> where T : AutoUIState
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);
-        if (Main.GameUpdateCount % 10 == 1 && _showText != null && _pos <_showText.Length) 
+        if (count == 1 && _showText != null && _pos <_showText.Length) 
             _currentText += _showText[_pos++];
-        
+        count = (count + 1) % 8;
         _text.SetText(_currentText);
     }
-    
-    // public override void Draw(SpriteBatch spriteBatch)
-    // {
-    //     base.Draw(spriteBatch);
-    //     ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, currenttext, GetDimensions().Position(),Color.White, 0f, Vector2.Zero, Vector2.One);
-    // }
+
+    public override void Draw(SpriteBatch spriteBatch)
+    {
+        base.Draw(spriteBatch);
+        //ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, currenttext, GetDimensions().Position(), Color.White, 0f, Vector2.Zero, Vector2.One);
+    }
 }

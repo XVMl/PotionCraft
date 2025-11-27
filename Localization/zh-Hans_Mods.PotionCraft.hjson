@@ -10,27 +10,17 @@ Items: {
 	}
 
 	MagicPanacea: {
-		DisplayName: Magic Panacea
+		DisplayName: 魔法汤药
 		Tooltip: ""
 	}
 
 	Pudding: {
-		DisplayName: Pudding
+		DisplayName: 布丁
 		Tooltip: ""
 	}
 
 	Jelly: {
-		DisplayName: Jelly
-		Tooltip: ""
-	}
-
-	Violet: {
-		DisplayName: Violet
-		Tooltip: ""
-	}
-
-	Lily: {
-		DisplayName: Lily
+		DisplayName: 果冻
 		Tooltip: ""
 	}
 
@@ -50,38 +40,98 @@ Items: {
 	}
 
 	FuLu: {
-		// DisplayName: Fu Lu
+		DisplayName: 符箓
 		// Tooltip: ""
 	}
 
 	ClowCarb_1: {
-		// DisplayName: Clow Carb_1
+		DisplayName: 库洛牌
 		// Tooltip: ""
 	}
 
 	ClowCard_2: {
-		// DisplayName: Clow Card_2
+		DisplayName: 库洛牌
 		// Tooltip: ""
 	}
 
 	TarotCard: {
-		// DisplayName: Tarot Card
+		DisplayName: 塔罗牌
 		// Tooltip: ""
 	}
 
 	Croissant: {
-		// Tooltip: ""
-		// DisplayName: Croissant
+		// DisplayName: 牛角包 
+		// Tooltip: "" 
 	}
 
 	TangHuLu: {
-		// Tooltip: ""
-		// DisplayName: Tang Hu Lu
+		DisplayName: 糖葫芦
+		Tooltip: "" 
 	}
 
 	Gingerbreadman: {
+		DisplayName: 姜饼人
+		// Tooltip: "" 
+	}
+
+	Invitation: {
+		DisplayName: 邀请函
 		// Tooltip: ""
-		// DisplayName: Gingerbreadman
+	}
+
+	MonsterMeat: {
+		DisplayName: 怪物肉
+		// Tooltip: ""
+	}
+
+	PorkoftheSea: {
+		DisplayName: 海猪肉
+		// Tooltip: ""
+	}
+
+	ResplendentDessert: {
+		DisplayName: 华美甜点
+		// Tooltip: ""
+	}
+
+	SliceofHellCake: {
+		DisplayName: 地狱蛋糕块
+		// Tooltip: ""
+	}
+
+	RegalDelicacy: {
+		DisplayName: 王室美食
+		// Tooltip: ""
+	}
+
+	RoyalDelight: {
+		DisplayName: 皇家美味
+		// Tooltip: ""
+	}
+
+	SparklingHoney: {
+		DisplayName: 闪耀蜂蜜
+		// Tooltip: ""
+	}
+
+	Stardrop: {
+		DisplayName: 星之果实
+		// Tooltip: ""
+	}
+
+	Whiskey: {
+		Tooltip: 威士忌
+		// DisplayName: Whiskey
+	}
+
+	Yakult: {
+		DisplayName: 优乐乳
+		// Tooltip: ""
+	}
+
+	ChewingGum: {
+		DisplayName: 口香糖
+		// Tooltip: ""
 	}
 }
 
@@ -96,8 +146,23 @@ CustomMaterials: {
 Dialogue: {
 	Prompt: {
 		// None: This is a tip
-		// ColorSelector: Click this to chang selected color
-		// InputButton: Click to get power to efit potion`s custom name
+		// Putity: click
+		// MashUp: click
+		// Marks: click
+		// PotionName: click
+		// EditName: click
+		// NameSelector: click
+		// MarksSelector: click
+		// SynopsisIcon: click
+		// ClearAll: click
+		// BrewPotion: click
+		// NumberSlider: click
+		// AutoUse: click
+		// LockPotion: click
+		// PackingPotion: click
+		// HelpButton: click
+		// MaterialList: click
+		// PotiomList: click
 	}
 }
 

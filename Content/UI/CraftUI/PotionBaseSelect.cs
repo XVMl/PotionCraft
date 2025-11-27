@@ -6,6 +6,8 @@ using Terraria.ModLoader.UI.Elements;
 using Terraria.ModLoader;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System.AutoLoaderSystem;
+using System.Collections.Generic;
+using static PotionCraft.Assets;
 
 
 namespace PotionCraft.Content.UI.CraftUI
@@ -29,6 +31,10 @@ namespace PotionCraft.Content.UI.CraftUI
             Height.Set(400f, 0);
             List.Width.Set(342, 0);
             List.Height.Set(360, 0);
+            List.PaddingLeft = 20f;
+            List.PaddingRight = 20f;
+            List.ListPadding = 40f;
+
             Append(List);
             //TransitionAnimation = () =>
             //{
@@ -39,29 +45,62 @@ namespace PotionCraft.Content.UI.CraftUI
             //};
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            Init(this);
+            List.Update(gameTime);
+            foreach (var item in List)
+            {
+                item.Update(gameTime);
+            }
+        }
+
         public void Init(PotionBaseSelect potionBaseSelect)
         {
             if (List.Count != 0) return;
-            var item = new Item();
-            item.SetDefaults(ModContent.ItemType<BasePotion>()+10);
-            PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
-            state.Active = !state.Active;
+            var styles = new List<string>{"Style2","Style3","Style4"};
 
-            List.Add(new ItemIcon<PotionBaseSelect>(potionBaseSelect,item) { 
-                OnClick = () =>
+            styles.ForEach(style =>
+            {
+                var item = new Item();
+                ModContent.TryFind("PotionCraft", style, out ModItem modItem);
+                item.SetDefaults(modItem.Type);
+                PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
+                List.Add(new ItemIcon<PotionBaseSelect>(potionBaseSelect, item)
                 {
-                    PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
-                    BrewPotionState brewPotionState = (BrewPotionState)state;
-                    brewPotionState.CreatPotion.IconID = item.type;
-                    brewPotionState.Refresh();
-                }
+                    Name = "PotionStyle",
+                    OnClick = () =>
+                    {
+                        PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
+                        BrewPotionState brewPotionState = (BrewPotionState)state;
+                        brewPotionState.CreatPotion.IconID = item.type;
+                        brewPotionState.Refresh();
+                    }
+                });
             });
-            ModContent.GetInstance<PotionCraft>().Logger.Debug(item);
+
+            var itemicon = new ItemIcon<PotionBaseSelect>(potionBaseSelect)
+            {
+                Slot = true,
+                Name = "ItemSlot"
+            };
+            itemicon.OnClick = itemicon.AddItem;
+            List.Add(itemicon);
+
+        }
+
+        private void CustomMaterial(PotionBaseSelect potionBaseSelect)
+        {
+
+            //PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
+            //BrewPotionState brewPotionState = (BrewPotionState)state;
+            //brewPotionState.CreatPotion.IconID = item.type;
+            //brewPotionState.Refresh();
         }
 
         public void Init(PotionBaseSelect BrewPotionState,Item item)
         {
-            if (LoaderPotionOrMaterial.PotionList.ContainsValue(item.type))
+            if (LoaderPotionOrMaterial.Foods.Contains(item.Name))
             {
                 PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
                 BrewPotionState brewPotionState = (BrewPotionState)state;

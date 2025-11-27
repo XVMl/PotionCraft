@@ -45,8 +45,10 @@ namespace PotionCraft.Content.UI.CraftUI
             base.LeftClick(evt);
         }
 
+
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             if (!mouseLeft)
                 return;
             maxvalue = Utils.Clamp((int)(CaculateMoney(Main.LocalPlayer) / 1000), 1, 999);
