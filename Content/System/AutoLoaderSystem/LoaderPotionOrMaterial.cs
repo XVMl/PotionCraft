@@ -16,18 +16,15 @@ public class LoaderPotionOrMaterial:ModSystem
     public static readonly Dictionary<string,(bool,int)> BuffsList = [];
 
     public static readonly Dictionary<string, int> PotionList = [];
-    
+
     public static List<string> Terrariabuffs = [];
 
     public static List<string> Foods = new();
     
     public static bool IsFood(Item item) => item.buffType is 26 or 206 or 207;
     
-    public static bool CanEditor(Item item) => BuffsList.ContainsKey(item.Name.Replace(" ",""));
-    
     public override void PostAddRecipes()
     {
-        //var Modbuffs = typeof(BuffID).GetField("buffs", BindingFlags.Static|BindingFlags.Public|BindingFlags.FlattenHierarchy)?.GetValue(null) as IList<ModBuff>;
         var modfields = typeof(BuffID).GetFields();
         foreach (var modfield in modfields)
         {
@@ -35,9 +32,7 @@ public class LoaderPotionOrMaterial:ModSystem
             BuffsList.TryAdd(modfield.Name, (true, (int)modfield.GetValue(null)! ));
             Terrariabuffs.Add(modfield.Name);
         }
-        //foreach (var buff in Modbuffs)
-        //    BuffsList.TryAdd(buff.Name, (true, Modbuffs.IndexOf(buff)));
-        
+
         for (var i = 0; i <ItemLoader.ItemCount; i++)
         {
             Item item = new();
@@ -51,6 +46,15 @@ public class LoaderPotionOrMaterial:ModSystem
                 PotionList.TryAdd(item.Name,item.buffType);
             }
         }
+        var buffs = typeof(BuffLoader).GetField("buffs", BindingFlags.Static | BindingFlags.NonPublic)
+            .GetValue(null) as IList<ModBuff>;
+
+        for (int i = BuffID.Count; i < buffs.Count; i++)
+        {
+            ModBuff buff = buffs[i];
+            BuffsList.TryAdd(buff.Name, (true, buff.Type));
+        }
+
     }
 
 }

@@ -60,18 +60,18 @@ Items: {
 	}
 
 	Croissant: {
-		// DisplayName: 牛角包 
-		// Tooltip: "" 
+		// Tooltip: ""
+		// DisplayName: Croissant
 	}
 
 	TangHuLu: {
+		Tooltip: ""
 		DisplayName: 糖葫芦
-		Tooltip: "" 
 	}
 
 	Gingerbreadman: {
+		// Tooltip: ""
 		DisplayName: 姜饼人
-		// Tooltip: "" 
 	}
 
 	Invitation: {
@@ -125,8 +125,8 @@ Items: {
 	}
 
 	Yakult: {
-		DisplayName: 优乐乳
 		// Tooltip: ""
+		DisplayName: 优乐乳
 	}
 
 	ChewingGum: {

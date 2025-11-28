@@ -8,6 +8,7 @@ using PotionCraft.Content.Items;
 using PotionCraft.Content.System.AutoLoaderSystem;
 using System.Collections.Generic;
 using static PotionCraft.Assets;
+using Terraria.GameContent;
 
 
 namespace PotionCraft.Content.UI.CraftUI
@@ -74,6 +75,11 @@ namespace PotionCraft.Content.UI.CraftUI
                         PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
                         BrewPotionState brewPotionState = (BrewPotionState)state;
                         brewPotionState.CreatPotion.IconID = item.type;
+                        Texture2D value = TextureAssets.Item[item.type].Value;
+                        Rectangle frame = ((Main.itemAnimations[item.type] == null) ? value.Frame() : Main.itemAnimations[Item.type].GetFrame(value));
+                        var _origin = frame.Size() / 2;
+
+
                         brewPotionState.Refresh();
                     }
                 });

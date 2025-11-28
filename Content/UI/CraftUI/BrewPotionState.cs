@@ -108,7 +108,6 @@ namespace PotionCraft.Content.UI.CraftUI
                 Craft = Putify;
                 potionCrucible.Putity.Active = true;
             }
-
             PotionMaterial = new Item();
             PotionMaterial.SetDefaults(ModContent.ItemType<BasePotion>());
 
@@ -151,7 +150,7 @@ namespace PotionCraft.Content.UI.CraftUI
             potion.DrawPotionList.Add(item.type);
             potion.DrawCountList.Add(1);
             potion._Name +=
-                $"{Lang.GetBuffName(item.buffType).Replace(" ", "")} + ";    
+                $"{BuffID.Search.GetName(item.buffType).Replace(" ", "")} + ";    
             goto End;
             
             BasePotion:
@@ -177,7 +176,7 @@ namespace PotionCraft.Content.UI.CraftUI
             potion.MashUpCount++;
             item.stack--;
             if (potion.MashUpCount == 0|| potion.MashUpCount == count + 1)
-                potion._Name = $"{Lang.GetBuffName(item.buffType).Replace(" ","")} ";
+                potion._Name = $"{BuffID.Search.GetName(item.buffType).Replace(" ","")} ";
         }
 
         #endregion

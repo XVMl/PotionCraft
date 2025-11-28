@@ -11,6 +11,9 @@ using Terraria.UI;
 using Terraria.ModLoader;
 using System.Runtime.CompilerServices;
 using PotionCraft.Content.System.AutoLoaderSystem;
+using Terraria.GameContent.Creative;
+using Newtonsoft.Json.Linq;
+using Terraria.GameContent;
 
 namespace PotionCraft.Content.UI.CraftUI
 {
@@ -208,10 +211,19 @@ namespace PotionCraft.Content.UI.CraftUI
             if (LoaderPotionOrMaterial.Foods.Contains(Item.Name))
             {
                 PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
+                CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId.TryGetValue(Item.type, out var count);
                 BrewPotionState brewPotionState = (BrewPotionState)state;
                 brewPotionState.CreatPotion.Item.useStyle = Item.useStyle;
                 brewPotionState.CreatPotion.Item.UseSound = Item.UseSound;
                 brewPotionState.CreatPotion.IconID = Item.type;
+                //Main.NewText(count);
+                //Main.NewText(Item.type);
+
+                Texture2D value = TextureAssets.Item[Item.type].Value;
+                Rectangle frame = ((Main.itemAnimations[Item.type] == null) ? value.Frame() : Main.itemAnimations[Item.type].GetFrame(value));
+
+                if (count > 0)
+                    brewPotionState.CreatPotion.Frame = frame;
                 brewPotionState.Refresh();
             }
         }

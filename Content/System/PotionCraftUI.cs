@@ -126,7 +126,6 @@ namespace PotionCraft.Content.System
             if (PotionCraftState is null || !PotionCraftState.Active)
                 return;
             AutoUIState.CurrentElement = Name;
-            Main.NewText(AutoUIState.CurrentElement);
         }
 
         public override void MouseOut(UIMouseEvent evt)

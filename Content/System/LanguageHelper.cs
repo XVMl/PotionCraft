@@ -17,7 +17,6 @@ using Terraria.UI.Chat;
 using static ReLogic.Graphics.DynamicSpriteFont;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.UI.Chat;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace PotionCraft.Content.System

@@ -133,8 +133,11 @@ namespace PotionCraft.Content.UI.PotionTooltip
             //var data = WrapTextWithColors(ShowBasePotion.PotionName, linetextnum);
             var data = WrapTextWithColors_ComPact(ShowBasePotion.PotionName, linetextnum);
             var marks= WrapTextWithColors_ComPact(ShowBasePotion.Signatures, linetextnum);
+            Main.NewText(ShowBasePotion._Name);
             PotionName.SetText(data.Item1);
             PotionMarks.SetText(marks.Item1);
+
+            var buff = BuffID.Search.GetName(10);
             var textheight= FontAssets.MouseText.Value.MeasureString(data.Item1).Y;
             var marksheight = FontAssets.MouseText.Value.MeasureString(marks.Item1).Y;
             PotionMarks.Top.Set(textheight+56, 0);
