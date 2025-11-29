@@ -108,15 +108,46 @@ namespace PotionCraft.Content.UI.CraftUI
                 Craft = Putify;
                 potionCrucible.Putity.Active = true;
             }
-            PotionMaterial = new Item();
-            PotionMaterial.SetDefaults(ModContent.ItemType<BasePotion>());
-
-            Craft.Invoke(AsPotion(PotionMaterial), currentItem);
-
+            
+            InitShowingMaterial();
             Refresh();
         }
+
+        private void InitShowingMaterial()
+        {
+            PotionMaterial = new Item();
+            PotionMaterial.SetDefaults(ModContent.ItemType<BasePotion>());
+            var potion = AsPotion(PotionMaterial);
+            if (currentItem.ModItem is BasePotion p)
+            {
+                potion = p;
+                return;
+            }
+            if (PotionList.ContainsKey(currentItem.Name))
+            {
+                var name = Lang.GetBuffName(currentItem.buffType);
+                potion.PotionDictionary.TryAdd(name, new PotionData(
+                name,
+                currentItem.type,
+                1,
+                0,
+                currentItem.buffType
+                ));
+            }
+
+            if (currentItem.ModItem is MagicPanacea m)
+            {
+                potion.PotionDictionary.TryAdd(m.Name, new PotionData(
+                    m.Name,
+                    m.Item.type,
+                    1,
+                    0,
+                    1
+                ));
+            }
+        }
         
-        public void Putify(BasePotion potion,Item item)
+        public static void Putify(BasePotion potion,Item item)
         {
             foreach (var buff in potion.PotionDictionary)
             {
@@ -131,7 +162,7 @@ namespace PotionCraft.Content.UI.CraftUI
             potion._Name += "@ ";
         }
 
-        public void MashUp(BasePotion potion,Item item)
+        public static void MashUp(BasePotion potion,Item item)
         {
             var count = 0;
             if(item.ModItem is BasePotion)
@@ -141,7 +172,7 @@ namespace PotionCraft.Content.UI.CraftUI
             potion.PotionDictionary.TryAdd(name, new PotionData(
                 name,
                 item.type,
-                0,
+                1,
                 0,
                 item.buffType
             ));
@@ -320,7 +351,7 @@ namespace PotionCraft.Content.UI.CraftUI
             MashUp.Left.Set(360, 0);
             MashUp.OnClike = () =>
             {
-                brewPotionState.MashUp(brewPotionState.CreatPotion, brewPotionState.currentItem);
+                BrewPotionState.MashUp(brewPotionState.CreatPotion, brewPotionState.currentItem);
                 brewPotionState.Craft = null;
                 brewPotionState.PotionMaterial = null;
                 Putity.Active = false;
@@ -345,7 +376,7 @@ namespace PotionCraft.Content.UI.CraftUI
             Putity.Left.Set(360, 0);
             Putity.OnClike = () =>
             {
-                brewPotionState.MashUp(brewPotionState.CreatPotion, brewPotionState.currentItem);
+                BrewPotionState.MashUp(brewPotionState.CreatPotion, brewPotionState.currentItem);
                 brewPotionState.Craft = null;
                 brewPotionState.PotionMaterial = null;
                 Putity.Active = false;

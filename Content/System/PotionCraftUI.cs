@@ -185,7 +185,9 @@ namespace PotionCraft.Content.System
 
             if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
-
+            
+            if (!Active)
+                Parent.RemoveChild(this);
 
             TransitionAnimation?.Invoke();
             IdelAnimation?.Invoke();

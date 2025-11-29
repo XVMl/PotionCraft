@@ -195,6 +195,7 @@ public class Input:PotionElement<BrewPotionState>
         
         if (!string.IsNullOrEmpty(Currentvalue))
             show += $"[c/{RGBToHex(SelectColor)}:{Currentvalue}]";
+        
         Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
         Utils.DrawBorderString(spriteBatch, show, vector2,Color.White);
         if (Main.GameUpdateCount % 20U >= 10U)

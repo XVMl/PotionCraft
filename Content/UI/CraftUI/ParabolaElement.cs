@@ -1,22 +1,29 @@
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.System;
+using Terraria;
+using Terraria.UI;
 
 namespace PotionCraft.Content.UI.CraftUI;
 
 public class ParabolaElement: PotionElement<BrewPotionState>
 {
     private Vector2 startPos;
+    
     private Vector2 endPos;
     
     private Vector2 middlePos;
 
     private Func<float,float> Parabola;
 
-    public ParabolaElement(Vector2 startPos, Vector2 endPos)
+    private Item item;
+
+    public ParabolaElement(Vector2 startPos, Vector2 endPos,Item _item)
     {
         this.startPos = startPos;
         this.endPos = endPos;
+        item = _item;
         Init();
     }
 
@@ -51,5 +58,11 @@ public class ParabolaElement: PotionElement<BrewPotionState>
 
         var c = p1.Y - a * p1.X * p1.X - b * p1.X;
         return (a, b, c);
+    }
+
+    public override void Draw(SpriteBatch spriteBatch)
+    {
+        ItemSlot.Draw(spriteBatch, ref item, 21, GetDimensions().Position());
+        
     }
 }

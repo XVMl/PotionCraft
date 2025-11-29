@@ -21,7 +21,7 @@ public class LoaderPotionOrMaterial:ModSystem
 
     public static List<string> Foods = new();
     
-    public static bool IsFood(Item item) => item.buffType is 26 or 206 or 207;
+    public static bool IsFood(Item item) => ItemID.Sets.IsFood[item.type];
     
     public override void PostAddRecipes()
     {

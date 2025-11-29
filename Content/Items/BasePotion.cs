@@ -17,6 +17,7 @@ using Terraria.Localization;
 using Terraria.Audio;
 using Newtonsoft.Json.Linq;
 using Microsoft.CodeAnalysis;
+using Terraria.GameContent.Creative;
 using Terraria.UI;
 using Terraria.GameContent.Creative;
 

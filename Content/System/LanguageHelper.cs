@@ -183,9 +183,10 @@ namespace PotionCraft.Content.System
         /// <summary>
         /// 智能换行
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="length"></param>
-        /// <param name="font"></param>
+        /// <param name="text">文本</param>
+        /// <param name="length">最大长度</param>
+        /// <param name="left">已有长度</param>
+        /// <param name="font">字体</param>
         /// <returns>Item1:包含颜色的字符串；Item2：总行数</returns>
         public static (string, int) WrapTextWithColors_ComPact(string text, float length,float left=0, DynamicSpriteFont font = null)
         {
@@ -208,10 +209,18 @@ namespace PotionCraft.Content.System
                     var characterData = (SpriteCharacterData)GetCharacterData.Invoke(font, [partText[index]]);
                     var kerning = characterData.Kerning;
 
-                    if (flag)
-                        kerning.X = Math.Max(kerning.X, 0f);
-                    else
-                        zero += font.CharacterSpacing + num2;
+                    switch (flag)
+                    {
+                        case true when partText[index] != ' ':
+                            substring = substring.Remove(pos, 1);
+                            continue;
+                        case true:
+                            kerning.X = Math.Max(kerning.X, 0f);
+                            break;
+                        default:
+                            zero += font.CharacterSpacing + num2;
+                            break;
+                    }
 
                     zero += kerning.X + kerning.Y;
                     num2 = kerning.Z;
@@ -223,7 +232,8 @@ namespace PotionCraft.Content.System
                     if(!string.IsNullOrEmpty(substring[..pos]))
                         currentLine.Append($"[c/{colorCode}:{substring[..pos]}]");
                     
-                    if (index!=0 && index!=partText.Length-1 && char.IsLetter(partText[index-1])&& char.IsLetter(partText[index])&&char.IsLetter(partText[index+1]))
+                    if (char.IsLetter(partText[index]) && 
+                        index-1>=0 && char.IsLetter(partText[index-2]) && index+1 < partText.Length && char.IsLetter(partText[index+1]))
                         currentLine.Append($"[c/{colorCode}:-]");
                     
                     lines.Add(currentLine.ToString().Trim());
@@ -235,8 +245,7 @@ namespace PotionCraft.Content.System
                     zero = 0f;
                     pos = 0;
                     flag = true;
-                    //if (partText[index]!=' ')
-                        goto start;
+                    goto start;
                 }
                 currentLine.Append($"[c/{colorCode}:{substring}]");
             }
