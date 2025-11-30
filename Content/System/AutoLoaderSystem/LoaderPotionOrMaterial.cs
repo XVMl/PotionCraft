@@ -30,6 +30,8 @@ public class LoaderPotionOrMaterial:ModSystem
         {
             if (modfield.FieldType != typeof(int)) continue;
             BuffsList.TryAdd(modfield.Name, (true, (int)modfield.GetValue(null)! ));
+            if (((int)modfield.GetValue(null)>= 1 && (int)modfield.GetValue(null) <= 18) ||
+                ((int)modfield.GetValue(null) >= 104 && (int)modfield.GetValue(null) <= 124))
             Terrariabuffs.Add(modfield.Name);
         }
 

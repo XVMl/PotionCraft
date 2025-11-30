@@ -10,6 +10,7 @@ float4 PixelShaderFunction(float4 samplercolor : TEXCOORD0, float2 coords : TEXC
 {
     float3 icolor = float3(R, G, B);
     float3 color = (1 - coords.y) - coords.x * (float3(1, 1, 1) - icolor);
+    //return float4(1, 1, 1, 1);
     return float4(color, alapha);
 }
 

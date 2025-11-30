@@ -14,6 +14,7 @@ using PotionCraft.Content.System.AutoLoaderSystem;
 using Terraria.GameContent.Creative;
 using Newtonsoft.Json.Linq;
 using Terraria.GameContent;
+using System.Collections.Generic;
 
 namespace PotionCraft.Content.UI.CraftUI
 {
@@ -21,11 +22,11 @@ namespace PotionCraft.Content.UI.CraftUI
     {
         private BrewPotionState _brewPotionState;
         
-        private Button coloreelectorbutton;
+        private Button<BrewPotionState> coloreelectorbutton;
 
-        private Button _coloreelectorbutton;
+        private Button<BrewPotionState> _coloreelectorbutton;
 
-        private Button _inputbutton;
+        private Button<BrewPotionState> _inputbutton;
 
         private Input _potionname;
 
@@ -47,6 +48,8 @@ namespace PotionCraft.Content.UI.CraftUI
                 OnClick = () =>
                 {
                     PotionCraftUI.UIstate.TryGetValue(nameof(PotionBaseSelect), out var state);
+                    state.Top.Set(300, 0);
+                    state.A = 0;
                     state.Active = !state.Active;
                 }
             };
@@ -211,20 +214,45 @@ namespace PotionCraft.Content.UI.CraftUI
             if (LoaderPotionOrMaterial.Foods.Contains(Item.Name))
             {
                 PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
-                CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId.TryGetValue(Item.type, out var count);
                 BrewPotionState brewPotionState = (BrewPotionState)state;
                 brewPotionState.CreatPotion.Item.useStyle = Item.useStyle;
                 brewPotionState.CreatPotion.Item.UseSound = Item.UseSound;
                 brewPotionState.CreatPotion.IconID = Item.type;
-                //Main.NewText(count);
-                //Main.NewText(Item.type);
-
+                brewPotionState.CreatPotion.PotionUseStyle = Item.useStyle;
+                brewPotionState.CreatPotion.useAnimation = Item.useAnimation;
+                brewPotionState.CreatPotion.useTime = Item.useTime;
+                //brewPotionState.CreatPotion.Item.holdStyle = Item.holdStyle;
+                //brewPotionState.CreatPotion.PotionUseSounds = Item.UseSound;
                 Texture2D value = TextureAssets.Item[Item.type].Value;
                 Rectangle frame = ((Main.itemAnimations[Item.type] == null) ? value.Frame() : Main.itemAnimations[Item.type].GetFrame(value));
 
-                if (count > 0)
-                    brewPotionState.CreatPotion.Frame = frame;
+                //if (count > 0)
+                brewPotionState.CreatPotion.Frame = frame;
                 brewPotionState.Refresh();
+            }
+
+            if (Item.ModItem is null)
+                return;
+
+            //Main.NewText(Item.ModItem.Name);
+
+            if (JsonLoader.Materials.Contains(Item.ModItem.Name))
+            {
+                var item = new Item();
+                ModContent.TryFind("PotionCraft", Item.ModItem.Name, out ModItem modItem);
+                item.SetDefaults(modItem.Type);
+                
+                PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
+                BrewPotionState brewPotionState = (BrewPotionState)state;
+                brewPotionState.CreatPotion.Item.useStyle = item.useStyle;
+                brewPotionState.CreatPotion.Item.UseSound = item.UseSound;
+                brewPotionState.CreatPotion.IconID = item.type;
+                brewPotionState.CreatPotion.PotionUseStyle = item.useStyle;
+                brewPotionState.CreatPotion.useAnimation = item.useAnimation;
+                brewPotionState.CreatPotion.useTime = item.useTime;
+                Texture2D value = TextureAssets.Item[item.type].Value;
+                Rectangle frame = ((Main.itemAnimations[item.type] == null) ? value.Frame() : Main.itemAnimations[item.type].GetFrame(value));
+                brewPotionState.CreatPotion.Frame = frame;
             }
         }
 
@@ -236,7 +264,6 @@ namespace PotionCraft.Content.UI.CraftUI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            //spriteBatch.Draw(Assets.UI.UI1.Value, GetDimensions().ToRectangle(),new Rectangle(124,38,102,104), Color.White);
             var tex = Assets.UI.ItemSlot.Value;
             if (IsMouseHovering)
                 tex = Assets.UI.ItemSlotActive.Value;

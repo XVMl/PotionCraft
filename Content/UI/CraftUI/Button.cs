@@ -11,7 +11,7 @@ using Terraria.UI;
 
 namespace PotionCraft.Content.UI.CraftUI;
 
-public class Button : PotionElement<BrewPotionState>
+public class Button<T> : PotionElement<T> where T : AutoUIState
 {
     public Asset<Texture2D> Texture;
 
@@ -25,6 +25,8 @@ public class Button : PotionElement<BrewPotionState>
 
     public Action OnHover;
 
+    public Action OnActive;
+
     public string Text;
 
     public float Scale;
@@ -34,25 +36,27 @@ public class Button : PotionElement<BrewPotionState>
     public Color Color;
 
     public Color Iconcolor = Color.White;
-    public Button(Asset<Texture2D> texture2D ,Color color, BrewPotionState brewPotionState, string text ="",float scale=1)
+    public Button(Asset<Texture2D> texture2D ,Color color, T State, string text ="",float scale=1)
     {
         Texture  = texture2D;
-        PotionCraftState = brewPotionState;
+        PotionCraftState = State;
         this.Text = text;
         this.Color = color;
         this.Scale = scale;
         _asset = texture2D;
     }
-    public Button(Asset<Texture2D> texture2D, Color color, Rectangle rectangle, BrewPotionState brewPotionState, string text = "", float scale = 1)
+    public Button(Asset<Texture2D> texture2D, Color color, Rectangle rectangle, T State, string text = "", float scale = 1)
     {
         Texture = texture2D;
         Rectangle = rectangle;
-        PotionCraftState = brewPotionState;
+        PotionCraftState = State;
         this.Text = text;
         this.Color = color;
         this.Scale = scale;
         _asset = texture2D;
     }
+
+
     public override void LeftClick(UIMouseEvent evt)
     {
         if (!Active)

@@ -1,4 +1,5 @@
-﻿using PotionCraft.Content.System;
+﻿using log4net.Core;
+using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
 using System.Linq;
 using Terraria;
@@ -6,6 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static PotionCraft.Content.System.AutoUIState;
 
+using static PotionCraft.Content.System.LanguageHelper;
 namespace PotionCraft.Content.Items
 {
     internal class TestSwitch:ModItem
@@ -35,10 +37,15 @@ namespace PotionCraft.Content.Items
 
         public override bool? UseItem(Player player)
         {
-            player.itemAnimation = Item.useAnimation;
-            PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
-            state.Active = !state.Active;
-            ActiveState = !ActiveState;
+            Mod instance = ModContent.GetInstance<PotionCraft>();
+            var question = CreatQuestion(4);
+            instance.Logger.Debug(question);
+            //var question = "DarkMageBookMount StardustMinion @ @ @ + DarkMageBookMount + LeafCrystal @ + GlitteryButterfly @ + @ Campfire + @ WellFed2 @ @ + @ OnFire3 + @ BabyRedPanda @ @ + @ TerraFartMinecartRight @ + @ Flipper @ @ + WarTable + DD2BetsyPet + ";
+            var name = LocationTranslate(question);
+            instance.Logger.Debug(name);
+            Main.NewText(name);
+            //var text = WrapTextWithColors_ComPact(name, 300);
+            //var height = MeasureString_Cursor(text.Item1);
             return true;
         }
     }

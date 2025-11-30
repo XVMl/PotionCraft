@@ -1,5 +1,6 @@
 ﻿using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
+using PotionCraft.Content.UI.DialogueUI;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -32,6 +33,16 @@ public class Invitation:ModItem
         PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
         state.Active = !state.Active; 
         ActiveState = !ActiveState;
+        if(!state.Active)
+        {
+            ((BrewPotionState)state).InitPotion();
+            PotionCraftUI.UIstate.TryGetValue(nameof(ColorSelector), out var colorselect);
+            colorselect.Active = false;
+            PotionCraftUI.UIstate.TryGetValue(nameof(DialogueState), out var dialogue);
+            dialogue.Active = false;
+            PotionCraftUI.UIstate.TryGetValue(nameof(PotionBaseSelect), out var potionbase);
+            potionbase.Active = false;
+        }
         return true;
     }
 }

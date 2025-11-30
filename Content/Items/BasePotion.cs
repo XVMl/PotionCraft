@@ -15,11 +15,7 @@ using static PotionCraft.Assets;
 using static PotionCraft.Content.System.LanguageHelper;
 using Terraria.Localization;
 using Terraria.Audio;
-using Newtonsoft.Json.Linq;
 using Microsoft.CodeAnalysis;
-using Terraria.GameContent.Creative;
-using Terraria.UI;
-using Terraria.GameContent.Creative;
 
 namespace PotionCraft.Content.Items
 {
@@ -50,8 +46,9 @@ namespace PotionCraft.Content.Items
         /// 
         /// </summary>
         public string CustomName="";
-
-        
+        /// <summary>
+        /// 是否可以自定义名称
+        /// </summary>
         public bool CanCustomName;
         /// <summary>
         /// 精炼的次数，用于改变字体颜色
@@ -126,6 +123,11 @@ namespace PotionCraft.Content.Items
         /// </summary>
         public Rectangle Frame = Rectangle.Empty;
 
+        public int useAnimation;
+
+        public int useTime;
+
+
         public static readonly MethodInfo ItemSound = typeof(SoundID).GetMethod("ItemSound", BindingFlags.NonPublic | BindingFlags.Static, [typeof(int)]);
 
         public override void SetStaticDefaults()
@@ -144,7 +146,6 @@ namespace PotionCraft.Content.Items
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.consumable = true;
             Item.UseSound = SoundID.Item1;
-            
         }
 
         public override void SaveData(TagCompound tag)
@@ -171,7 +172,9 @@ namespace PotionCraft.Content.Items
             tag["CanCustomName"] = CanCustomName;
             tag["_Name"] = _Name;
             tag["CanEditor"] = CanEditor;
-            //tag["Farme"] = Vector4Tostirng(Frame);
+            tag["useTime"] = useTime;
+            tag["useAnimation"] = useAnimation;
+            //tag["Farme"] = RectangleTostirng(Frame);
         }
 
         public static Rectangle StringToRectangle(string s)
@@ -185,7 +188,7 @@ namespace PotionCraft.Content.Items
             return new Rectangle(ints[0], ints[1], ints[2], ints[3]);
         }
 
-        public static string RectangleTostirng(Vector4 v4) => $"{v4.X},{v4.Y},{v4.Z},{v4.W}";
+        public static string RectangleTostirng(Rectangle v4) => $"{v4.X},{v4.Y},{v4.Width},{v4.Height}";
 
         public override void LoadData(TagCompound tag)
         {
@@ -214,7 +217,12 @@ namespace PotionCraft.Content.Items
             IconID = tag.Get<int>("IconID");
             _Name = tag.GetString("_Name");
             CanEditor= tag.GetBool("CanEditor");
-            //Frame = StringToVector4(tag.GetString("Frame"));
+
+            useAnimation = tag.GetInt("useAnimation");
+            useTime = tag.GetInt("useTime");
+            Item.useAnimation = useAnimation;
+            Item.useTime = useTime;
+            //Frame = StringToRectangle(tag.GetString("Frame"));
             if (IconID == -1) IconID = Item.type;
             if (PotionUseSounds == 0) PotionUseSounds = 1;
             Item.UseSound = (SoundStyle)ItemSound.Invoke(null, [PotionUseSounds]);
@@ -228,11 +236,12 @@ namespace PotionCraft.Content.Items
             {
                 Main.instance.LoadItem(IconID);
                 var icon = TextureAssets.Item[IconID].Value;
-                var _origin = Frame.Size() / 2;
                 if (Frame.Equals(Rectangle.Empty))
                 {
-                    _origin = icon.Size()/2;
+                    Texture2D value = TextureAssets.Item[IconID].Value;
+                    Frame = ((Main.itemAnimations[IconID] == null) ? value.Frame() : Main.itemAnimations[IconID].GetFrame(value));
                 }
+                var _origin = Frame.Size() / 2;
                 spriteBatch.Draw(icon, position, Frame, Color.White, 0, _origin, scale*1.1f, SpriteEffects.None, 0);
                 return false;
             }
@@ -253,14 +262,13 @@ namespace PotionCraft.Content.Items
             {
                 Main.instance.LoadItem(IconID);
                 var icon = TextureAssets.Item[IconID].Value;
-                if (!Frame.Equals(Vector4.Zero))
+                if (Frame.Equals(Rectangle.Empty))
                 {
-                    //var rec = TextureAssets.Item[IconID].Frame((int)Frame.X, (int)Frame.Y, (int)Frame.Z, (int)Frame.W);
-                    var origin = Frame.Size() / 2;
-                    spriteBatch.Draw(icon, Item.position - Main.screenPosition,Frame, Color.White, 0, origin, scale * 1.1f, SpriteEffects.None, 0);
-                    return false;
+                    Texture2D value = TextureAssets.Item[IconID].Value;
+                    Frame = ((Main.itemAnimations[IconID] == null) ? value.Frame() : Main.itemAnimations[IconID].GetFrame(value));
                 }
-                spriteBatch.Draw(icon, Item.position - Main.screenPosition, null, Color.White, 0, icon.Size() / 2, scale*1.1f, SpriteEffects.None, 0);
+                var _origin = Frame.Size() / 2;
+                spriteBatch.Draw(icon, Item.position - Main.screenPosition, Frame, Color.White, 0, _origin, scale*1.1f, SpriteEffects.None, 0);
                 return false;
             }
             for (int i = 0; i < DrawPotionList.Count; i++)
@@ -281,12 +289,10 @@ namespace PotionCraft.Content.Items
 
         public override bool? UseItem(Player player)
         {
-            Item.useStyle = PotionUseStyle;
             foreach (var item in PotionDictionary)
             {
                 player.AddBuff(item.Value.BuffId, item.Value.BuffTime);
             }
-            Main.NewText(CustomName);
             return true;
         }
 

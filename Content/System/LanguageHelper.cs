@@ -61,12 +61,12 @@ namespace PotionCraft.Content.System
             return lang.Equals(key) ? null : lang;
         }
 
-        public static string TryGetPurifyText(int count) => PurifyColor.GetValueOrDefault(count.ToString(), Deafult_Hex)?
+        public static string TryGetPurifyText(int count) => PurifyColor.GetValueOrDefault(count.ToString(), "[c/FC1488:]")?
             .Insert(10, TryGetLanguagValue($"Craft.Purified"));
-        public static string TryGetMashUpText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), Deafult_Hex)?
+        public static string TryGetMashUpText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), "[c/02000f:]")?
             .Insert(10, TryGetLanguagValue($"Craft.MashUp"));
 
-        public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), Deafult_Hex)?
+        public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), "[c/02000f:]")?
             .Insert(10, TryGetLanguagValue($"Craft.And"));
 
         public static string TryGetBuffName(string name, bool space = false){
@@ -209,18 +209,10 @@ namespace PotionCraft.Content.System
                     var characterData = (SpriteCharacterData)GetCharacterData.Invoke(font, [partText[index]]);
                     var kerning = characterData.Kerning;
 
-                    switch (flag)
-                    {
-                        case true when partText[index] != ' ':
-                            substring = substring.Remove(pos, 1);
-                            continue;
-                        case true:
-                            kerning.X = Math.Max(kerning.X, 0f);
-                            break;
-                        default:
-                            zero += font.CharacterSpacing + num2;
-                            break;
-                    }
+                    if(flag)
+                        kerning.X = Math.Max(kerning.X, 0f);
+                    else
+                        zero += font.CharacterSpacing + num2;
 
                     zero += kerning.X + kerning.Y;
                     num2 = kerning.Z;
@@ -228,13 +220,14 @@ namespace PotionCraft.Content.System
 
                     if (zero <= length) 
                         continue;
-                    
-                    if(!string.IsNullOrEmpty(substring[..pos]))
+
+                        
+                    if (!string.IsNullOrEmpty(substring[..pos]))
                         currentLine.Append($"[c/{colorCode}:{substring[..pos]}]");
                     
-                    if (char.IsLetter(partText[index]) && 
-                        index-1>=0 && char.IsLetter(partText[index-2]) && index+1 < partText.Length && char.IsLetter(partText[index+1]))
-                        currentLine.Append($"[c/{colorCode}:-]");
+                    //if (LanguageManager.Instance.ActiveCulture.Name != "zh-Hans" && (char.IsLetter(partText[index]) && 
+                    //    index-1>=0 && char.IsLetter(partText[index-1]) || index+1 < partText.Length && char.IsLetter(partText[index+1])))
+                    //    currentLine.Append($"[c/{colorCode}:-]");
                     
                     lines.Add(currentLine.ToString().Trim());
                     substring=substring[pos..];
@@ -368,9 +361,10 @@ namespace PotionCraft.Content.System
             List<string> experssion = [];
             var random = new Random();
             var numOperands = level * random.Next(3, 5);
+            experssion.Add($"{Terrariabuffs[random.Next(0, Terrariabuffs.Count)]} ");
             for (var  i = 0; i < numOperands; i++)
             {
-                experssion.Add($"{Terrariabuffs[random.Next(0, Terrariabuffs.Count + 1)]} ");
+                experssion.Add($"{Terrariabuffs[random.Next(0, Terrariabuffs.Count)]} ");
                 experssion.Add("+ ");
             }
             var operrands = numOperands/level *(random.Next(2,3)+level);

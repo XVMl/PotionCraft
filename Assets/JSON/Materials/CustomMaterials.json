@@ -7,7 +7,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 2,
       "PotionUseSound": 2
     },
     {
@@ -16,7 +16,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 2,
       "PotionUseSound": 2
     },
     {
@@ -25,7 +25,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1.1,
-      "UseStyle": 5,
+      "UseStyle": 4,
       "PotionUseSound": 2
     },
     {
@@ -34,7 +34,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1.1,
-      "UseStyle": 5,
+      "UseStyle": 4,
       "PotionUseSound": 2
     },
     {
@@ -43,7 +43,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1.1,
-      "UseStyle": 5,
+      "UseStyle": 4,
       "PotionUseSound": 2
     },
     {
@@ -52,7 +52,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1.1,
-      "UseStyle": 5,
+      "UseStyle": 4,
       "PotionUseSound": 2
     },
     {
@@ -61,7 +61,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 2,
       "PotionUseSound": 2
     },
     {
@@ -70,7 +70,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 2,
       "PotionUseSound": 2
     },
     {
@@ -79,7 +79,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 7,
       "PotionUseSound": 2
     },
     {
@@ -88,7 +88,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 7,
       "PotionUseSound": 2
     },
     {
@@ -97,7 +97,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1.1,
-      "UseStyle": 5,
+      "UseStyle": 2,
       "PotionUseSound": 2
     },
     {
@@ -106,7 +106,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 2,
       "PotionUseSound": 2
     },
     {
@@ -115,7 +115,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 2,
       "PotionUseSound": 2
     },
     {
@@ -124,7 +124,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 2,
       "PotionUseSound": 2
     },
     {
@@ -133,7 +133,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 2,
       "PotionUseSound": 2
     },
     {
@@ -142,7 +142,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 2,
       "PotionUseSound": 2
     },
     {
@@ -151,7 +151,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 2,
       "PotionUseSound": 2
     },
     {
@@ -160,7 +160,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 2,
       "PotionUseSound": 2
     },
     {
@@ -169,7 +169,7 @@
       "BaseType": 2,
       "NameColor": "",
       "ScaleSize": 1,
-      "UseStyle": 5,
+      "UseStyle": 4,
       "PotionUseSound": 2
     },
     {
@@ -178,7 +178,7 @@
       "BaseType": 3,
       "NameColor": "",
       "ScaleSize": 1.1,
-      "UseStyle": 5,
+      "UseStyle": 7,
       "PotionUseSound": 2
     },
     {
@@ -187,7 +187,7 @@
       "BaseType": 3,
       "NameColor": "",
       "ScaleSize": 1.1,
-      "UseStyle": 5,
+      "UseStyle": 7,
       "PotionUseSound": 2
     },
     {
@@ -196,7 +196,7 @@
       "BaseType": 3,
       "NameColor": "",
       "ScaleSize": 1.1,
-      "UseStyle": 5,
+      "UseStyle": 7,
       "PotionUseSound": 2
     }
   ]

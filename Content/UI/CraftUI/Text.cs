@@ -28,8 +28,8 @@ public class Text<T>:PotionElement<T> where T : AutoUIState
         PotionCraftState = potionCraftState;
         _text = new("",1.2f);
         //_text.TextColor = Color.Black;
-        _text.Left.Set(50, 0);
-        _text.Top.Set(40, 0);
+        //_text.Left.Set(50, 0);
+        //_text.Top.Set(40, 0);
         _text.VAlign = .5f;
         Append(_text);
         Width.Set(400,0);
@@ -45,7 +45,12 @@ public class Text<T>:PotionElement<T> where T : AutoUIState
 
     public override void LeftClick(UIMouseEvent evt)
     {
-        if (_currentText.Equals(_showText)) 
+        EndLoadText();
+    }
+
+    public void EndLoadText()
+    {
+        if (_currentText.Equals(_showText))
             return;
         _currentText = _showText;
         _pos = _showText.Length;

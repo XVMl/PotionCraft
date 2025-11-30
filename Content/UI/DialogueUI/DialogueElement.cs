@@ -25,15 +25,14 @@ public class DialogueElement:PotionElement<DialogueState>
     public DialogueElement(DialogueState dialogueState)
     {
         Height.Set(176, 0);
-        Width.Set(652, 0);
+        Width.Set(626, 0);
         PotionCraftState = dialogueState;
-        TransitionAnimation = () =>
-        { 
-            var top = MathHelper.Lerp(Top.Pixels, Active ? 0 : 36, .05f);
-            Top.Set(top, 0);
-        };
+        //TransitionAnimation = () =>
+        //{ 
+        //    var top = MathHelper.Lerp(Top.Pixels, Active ? 0 : 36, .05f);
+        //    Top.Set(top, 0);
+        //};
         _dialogue =new Text<DialogueState>(dialogueState);
-        _dialogue.SetText("ASDADFMKADFM");
         Append(_dialogue);
         _dialoguearea = new UIElement();
         _dialoguearea.Width.Set(424, 0);

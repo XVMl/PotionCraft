@@ -7,6 +7,8 @@ using Terraria.ModLoader;
 using PotionCraft.Content.System.AutoLoaderSystem;
 using System.Collections.Generic;
 using Terraria.GameContent;
+using static PotionCraft.Assets;
+using PotionCraft.Content.Items;
 
 
 namespace PotionCraft.Content.UI.CraftUI
@@ -21,31 +23,31 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void OnInitialize()
         {
-            Top.Set(300, 0);
+            Top.Set(320, 0);
             Left.Set(20, 0);
             Active = false;
             A = 1;
             List = new UIGrid();
             Width.Set(342f, 0);
-            Height.Set(400f, 0);
+            Height.Set(420f, 0);
+            List.Left.Set(30, 0);
+            List.Top.Set(20, 0);
             List.Width.Set(342, 0);
-            List.Height.Set(360, 0);
+            List.Height.Set(420, 0);
             List.PaddingLeft = 20f;
-            List.PaddingRight = 20f;
             List.ListPadding = 40f;
-
             Append(List);
-            //TransitionAnimation = () =>
-            //{
-            //    Init(this);
-            //    var top = MathHelper.Lerp(Top.Pixels, Active ? 300 : 270, .05f);
-            //    A = MathHelper.Lerp(A, Active ? 1 : 0, .05f);
-            //    Top.Set(top, 0);
-            //};
+            TransitionAnimation = () =>
+            {
+                var top = MathHelper.Lerp(Top.Pixels, Active ? 320 : 300, .1f);
+                A = MathHelper.Lerp(A, Active ? 1 : 0, .05f);
+                Top.Set(top, 0);
+            };
         }
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             Init(this);
             List.Update(gameTime);
             foreach (var item in List)
@@ -57,8 +59,23 @@ namespace PotionCraft.Content.UI.CraftUI
         public void Init(PotionBaseSelect potionBaseSelect)
         {
             if (List.Count != 0) return;
+            var i = new Item();
+            i.SetDefaults(ModContent.ItemType<BasePotion>());
+            List.Add(new ItemIcon<PotionBaseSelect>(potionBaseSelect, i)
+            {
+                Name = "PotionStyle",
+                OnClick = () =>
+                {
+                    PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
+                    BrewPotionState brewPotionState = (BrewPotionState)state;
+                    brewPotionState.CreatPotion.IconID = i.type;
+                    Texture2D value = TextureAssets.Item[i.type].Value;
+                    Rectangle frame = ((Main.itemAnimations[i.type] == null) ? value.Frame() : Main.itemAnimations[i.type].GetFrame(value));
+                    brewPotionState.CreatPotion.Frame = frame;
+                    brewPotionState.Refresh();
+                }
+            });
             var styles = new List<string>{"Style2","Style3","Style4"};
-
             styles.ForEach(style =>
             {
                 var item = new Item();
@@ -75,31 +92,22 @@ namespace PotionCraft.Content.UI.CraftUI
                         brewPotionState.CreatPotion.IconID = item.type;
                         Texture2D value = TextureAssets.Item[item.type].Value;
                         Rectangle frame = ((Main.itemAnimations[item.type] == null) ? value.Frame() : Main.itemAnimations[item.type].GetFrame(value));
-                        var _origin = frame.Size() / 2;
-
-
+                        brewPotionState.CreatPotion.Frame = frame;
                         brewPotionState.Refresh();
                     }
                 });
             });
-
-            var itemicon = new ItemIcon<PotionBaseSelect>(potionBaseSelect)
+            for (int j = 0; j < 2; j++)
             {
-                Slot = true,
-                Name = "ItemSlot"
-            };
-            itemicon.OnClick = itemicon.AddItem;
-            List.Add(itemicon);
+                var itemicon = new ItemIcon<PotionBaseSelect>(potionBaseSelect)
+                {
+                    Slot = true,
+                    Name = "ItemSlot"
+                };
+                itemicon.OnClick = itemicon.AddItem;
+                List.Add(itemicon);
+            }
 
-        }
-
-        private void CustomMaterial(PotionBaseSelect potionBaseSelect)
-        {
-
-            //PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
-            //BrewPotionState brewPotionState = (BrewPotionState)state;
-            //brewPotionState.CreatPotion.IconID = item.type;
-            //brewPotionState.Refresh();
         }
 
         public void Init(PotionBaseSelect BrewPotionState,Item item)
@@ -118,9 +126,9 @@ namespace PotionCraft.Content.UI.CraftUI
         
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().ToRectangle(), new Rectangle(0, 12, 342, 12), Color.White*A);
-            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().Position(), new Rectangle(0,0,342,12),Color.White*A);
-            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().Position() + new Vector2(0,400), new Rectangle(0, 212, 342, 12), Color.White * A);
+            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().ToRectangle(), new Rectangle(0, 20, 342, 40), Color.White);
+            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().Position(), new Rectangle(0,0,342,100),Color.White);
+            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().Position() + new Vector2(0,420), new Rectangle(0, 208, 342, 16), Color.White );
             base.Draw(spriteBatch);
         }
 

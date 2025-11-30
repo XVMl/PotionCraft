@@ -42,7 +42,7 @@ public class BaseCustomMaterials : ModItem
         Item.maxStack = 9999;
         Item.useAnimation = 45;
         Item.useTime = 45;
-        Item.useStyle = ItemUseStyleID.None;
+        Item.useStyle = Materialdata.UseStyle;
     }
     
     public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -54,8 +54,6 @@ public class BaseCustomMaterials : ModItem
 
     public override bool? UseItem(Player player)
     {
-        //    Main.NewText(Name);
-        //    Main.NewText(Materialdata.Name);
         return false;
     }
 

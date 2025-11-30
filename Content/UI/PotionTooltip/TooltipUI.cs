@@ -57,7 +57,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Area.Top.Set(140f, 0f);
             Append(Area);
             PotionIngredients = new(this);
-            PotionIngredients.Top.Set(30, 0);
+            PotionIngredients.Top.Set(35, 0);
             PotionIngredients.Left.Set(50, 0);
             PotionIngredients.Width.Set(350, 0);
             PotionIngredients.Height.Set(500, 0);
@@ -113,6 +113,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             //Active = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
             if (!Active) 
                 return;
+
             if (CheckPotion(ShowBasePotion, AsPotion(Main.HoverItem)))
                 return;
             PotionIngredients.UIgrid.Clear();
@@ -133,7 +134,6 @@ namespace PotionCraft.Content.UI.PotionTooltip
             //var data = WrapTextWithColors(ShowBasePotion.PotionName, linetextnum);
             var data = WrapTextWithColors_ComPact(ShowBasePotion.PotionName, linetextnum);
             var marks= WrapTextWithColors_ComPact(ShowBasePotion.Signatures, linetextnum);
-            Main.NewText(ShowBasePotion._Name);
             PotionName.SetText(data.Item1);
             PotionMarks.SetText(marks.Item1);
 
@@ -143,7 +143,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             PotionMarks.Top.Set(textheight+56, 0);
             NameArea.Height.Set(textheight+marksheight + 75, 0);
             var count = ShowBasePotion.PotionDictionary.Count/2+1;
-            Area.Height.Set(count * 50 + 90, 0);
+            Area.Height.Set(Math.Max(400, count * 50 + 90), 0);
             PotionIngredients.Height.Set(count*50+70, 0);
             PotionIngredients.UIgrid.Height.Set(count * 50 + 70, 0);
         }
@@ -221,10 +221,10 @@ namespace PotionCraft.Content.UI.PotionTooltip
             var auto_rotation =  ShowBasePotion.AutoUse ? Main.time * .03f : 0;
             spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(129, AreaRectangle.Height - 58), new Rectangle(40, 0, 18, 18), Deafult, (float)auto_rotation, new Vector2(18,18)/2, 1, SpriteEffects.None, 0);
 
-            var packing_rectangle = ShowBasePotion.IsPackage ? new Rectangle(0, 0, 18, 18) : new Rectangle(20, 0, 18, 18); 
+            var packing_rectangle = ShowBasePotion.IsPackage ? new Rectangle(0, 0, 18, 18) : new Rectangle(22, 0, 18, 18); 
             spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(90, AreaRectangle.Height-68), packing_rectangle, Deafult);
 
-
+            
         }
     }
 }

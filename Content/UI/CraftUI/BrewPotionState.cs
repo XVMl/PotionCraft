@@ -11,6 +11,7 @@ using Terraria.ID;
 using Terraria.GameContent;
 using Terraria.UI.Chat;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
+using Humanizer;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
@@ -47,9 +48,9 @@ namespace PotionCraft.Content.UI.CraftUI
         {
             potionCrucible = new PotionCrucible(this);
             potionCrucible.HAlign = .5f;
-            potionCrucible.Top.Set(200f, 0);
+            potionCrucible.Top.Set(180f, 0);
             Append(potionCrucible);
-
+            
             potionSetting = new PotionSetting(this)
             {
                 HAlign = .5f,
@@ -58,7 +59,7 @@ namespace PotionCraft.Content.UI.CraftUI
             Append(potionSetting);
 
             PotionSynopsis = new PotionSynopsis(this);
-            PotionSynopsis.Top.Set(320, 0);
+            PotionSynopsis.Top.Set(300, 0);
             PotionSynopsis.Left.Set(370, 0);
             //PotionSynopsis.IdelAnimation = () =>
             //{
@@ -69,7 +70,7 @@ namespace PotionCraft.Content.UI.CraftUI
             Append(PotionSynopsis);
 
             potionComponent = new PotionComponent(this);
-            potionComponent.Top.Set(320, 0);
+            potionComponent.Top.Set(300, 0);
             potionComponent.Left.Set(1150, 0);
             //potionComponent.IdelAnimation = () =>
             //{
@@ -78,7 +79,14 @@ namespace PotionCraft.Content.UI.CraftUI
             //};
             Append(potionComponent);
 
-            
+            TransitionAnimation = () =>
+            {
+                var top = MathHelper.Lerp(PotionSynopsis.Top.Pixels, Active ? 320 : 300, .1f);
+                A = MathHelper.Lerp(A, Active ? 1 : 0, .05f);
+                PotionSynopsis.Top.Set(top, 0);
+                potionComponent.Top.Set(top, 0);
+                potionCrucible.Top.Set(MathHelper.Lerp(potionCrucible.Top.Pixels, Active ? 200 : 180, .1f), 0);
+            };
         }
 
         #region 操作具体方法
@@ -212,6 +220,15 @@ namespace PotionCraft.Content.UI.CraftUI
 
         #endregion
         
+        public void InitPotion()
+        {
+            PotionSynopsis.Top.Set(300, 0);
+            potionComponent.Top.Set(300, 0);
+            potionCrucible.Top.Set(180, 0);
+        }
+
+        
+
         public static void DrawCost(SpriteBatch spriteBatch,int cost,Vector2 pos)
         {
             var text2 = "";
@@ -271,6 +288,10 @@ namespace PotionCraft.Content.UI.CraftUI
             Potion.SetDefaults(ModContent.ItemType<BasePotion>());
             SetModItem.Invoke(Potion, [PreviewPotion.ModItem]);
             Potion.stack = potionSetting.slider.value;
+            Potion.useStyle = CreatPotion.Item.useStyle;
+            Potion.UseSound = CreatPotion.Item.UseSound;
+            Potion.useTime = CreatPotion.useTime;
+            Potion.useAnimation = CreatPotion.useAnimation;
             Main.LocalPlayer.GetItem(Main.LocalPlayer.whoAmI,Potion, GetItemSettings.ItemCreatedFromItemUsage);
             Main.LocalPlayer.BuyItem(1000 * potionSetting.slider.value);
             ClearAll();
@@ -322,9 +343,9 @@ namespace PotionCraft.Content.UI.CraftUI
     {
         private UIElement Crucible;
 
-        public Button MashUp;
+        public Button<BrewPotionState> MashUp;
 
-        public Button Putity;
+        public Button<BrewPotionState> Putity;
 
         private BrewPotionState BrewPotionState;
         public PotionCrucible(BrewPotionState brewPotionState)
@@ -376,7 +397,7 @@ namespace PotionCraft.Content.UI.CraftUI
             Putity.Left.Set(360, 0);
             Putity.OnClike = () =>
             {
-                BrewPotionState.MashUp(brewPotionState.CreatPotion, brewPotionState.currentItem);
+                BrewPotionState.Putify(brewPotionState.CreatPotion, brewPotionState.currentItem);
                 brewPotionState.Craft = null;
                 brewPotionState.PotionMaterial = null;
                 Putity.Active = false;
@@ -405,7 +426,7 @@ namespace PotionCraft.Content.UI.CraftUI
             if (Main.mouseItem.IsAir)
                 return;
 
-            if (!PotionList.ContainsKey(Main.mouseItem.Name))
+            if (!PotionList.ContainsKey(Main.mouseItem.Name) && Main.mouseItem.ModItem is not MagicPanacea)
                 return;
 
             BrewPotionState.AddPotion(Main.mouseItem);
@@ -417,9 +438,8 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            base.Draw(spriteBatch);
             spriteBatch.Draw(Assets.UI.Crucible, Crucible.GetDimensions().ToRectangle(), Color.White);
-
+            base.Draw(spriteBatch);
         }
 
     }

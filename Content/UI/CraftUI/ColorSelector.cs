@@ -155,7 +155,8 @@ namespace PotionCraft.Content.UI.CraftUI
             shader.TrySetParameter("B", B);
             shader.TrySetParameter("alapha", A);
             shader.Apply();
-            Main.spriteBatch.Draw(UITexture("ColorUI").Value, palette.GetDimensions().ToRectangle(),  Color.White * A);
+            Main.spriteBatch.Draw(UITexture("ColorUI").Value, palette.GetDimensions().ToRectangle(),  Color.White );
+            
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
             var color = ShaderManager.GetShader("PotionCraft.ColorVariation");
