@@ -111,7 +111,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Area.Left.Set(pos.X +x, 0); 
             Area.Top.Set(pos.Y + y, 0);
             //Active = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
-            if (!Active) 
+            if (!Active || Main.HoverItem.ModItem is not BasePotion) 
                 return;
 
             if (CheckPotion(ShowBasePotion, AsPotion(Main.HoverItem)))
@@ -131,13 +131,11 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 "en-US" => 300,
                 _ => 300,
             };
-            //var data = WrapTextWithColors(ShowBasePotion.PotionName, linetextnum);
             var data = WrapTextWithColors_ComPact(ShowBasePotion.PotionName, linetextnum);
             var marks= WrapTextWithColors_ComPact(ShowBasePotion.Signatures, linetextnum);
             PotionName.SetText(data.Item1);
             PotionMarks.SetText(marks.Item1);
 
-            var buff = BuffID.Search.GetName(10);
             var textheight= FontAssets.MouseText.Value.MeasureString(data.Item1).Y;
             var marksheight = FontAssets.MouseText.Value.MeasureString(marks.Item1).Y;
             PotionMarks.Top.Set(textheight+56, 0);
@@ -224,7 +222,6 @@ namespace PotionCraft.Content.UI.PotionTooltip
             var packing_rectangle = ShowBasePotion.IsPackage ? new Rectangle(0, 0, 18, 18) : new Rectangle(22, 0, 18, 18); 
             spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(90, AreaRectangle.Height-68), packing_rectangle, Deafult);
 
-            
         }
     }
 }

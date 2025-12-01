@@ -65,18 +65,6 @@ public class JsonLoader:ModSystem
         }
     }
 
-    public void LoadCustumSetting()
-    {
-        try
-        {
-            var path = Main.SavePath;
-
-        }
-        catch (Exception e)
-        {
-            throw;
-        }
-    }
     private static Dictionary<string, string> ArrayDictionary(Dictionary<string, object> jsonObject,string key)
     {
         if (!jsonObject.TryGetValue(key, out _)) return null;

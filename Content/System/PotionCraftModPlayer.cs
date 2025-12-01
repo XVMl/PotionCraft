@@ -43,11 +43,14 @@ public class PotionCraftModPlayer:ModPlayer
 
     public override void PostUpdate()
     {
-        base.PostUpdate();
-
+        if (Main.dedServ)
+        {
+            return;
+        }
         PotionCraftUI.UIstate.TryGetValue(nameof(TooltipUI), out var state);
         state.Active = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
-        //Main.NewText(CurrentElement);
+
+
         if (!ActiveState)
             return;
         ManagedScreenFilter distortion = ShaderManager.GetFilter("PotionCraft.GaussBlur");

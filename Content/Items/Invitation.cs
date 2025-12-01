@@ -29,6 +29,11 @@ public class Invitation:ModItem
     }
     public override bool? UseItem(Player player)
     {
+        if (Main.dedServ|| Main.LocalPlayer.whoAmI != player.whoAmI )
+        {
+            return false;
+        }
+
         player.itemAnimation = Item.useAnimation;
         PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
         state.Active = !state.Active; 

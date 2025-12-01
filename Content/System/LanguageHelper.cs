@@ -123,8 +123,6 @@ namespace PotionCraft.Content.System
             return parts;
         }
 
-        private static float CalculateWidth(string text) => FontAssets.MouseText.Value.MeasureString(DeleteTextColor_SaveString(text)).X;
-
         /// <summary>
         /// 智能换行
         /// </summary>

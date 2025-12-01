@@ -18,8 +18,6 @@ public class DialogueState:AutoUIState
 
     private DialogueSelect dialogueSelect;
 
-    public DialogueQuestion question;
-
     private Button<DialogueState> crucible;
 
     private Button<DialogueState> Hajimi;
@@ -55,18 +53,18 @@ public class DialogueState:AutoUIState
         dialogueSelect.Top.Set(270, 0);
         Append(dialogueSelect);
 
-        question = new(this);
-        question.A = 0;
-        question.Active = false;
-        question.HAlign = .5f;
-        question.TransitionAnimation = () =>
-        {
-            var top = MathHelper.Lerp(question.Top.Pixels, question.Active ? 250 : 220, .05f);
-            question.A = MathHelper.Lerp(question.A, question.Active ? 1 : 0, .05f);
-            question.Top.Set(top, 0);
-        };
-        question.Top.Set(220, 0);
-        Append(question);
+        //question = new(this);
+        //question.A = 0;
+        //question.Active = false;
+        //question.HAlign = .5f;
+        //question.TransitionAnimation = () =>
+        //{
+        //    var top = MathHelper.Lerp(question.Top.Pixels, question.Active ? 250 : 220, .05f);
+        //    question.A = MathHelper.Lerp(question.A, question.Active ? 1 : 0, .05f);
+        //    question.Top.Set(top, 0);
+        //};
+        //question.Top.Set(220, 0);
+        //Append(question);
 
         crucible = new(Assets.UI.CrucibleIcon, Color.White, this);
         crucible.Name = "CrucibleButton";
@@ -103,8 +101,7 @@ public class DialogueState:AutoUIState
             potionbase.Active = false;
 
             dialogueSelect.Active = true;
-            question.InitPreItem(4);
-
+            
         };
         Hajimi.HoverTexture = Assets.UI.HajimiIconHover;
         Append(Hajimi);
@@ -115,6 +112,6 @@ public class DialogueState:AutoUIState
     {
         base.Update(gameTime);
         dialogueElement.Update(gameTime);
-        question.Update(gameTime);
+        //question.Update(gameTime);
     }
 }

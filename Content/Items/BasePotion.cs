@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using System.Reflection;
-using PotionCraft.Content.System;
-using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
@@ -16,12 +13,14 @@ using static PotionCraft.Content.System.LanguageHelper;
 using Terraria.Localization;
 using Terraria.Audio;
 using Microsoft.CodeAnalysis;
+using System.IO;
+using System;
 
 namespace PotionCraft.Content.Items
 {
     public class BasePotion : ModItem
     {
-        public override string Texture => Path.Items + "Style1";
+        public override string Texture => Assets.Path.Items + "Style1";
         /// <summary>
         /// 将会显示的药剂名
         /// </summary>
@@ -38,37 +37,46 @@ namespace PotionCraft.Content.Items
                 };
             }
         }
+
         /// <summary>
         /// 用药水名、+和@记录的类似于后缀表达式的特殊名称，用于快速比对和本地化翻译
         /// </summary>
+        [NetSend] 
         public string _Name="";
         /// <summary>
         /// 
         /// </summary>
+        [NetSend]
         public string CustomName="";
         /// <summary>
         /// 是否可以自定义名称
         /// </summary>
+        [NetSend]
         public bool CanCustomName;
         /// <summary>
         /// 精炼的次数，用于改变字体颜色
         /// </summary>
+        [NetSend]
         public int PurifyingCount;
         /// <summary>
         /// 组合的次数，用于改变字体颜色
         /// </summary>
+        [NetSend]
         public int MashUpCount;
         /// <summary>
         /// 是否为酒类
         /// </summary>
+        [NetSend]
         public bool Wine;
         /// <summary>
         /// 是否为魔法
         /// </summary>
+        [NetSend]
         public bool Magic;
         /// <summary>
         /// 备注的文本
         /// </summary>
+        [NetSend]
         public string Signatures = "";
         /// <summary>
         /// 用于记录药剂的药水数据
@@ -89,43 +97,53 @@ namespace PotionCraft.Content.Items
         /// <summary>
         /// 用于记录药剂的基液名称
         /// </summary>
+        [NetSend]
         public string BaseName = TryGetLanguagValue("BaseName.0");
         /// <summary>
         /// 用于记录药剂的使用方式
         /// </summary>
+        [NetSend]
         public int PotionUseStyle = ItemUseStyleID.DrinkLiquid;
         /// <summary>
         /// 用于记录药剂的使用声音
         /// </summary>
+        [NetSend]
         public int PotionUseSounds = (int)PotionUseSound.Item2;
         /// <summary>
         /// 用于记录药剂是否包装
         /// </summary>
+        [NetSend]
         public bool IsPackage = true;
         /// <summary>
         /// 用于记录药剂的图标ID
         /// </summary>
+        [NetSend]
         public int IconID = ModContent.ItemType<BasePotion>();
         /// <summary>
         /// 用于记录药剂是否自动使用
         /// </summary>
+        [NetSend]
         public bool AutoUse;
         /// <summary>
         /// 用于记录可以编辑的玩家名称
         /// </summary>
-        public string EditorName;
+        [NetSend]
+        public string EditorName="";
         /// <summary>
         /// 用于记录是否可以编辑
         /// </summary>
+        [NetSend]
         public bool CanEditor;
         /// <summary>
         /// 
         /// </summary>
         public Rectangle Frame = Rectangle.Empty;
 
-        public int useAnimation;
+        [NetSend]
+        public int useAnimation=45;
 
-        public int useTime;
+        [NetSend]
+        public int useTime=45;
 
 
         public static readonly MethodInfo ItemSound = typeof(SoundID).GetMethod("ItemSound", BindingFlags.NonPublic | BindingFlags.Static, [typeof(int)]);
@@ -282,6 +300,113 @@ namespace PotionCraft.Content.Items
             return false;
         }
 
+        public override void NetSend(BinaryWriter writer)
+        {
+            foreach (var field in GetType().GetFields())
+            {
+                if (field.GetCustomAttribute<NetSend>() is null)
+                    continue;
+                var type = field.FieldType;
+                if(type == typeof(int))
+                {
+                    writer.Write((int)field.GetValue(this));
+                }
+                else if (type == typeof(string))
+                {
+                    var value = (string)field.GetValue(this);
+                    value ??= "";
+                    writer.Write(value);
+                }
+                else if (type == typeof(bool))
+                { 
+                    writer.Write((bool)field.GetValue(this));
+                }
+                Mod instance = ModContent.GetInstance<PotionCraft>();
+                instance.Logger.Debug(field.Name + " " + field.GetValue(this));
+            }
+
+
+            writer.Write(PotionDictionary.Count);
+            foreach (var item in PotionDictionary)
+            {
+                writer.Write(item.Value.BuffName);
+                writer.Write(item.Value.ItemId);
+                writer.Write(item.Value.Counts);
+                writer.Write(item.Value.BuffTime);
+                writer.Write(item.Value.BuffId);
+            }
+
+            writer.Write(DrawPotionList.Count);
+            foreach (int item in DrawPotionList)
+            {
+                writer.Write(item);
+            }
+            writer.Write(DrawCountList.Count);
+            foreach (int item in DrawCountList)
+            {
+                writer.Write(item);
+            }
+        }
+
+        public override void NetReceive(BinaryReader reader)
+        {
+            foreach (var field in GetType().GetFields())
+            {
+                if (field.GetCustomAttribute<NetSend>() is null)
+                    continue;
+
+
+                Mod instance = ModContent.GetInstance<PotionCraft>();
+                instance.Logger.Debug(field.Name);
+                var type = field.FieldType;
+                if (type == typeof(int))
+                {
+                    field.SetValue(this, reader.ReadInt32());
+                }
+                else if (type == typeof(string))
+                {
+                    field.SetValue(this, reader.ReadString());
+                }
+                else if (type == typeof(bool))
+                {
+                    field.SetValue(this, reader.ReadBoolean());
+                }
+
+            }
+
+            var count = reader.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                var BuffName = reader.ReadString();
+                var ItemID = reader.ReadInt32();
+                var Count = reader.ReadInt32();
+                var BuffTime = reader.ReadInt32();
+                var BuffId = reader.ReadInt32();
+                PotionDictionary.Add(BuffName,
+                    new PotionData(BuffName,
+                    ItemID,
+                    Count,
+                    BuffTime,
+                    BuffId
+                ));
+            }
+
+            var potionlistcount = reader.ReadInt32();
+            for (int i = 0; i < potionlistcount; i++)
+            {
+                DrawPotionList.Add(reader.ReadInt32());
+            }
+            var countlistconut = reader.ReadInt32();
+            for (int i = 0; i < countlistconut; i++)
+            {
+                DrawCountList.Add(reader.ReadInt32());
+            }
+
+            Item.useAnimation = useAnimation;
+            Item.useTime = useTime;
+            Item.useStyle = PotionUseStyle;
+        }
+
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             tooltips.Clear();
@@ -296,5 +421,20 @@ namespace PotionCraft.Content.Items
             return true;
         }
 
+    }
+
+    [AttributeUsage(AttributeTargets.Field|AttributeTargets.Property, AllowMultiple = false)]
+    public class NetSend : Attribute
+    {
+        public bool Synchronize;
+
+        public NetSend() 
+        {
+            Synchronize = true;
+        }
+        public NetSend(bool synchronize)
+        {
+            Synchronize = synchronize;
+        }
     }
 }

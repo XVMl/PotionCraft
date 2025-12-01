@@ -270,6 +270,7 @@ namespace PotionCraft.Content.System
             Mod instance = ModContent.GetInstance<PotionCraft>();
             if (item.ModItem == null)
             {
+                instance.Logger.Warn(item.Name+" "+item.type);
                 instance.Logger.Warn($"Item was erroneously casted to Potion");
             }
             return ModContent.GetInstance<BasePotion>();

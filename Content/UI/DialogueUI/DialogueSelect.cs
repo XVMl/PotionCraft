@@ -25,7 +25,7 @@ public class DialogueSelect:PotionElement<DialogueState>
 
     public void Init(DialogueState dialogueState)
     {
-        Help = new(Assets.UI.DialogueElement, Color.White, dialogueState);
+        Help = new(Assets.UI.DialogueElement, Color.White, dialogueState,"药剂示例");
         Help.Name = "HelpButton";
         Help.Width.Set(436, 0);
         Help.Height.Set(72, 0);
@@ -36,14 +36,18 @@ public class DialogueSelect:PotionElement<DialogueState>
         Help.HoverTexture = Assets.UI.DialogueElementActive;
         Append(Help);
 
-        Question = new(Assets.UI.DialogueElement, Color.White, dialogueState);
+        Question = new(Assets.UI.DialogueElement, Color.White, dialogueState,"炼药挑战");
         Question.Name = "QuestionButton";
         Question.Width.Set(436, 0);
         Question.Height.Set(72, 0);
         Question.VAlign = 1f;
         Question.OnClike = () =>
         {
-            dialogueState.question.Active = true;
+            Active = false;
+            PotionCraftUI.UIstate.TryGetValue(nameof(DialogueQuestion), out var state);
+            state.Active = true;
+
+            //dialogueState.question.Active = true;
         };
         Question.HoverTexture = Assets.UI.DialogueElementActive;
         Append(Question);

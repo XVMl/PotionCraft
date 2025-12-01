@@ -2,6 +2,7 @@ using log4net.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
+using Newtonsoft.Json.Linq;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
@@ -14,36 +15,35 @@ using static PotionCraft.Content.System.LanguageHelper;
 
 namespace PotionCraft.Content.UI.DialogueUI;
 
-public class DialogueQuestion:PotionElement<DialogueState>
+public class DialogueQuestion :AutoUIState
 {
-    private ItemIcon<DialogueState> _preview;
+    private ItemIcon<DialogueQuestion> _preview;
 
-    private ItemIcon<DialogueState> _submit;
+    private ItemIcon<DialogueQuestion> _submit;
 
-    private Text<DialogueState> _question;
+    private Text<DialogueQuestion> _question;
 
-    DialogueState DialogueState;
+    public override bool Isload() => true;
 
-    private SlotState _state = SlotState.Preview;
-
+    public override string LayersFindIndex => "Vanilla: Mouse Text";
     private enum SlotState
     {
         Preview,
         Submit,
     }
-    
-    public DialogueQuestion(DialogueState dialogueState)
+
+    public override void OnInitialize()
     {
-        PotionCraftState = dialogueState;
         Width.Set(626, 0);
         Height.Set(300, 0);
-        DialogueState DialogueState = dialogueState;
-        Init(dialogueState);
+        Active = false;
+        Init(this);
+
     }
 
-    public void Init(DialogueState dialogueState)
+    public void Init(DialogueQuestion dialogueQuestion)
     {
-        _question = new(dialogueState);
+        _question = new(dialogueQuestion);
         _question.Left.Set(30, 0);
         Append(_question);
     }
@@ -69,12 +69,18 @@ public class DialogueQuestion:PotionElement<DialogueState>
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);
-        //if (!Active)
-        //    RemoveAllChildren();
-        //else
-        //    Init(DialogueState);
-
         _question.Update(gameTime);
+
+        if(GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft)
+        {
+            Left.Set((int)(Main.MouseScreen.X ), 0);
+            Top.Set((int)(Main.MouseScreen.Y), 0);
+            //var Dvalue = GetDimensions().Position()-Main.MouseScreen;
+
+            //Left.Set((int)(Main.MouseScreen.X + Dvalue.X), 0);
+            //Top.Set((int)(Main.MouseScreen.Y + Dvalue.Y), 0);
+        }
+
     }
 
     public override void LeftClick(UIMouseEvent evt)
