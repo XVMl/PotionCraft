@@ -71,28 +71,9 @@ namespace PotionCraft.Content.System
 
         public static string TryGetBuffName(string name, bool space = false){
 
-            var lname = TryGetBuffNameText(name);
+            var lname = Lang.GetBuffName(BuffID.Search.GetId(name));
             return ColorfulTexts["BuffName"]
                 .GetValueOrDefault(name, Deafult_Hex).Insert(10, $"{lname}{(space ? " " : "")}");
-        }
-
-        public static string TryGetBuffNameText(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-                return "";
-            if (BuffsList.TryGetValue(name, out var value) && value.Item1)
-                return Lang.GetBuffName(value.Item2);
-            if (BuffsList.ContainsKey(name)&&!value.Item1)
-                return "NONE";
-            var buff = typeof(BuffID).GetField(name, BindingFlags.Static|BindingFlags.Public|BindingFlags.FlattenHierarchy);
-            if(buff is null)
-            {
-                BuffsList.TryAdd(name,(false,0));
-                return "NONE";
-            }
-            var buffid = (int)buff.GetValue(null);
-            BuffsList.TryAdd(name, (true, buffid));
-            return Lang.GetBuffName(buffid);
         }
 
         public static string LocationPotionText(string text) => TryGetLanguagValue($"Craft.{text}");
@@ -359,11 +340,21 @@ namespace PotionCraft.Content.System
             List<string> experssion = [];
             var random = new Random();
             var numOperands = level * random.Next(3, 5);
+            var record = 0;
+            var and = 0;
             experssion.Add($"{Terrariabuffs[random.Next(0, Terrariabuffs.Count)]} ");
             for (var  i = 0; i < numOperands; i++)
             {
                 experssion.Add($"{Terrariabuffs[random.Next(0, Terrariabuffs.Count)]} ");
+                if (record <= 1 && random.Next(0, 3) > 1) continue;
+                record -= 2;
                 experssion.Add("+ ");
+                and++;
+            }
+            while(and< numOperands)
+            {
+                experssion.Add("+ ");
+                and++;
             }
             var operrands = numOperands/level *(random.Next(2,3)+level);
             for (var i = 0; i < operrands; i++)
@@ -374,6 +365,7 @@ namespace PotionCraft.Content.System
         
         public static string LocationTranslate(string _name, bool bracket = true)
         {
+            
             string[] parts = _name.Split(' ');
             Stack<string> stack = new();
             var mashupconunt = 1;

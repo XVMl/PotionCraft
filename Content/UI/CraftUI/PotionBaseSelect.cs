@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Terraria.GameContent;
 using static PotionCraft.Assets;
 using PotionCraft.Content.Items;
+using Terraria.ID;
 
 
 namespace PotionCraft.Content.UI.CraftUI
@@ -112,7 +113,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public void Init(PotionBaseSelect BrewPotionState,Item item)
         {
-            if (LoaderPotionOrMaterial.Foods.Contains(item.Name))
+            if (ItemID.Sets.IsFood[item.type])
             {
                 PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
                 BrewPotionState brewPotionState = (BrewPotionState)state;

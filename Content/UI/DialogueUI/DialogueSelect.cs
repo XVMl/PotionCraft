@@ -46,8 +46,7 @@ public class DialogueSelect:PotionElement<DialogueState>
             Active = false;
             PotionCraftUI.UIstate.TryGetValue(nameof(DialogueQuestion), out var state);
             state.Active = true;
-
-            //dialogueState.question.Active = true;
+            ((DialogueQuestion)state).InitPreItem(4);
         };
         Question.HoverTexture = Assets.UI.DialogueElementActive;
         Append(Question);

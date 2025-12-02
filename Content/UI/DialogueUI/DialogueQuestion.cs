@@ -3,29 +3,54 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using Newtonsoft.Json.Linq;
+using NVorbis.Contracts;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 using static PotionCraft.Content.System.LanguageHelper;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 
 namespace PotionCraft.Content.UI.DialogueUI;
 
 public class DialogueQuestion :AutoUIState
 {
-    private ItemIcon<DialogueQuestion> _preview;
+    private ItemIcon<DialogueQuestion> _previewIcon;
 
-    private ItemIcon<DialogueQuestion> _submit;
+    private ItemIcon<DialogueQuestion> _submitIcon;
+
+    private Button<DialogueQuestion> _previewButton;
+
+    private Button<DialogueQuestion> _submitButton;
+
+    private Button<DialogueQuestion> _submit;
 
     private Text<DialogueQuestion> _question;
+
+    private Button<DialogueQuestion> _close;
+
+    private Button<DialogueQuestion> _contract;
+
+    private Button<DialogueQuestion> _zoom;
+
+    private bool compactWindos;
+
+    private float tarHeigth=406;
+
+    private Vector2 Offset = Vector2.Zero;
 
     public override bool Isload() => true;
 
     public override string LayersFindIndex => "Vanilla: Mouse Text";
+    
+    
     private enum SlotState
     {
         Preview,
@@ -35,7 +60,9 @@ public class DialogueQuestion :AutoUIState
     public override void OnInitialize()
     {
         Width.Set(626, 0);
-        Height.Set(300, 0);
+        Height.Set(450, 0);
+        Top.Set(600, 0);
+        Left.Set(350, 0);
         Active = false;
         Init(this);
 
@@ -46,23 +73,120 @@ public class DialogueQuestion :AutoUIState
         _question = new(dialogueQuestion);
         _question.Left.Set(30, 0);
         Append(_question);
+
+        _submitIcon = new ItemIcon<DialogueQuestion>(dialogueQuestion)
+        { 
+            Slot = true,
+            Name = "ItemSlot"
+        };
+        _submitIcon.Top.Set(268, 0);
+        _submitIcon.Left.Set(258, 0);
+        _submitIcon.OnClick = _submitIcon.AddItem;
+        //Append(_submitIcon);
+
+        _previewIcon = new(dialogueQuestion)
+        {
+            Name = "SynopsisIcon",
+            ExtraInformation = true,
+        };
+        _previewIcon.Top.Set(268, 0);
+        _previewIcon.Left.Set(258, 0);
+        Append(_previewIcon);
+
+        _previewButton = new(Assets.UI.Icon, Color.White, new Rectangle(98, 0, 18, 18), dialogueQuestion);
+        _previewButton.Name = "PreviewButton";
+        _previewButton.Width.Set(18, 0);
+        _previewButton.Height.Set(18, 0);
+        _previewButton.Left.Set(232, 0);
+        _previewButton.Top.Set(272, 0);
+        //_previewButton.OnClike = () =>
+        //{
+        //    _coloreelectorbutton.Active = !_coloreelectorbutton.Active;
+        //};
+        Append(_previewButton);
+
+        _submitButton = new(Assets.UI.Icon, Color.White, new Rectangle(118, 0, 18, 18), dialogueQuestion);
+        _submitButton.Name = "SubmitButton";
+        _submitButton.Width.Set(18, 0);
+        _submitButton.Height.Set(18, 0);
+        _submitButton.Left.Set(232, 0);
+        _submitButton.Top.Set(294, 0);
+        //_submitButton.OnClike = () =>
+        //{
+        //    _coloreelectorbutton.Active = !_coloreelectorbutton.Active;
+        //};
+        Append(_submitButton);
+
+        _submit = new(Assets.UI.Icon, Color.White, new Rectangle(138, 0, 18, 18), dialogueQuestion);
+        _submit.Name = "Submit";
+        _submit.Width.Set(18, 0);
+        _submit.Height.Set(18, 0);
+        _submit.Left.Set(368, 0);
+        _submit.Top.Set(352, 0);
+        //_submit.OnClike = () =>
+        //{
+        //    _coloreelectorbutton.Active = !_coloreelectorbutton.Active;
+        //};
+        Append(_submit);
+
+        _close = new(Assets.UI.Windos, Color.White, new Rectangle(0, 0, 18, 18), dialogueQuestion);
+        _close.Name = "Close";
+        _close.Width.Set(18, 0);
+        _close.Height.Set(18, 0);
+        _close.Left.Set(20, 0);
+        _close.Top.Set(20, 0);
+        _close.OnClike = () =>
+        {
+            Active = false;
+        };
+        Append(_close);
+
+        _contract = new(Assets.UI.Windos, Color.White, new Rectangle(20, 0, 18, 18), dialogueQuestion);
+        _contract.Name = "Contract";
+        _contract.Width.Set(18, 0);
+        _contract.Height.Set(18, 0);
+        _contract.Left.Set(45, 0);
+        _contract.Top.Set(20, 0);
+        _contract.OnClike = () =>
+        {
+            compactWindos = true;
+            CalculateHeight();
+        };
+        Append(_contract);
+
+        _zoom = new(Assets.UI.Windos, Color.White, new Rectangle(40, 0, 18, 18), dialogueQuestion);
+        _zoom.Name = "Zoom";
+        _zoom.Width.Set(18, 0);
+        _zoom.Height.Set(18, 0);
+        _zoom.Left.Set(70, 0);
+        _zoom.Top.Set(20, 0);
+        _zoom.OnClike = () =>
+        {
+            compactWindos = false;
+            CalculateHeight();
+        };
+        Append(_zoom);
+
     }
 
     public void InitPreItem(int level)
     {
+        if (!string.IsNullOrEmpty(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName))
+            return;
+        Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName =  CreatQuestion(level);
+        var item = new Item();
+        item = CreatePotionByName(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName);
+        _previewIcon.Item = item;
+        CalculateHeight();
+    }
+
+    public void CalculateHeight()
+    {
         var bracket = LanguageManager.Instance.ActiveCulture.Name != "zh-Hans";
-        var question =  CreatQuestion(level);
-        //var item = new Item();
-        //item.SetDefaults(ModContent.ItemType<BasePotion>());
-        //var preitem = AsPotion(item);
-        //preitem._Name = question;
-        Mod instance = ModContent.GetInstance<PotionCraft>();
-        instance.Logger.Debug(question);
-        var name = LocationTranslate(question,bracket);
-        instance.Logger.Debug(question);
-        var text = WrapTextWithColors_ComPact(name,450);
-        var height = MeasureString_Cursor(text.Item1);
-        Height.Set(200 + height.Y, 0);
+        var name = LocationTranslate(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName, bracket);
+        var text = WrapTextWithColors_ComPact(name, compactWindos ? 250 : 450);
+        var height = FontAssets.MouseText.Value.MeasureString(text.Item1).Y;
+        tarHeigth = height+250;
         _question.SetText(text.Item1);
     }
 
@@ -71,14 +195,33 @@ public class DialogueQuestion :AutoUIState
         base.Update(gameTime);
         _question.Update(gameTime);
 
-        if(GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft)
-        {
-            Left.Set((int)(Main.MouseScreen.X ), 0);
-            Top.Set((int)(Main.MouseScreen.Y), 0);
-            //var Dvalue = GetDimensions().Position()-Main.MouseScreen;
+        Width.Set(MathHelper.Lerp(Width.Pixels, compactWindos? 348 : 626, .1f), 0);
+        Height.Set(MathHelper.Lerp(Height.Pixels, tarHeigth, .1f), 0);
 
-            //Left.Set((int)(Main.MouseScreen.X + Dvalue.X), 0);
-            //Top.Set((int)(Main.MouseScreen.Y + Dvalue.Y), 0);
+        _previewIcon.Top.Set(MathHelper.Lerp(_previewIcon.Top.Pixels, Height.Pixels - 138, .1f), 0);
+        _previewIcon.Left.Set(MathHelper.Lerp(_previewIcon.Left.Pixels, compactWindos ? 120:258, .1f), 0);
+
+        _previewButton.Top.Set(MathHelper.Lerp(_previewButton.Top.Pixels, Height.Pixels - 134, .1f), 0);
+        _previewButton.Left.Set(MathHelper.Lerp(_previewButton.Left.Pixels, compactWindos ? 94 : 232, .1f), 0);
+
+        _submitButton.Top.Set(MathHelper.Lerp(_submitButton.Top.Pixels, Height.Pixels - 112, .1f), 0);
+        _submitButton.Left.Set(MathHelper.Lerp(_submitButton.Left.Pixels, compactWindos ? 94 : 232, .1f), 0);
+
+        _submit.Top.Set(MathHelper.Lerp(_submit.Top.Pixels, Height.Pixels - 54, .1f), 0);
+        _submit.Left.Set(MathHelper.Lerp(_submit.Left.Pixels, compactWindos ? 230 : 368, .1f), 0);
+
+
+        if (GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft)
+        {
+            if (Offset == Vector2.Zero)
+                Offset = Main.MouseScreen - GetDimensions().Position();
+
+            Left.Set((int)(Main.MouseScreen- Offset).X, 0);
+            Top.Set((int)(Main.MouseScreen -Offset).Y, 0);
+        }
+        else
+        {
+            Offset = Vector2.Zero;
         }
 
     }
@@ -89,37 +232,86 @@ public class DialogueQuestion :AutoUIState
         _question.EndLoadText();
     }
 
-    public static Item CreatePotionByName()
+    public Item CreatePotionByName(string name)
     {
         var item = new Item();
         item.SetDefaults(ModContent.ItemType<BasePotion>());
         var modItem = AsPotion(item);
-        var list = modItem._Name.Split(' ');
+        var list = name.Split(' ');
         var material = new Item();
+        var stack = new Stack<Dictionary<string, PotionData>>();
+
         foreach (var craft in list)
         {
             switch (craft)
             {
+                case " ":
+                case "":
+                    break;
                 case "+":
-                   BrewPotionState.MashUp(modItem,material);
+                    stack.Push(MashUp(stack.Pop(), stack.Pop()));
                     break;
                 case "@":
-                   BrewPotionState.Putify(modItem,material); 
+                    stack.Push(stack.Pop());
                     break;
                 default:
+                    BuffID.Search.TryGetId(craft, out var buffid);
                     material = new Item();
-                    material.SetDefaults(ItemID.Search.GetId(craft));
+                    material.SetDefaults(PotionWithBuffList[buffid]);
+                    var potiondata = new PotionData(craft, material.type, 1, 1, 1);
+                    stack.Push(new Dictionary<string, PotionData>
+                    {
+                        { name, potiondata }
+                    });
                     break;
             }
         }
         return item;
     }
 
+    public Dictionary<string, PotionData> MashUp(Dictionary<string, PotionData> first, Dictionary<string, PotionData>second)
+    {
+        foreach (var data in second)
+        {
+            if (first.TryGetValue(data.Key,out var value))
+            {
+                value.Counts += data.Value.Counts;
+                continue;
+            }
+            first.TryAdd(data.Key, data.Value);
+        }
+        return first;
+    }
+
+    private Dictionary<string, PotionData> Putify(Dictionary<string, PotionData> dict)
+    {
+        foreach (var data in dict)
+        {
+            data.Value.Counts *= 2;
+        }
+        return dict;
+    }
+
     public override void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(Assets.UI.Question, GetDimensions().Position(), new Rectangle(0, 0, 626, 12), Color.White);
-        spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X,(int)GetDimensions().Y+12,626, (int)Height.Pixels-12), new Rectangle(0, 20, 626, 40), Color.White);
-        spriteBatch.Draw(Assets.UI.Question, GetDimensions().Position() + new Vector2(0, 248 + Height.Pixels - 260), new Rectangle(0, 248, 626, 158), Color.White);
+        //spriteBatch.Draw(Assets.UI.Question, GetDimensions().Position(), new Rectangle(0, 0, 626, 12), Color.White);
+        //spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X,(int)GetDimensions().Y+12,626, (int)Height.Pixels-12), new Rectangle(0, 20, 626, 40), Color.White);
+        //spriteBatch.Draw(Assets.UI.Question, GetDimensions().Position() + new Vector2(0, Height.Pixels-158), new Rectangle(0, 248, 626, 158), Color.White);
+
+        spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X, (int)GetDimensions().Y, 14, 14), new Rectangle(0, 0, 14, 14), Color.White);
+        spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X+14, (int)GetDimensions().Y, (int)Width.Pixels - 28, 14), new Rectangle(14, 0, 14, 14), Color.White);
+        spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X+ (int)Width.Pixels - 14, (int)GetDimensions().Y, 14, 14), new Rectangle(612, 0, 14, 14), Color.White);
+
+        spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X, (int)GetDimensions().Y+14, 14, (int)Height.Pixels - 28), new Rectangle(0, 14, 14, 14), Color.White);
+        spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X + (int)Width.Pixels - 14, (int)GetDimensions().Y+14, 14, (int)Height.Pixels - 28), new Rectangle(612, 14, 14, 14), Color.White);
+
+        spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X, (int)GetDimensions().Y + (int)Height.Pixels - 14, 14, 14), new Rectangle(0, 392, 14, 14), Color.White);
+        spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X + 14, (int)GetDimensions().Y + (int)Height.Pixels - 14, (int)Width.Pixels - 28, 14), new Rectangle(14, 392, 14, 14), Color.White);
+        spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X + (int)Width.Pixels - 14, (int)GetDimensions().Y + (int)Height.Pixels - 14, 14, 14), new Rectangle(612, 392, 14, 14), Color.White);
+
+        spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X + 14, (int)GetDimensions().Y + 14, (int)Width.Pixels -28, (int)Height.Pixels-28), new Rectangle(14, 14, 14, 14), Color.White);
+
+
         base.Draw(spriteBatch);
 
     }

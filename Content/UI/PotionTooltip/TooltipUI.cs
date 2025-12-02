@@ -132,6 +132,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 _ => 300,
             };
             var data = WrapTextWithColors_ComPact(ShowBasePotion.PotionName, linetextnum);
+            Main.NewText(ShowBasePotion._Name);
             var marks= WrapTextWithColors_ComPact(ShowBasePotion.Signatures, linetextnum);
             PotionName.SetText(data.Item1);
             PotionMarks.SetText(marks.Item1);

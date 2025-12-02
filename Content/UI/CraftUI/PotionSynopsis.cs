@@ -15,6 +15,7 @@ using Terraria.GameContent.Creative;
 using Newtonsoft.Json.Linq;
 using Terraria.GameContent;
 using System.Collections.Generic;
+using Terraria.ID;
 
 namespace PotionCraft.Content.UI.CraftUI
 {
@@ -211,7 +212,7 @@ namespace PotionCraft.Content.UI.CraftUI
                     Item.TurnToAir();
                     break;
             }
-            if (LoaderPotionOrMaterial.Foods.Contains(Item.Name))
+            if (ItemID.Sets.IsFood[Item.type])
             {
                 PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
                 BrewPotionState brewPotionState = (BrewPotionState)state;

@@ -17,6 +17,8 @@ public class PotionCraftModPlayer:ModPlayer
 {
     public bool CanNOBasePotion = true;
 
+    public string PotionName="";
+
     public static ModKeybind PotionCraftKeybind;
 
     public static MethodInfo Helditem = typeof(Player).GetMethod(nameof(Main.LocalPlayer.HeldItem), BindingFlags.Public | BindingFlags.Instance);
