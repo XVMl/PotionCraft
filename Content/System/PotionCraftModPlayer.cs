@@ -7,6 +7,7 @@ using PotionCraft.Content.UI.PotionTooltip;
 using System;
 using System.Reflection;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static PotionCraft.Content.System.AutoUIState;

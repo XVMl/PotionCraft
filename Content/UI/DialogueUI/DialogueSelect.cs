@@ -3,8 +3,6 @@ using Microsoft.Xna.Framework;
 using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
 using Terraria;
-using Terraria.ModLoader;
-
 namespace PotionCraft.Content.UI.DialogueUI;
 
 public class DialogueSelect:PotionElement<DialogueState>
@@ -31,7 +29,11 @@ public class DialogueSelect:PotionElement<DialogueState>
         Help.Height.Set(72, 0);
         Help.OnClike = () =>
         {
-            Main.NewText("!!!!");
+            Active = false;
+            PotionCraftUI.UIstate.TryGetValue(nameof(ExamplePotion), out var state);
+            state.Active = true;
+            ExamplePotion example = (ExamplePotion)state;
+            example.Init(example);
         };
         Help.HoverTexture = Assets.UI.DialogueElementActive;
         Append(Help);

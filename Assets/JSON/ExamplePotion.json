@@ -1,0 +1,21 @@
+{
+  "Type": "Potion",
+  "Potions": [
+    {
+      "_Name": "Shine Battle +",
+      "IconID": 0,
+      "CustomName": "",
+      "CanCustomName": false,
+      "Signatures": "",
+      "CanEditor": true
+    },
+    {
+      "_Name": "Shine Battle +",
+      "IconID": 5096,
+      "CustomName": "",
+      "CanCustomName": false,
+      "Signatures": "",
+      "CanEditor": true
+    }
+  ]
+}

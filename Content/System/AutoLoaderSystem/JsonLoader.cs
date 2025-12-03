@@ -5,7 +5,6 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PotionCraft.Content.Items;
-using Terraria;
 using Terraria.ModLoader;
 using static PotionCraft.Content.System.ColorfulText.PotionColorText;
 namespace PotionCraft.Content.System.AutoLoaderSystem;
@@ -13,8 +12,6 @@ namespace PotionCraft.Content.System.AutoLoaderSystem;
 public class JsonLoader:ModSystem
 {
     public static Dictionary<string,Dictionary<string,string>> ColorfulTexts = new();
-    
-    public static List<string> Materials = new ();
 
     private string FileStreamText(string filename)
     {
@@ -28,7 +25,6 @@ public class JsonLoader:ModSystem
         foreach (var item in array)
         {
             var data = JsonConvert.DeserializeObject<MaterialData>(item.ToString());
-            Materials.Add(data.Name);
             Mod.AddContent(new BaseCustomMaterials(data));
         }
     }

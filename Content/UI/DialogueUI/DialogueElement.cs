@@ -33,6 +33,7 @@ public class DialogueElement:PotionElement<DialogueState>
         //    Top.Set(top, 0);
         //};
         _dialogue =new Text<DialogueState>(dialogueState);
+        _dialogue.Left.Set(20,0);
         Append(_dialogue);
         _dialoguearea = new UIElement();
         _dialoguearea.Width.Set(424, 0);
@@ -52,7 +53,8 @@ public class DialogueElement:PotionElement<DialogueState>
         if ((_currentElement == AutoUIState.CurrentElement)|| string.IsNullOrEmpty(AutoUIState.CurrentElement))
             return;
         var text = TryGetLanguagValue($"Dialogue.Prompt.{AutoUIState.CurrentElement}");
-        _dialogue.SetText(AutoUIState.CurrentElement);
+        
+        _dialogue.SetText(WrapTextWithColors_ComPact(text,200).Item1);
         _currentElement = AutoUIState.CurrentElement;
     }
 
@@ -60,7 +62,5 @@ public class DialogueElement:PotionElement<DialogueState>
     {
         spriteBatch.Draw(Assets.UI.DialogueUI.Value, GetDimensions().Position(), Color.White);
         base.Draw(spriteBatch);
-        //var offset = (float)Math.Abs(Math.Sin(Main.GameUpdateCount % 10))*2;
-        //spriteBatch.Draw(Assets.UI.Dialogue.Value, _dialoguearea.GetDimensions().Position()+ new Vector2(0,offset),null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
     }
 }

@@ -321,8 +321,8 @@ namespace PotionCraft.Content.Items
                 { 
                     writer.Write((bool)field.GetValue(this));
                 }
-                Mod instance = ModContent.GetInstance<PotionCraft>();
-                instance.Logger.Debug(field.Name + " " + field.GetValue(this));
+                //Mod instance = ModContent.GetInstance<PotionCraft>();
+                //instance.Logger.Debug(field.Name + " " + field.GetValue(this));
             }
 
 
@@ -356,8 +356,8 @@ namespace PotionCraft.Content.Items
                     continue;
 
 
-                Mod instance = ModContent.GetInstance<PotionCraft>();
-                instance.Logger.Debug(field.Name);
+                //Mod instance = ModContent.GetInstance<PotionCraft>();
+                //instance.Logger.Debug(field.Name);
                 var type = field.FieldType;
                 if (type == typeof(int))
                 {

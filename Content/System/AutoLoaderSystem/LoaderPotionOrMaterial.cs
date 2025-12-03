@@ -35,14 +35,7 @@ public class LoaderPotionOrMaterial:ModSystem
                 Terrariabuffs.Add(BuffID.Search.GetName(item.buffType));
             }
         }
-        var buffs = typeof(BuffLoader).GetField("buffs", BindingFlags.Static | BindingFlags.NonPublic)
-            .GetValue(null) as IList<ModBuff>;
-
-        for (int i = BuffID.Count; i < buffs.Count; i++)
-        {
-            ModBuff buff = buffs[i];
-        }
-
+        
     }
 
 

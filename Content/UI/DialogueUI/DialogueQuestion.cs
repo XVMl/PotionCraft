@@ -1,21 +1,15 @@
-using log4net.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
-using Newtonsoft.Json.Linq;
-using NVorbis.Contracts;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 using static PotionCraft.Content.System.LanguageHelper;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 
 namespace PotionCraft.Content.UI.DialogueUI;
@@ -40,6 +34,8 @@ public class DialogueQuestion :AutoUIState
 
     private Button<DialogueQuestion> _zoom;
 
+    private UIElement iElement;
+
     private bool compactWindos;
 
     private float tarHeigth=406;
@@ -49,7 +45,6 @@ public class DialogueQuestion :AutoUIState
     public override bool Isload() => true;
 
     public override string LayersFindIndex => "Vanilla: Mouse Text";
-    
     
     private enum SlotState
     {
@@ -65,13 +60,13 @@ public class DialogueQuestion :AutoUIState
         Left.Set(350, 0);
         Active = false;
         Init(this);
-
     }
 
     public void Init(DialogueQuestion dialogueQuestion)
     {
         _question = new(dialogueQuestion);
         _question.Left.Set(30, 0);
+        _question.Top.Set(20, 0);
         Append(_question);
 
         _submitIcon = new ItemIcon<DialogueQuestion>(dialogueQuestion)
@@ -167,6 +162,10 @@ public class DialogueQuestion :AutoUIState
         };
         Append(_zoom);
 
+        iElement = new();
+        iElement.Width.Set(268, 0);
+        iElement.Height.Set(10,0);
+        Append(iElement);
     }
 
     public void InitPreItem(int level)
@@ -176,6 +175,7 @@ public class DialogueQuestion :AutoUIState
         Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName =  CreatQuestion(level);
         var item = new Item();
         item = CreatePotionByName(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName);
+        
         _previewIcon.Item = item;
         CalculateHeight();
     }
@@ -185,8 +185,8 @@ public class DialogueQuestion :AutoUIState
         var bracket = LanguageManager.Instance.ActiveCulture.Name != "zh-Hans";
         var name = LocationTranslate(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName, bracket);
         var text = WrapTextWithColors_ComPact(name, compactWindos ? 250 : 450);
-        var height = FontAssets.MouseText.Value.MeasureString(text.Item1).Y;
-        tarHeigth = height+250;
+        //var height = FontAssets.MouseText.Value.MeasureString(text.Item1).Y;
+        tarHeigth = text.Item2*33 + 250;
         _question.SetText(text.Item1);
     }
 
@@ -210,6 +210,10 @@ public class DialogueQuestion :AutoUIState
         _submit.Top.Set(MathHelper.Lerp(_submit.Top.Pixels, Height.Pixels - 54, .1f), 0);
         _submit.Left.Set(MathHelper.Lerp(_submit.Left.Pixels, compactWindos ? 230 : 368, .1f), 0);
 
+        iElement.Top.Set(MathHelper.Lerp(iElement.Top.Pixels, Height.Pixels - 152, .1f), 0);
+        iElement.Left.Set(MathHelper.Lerp(iElement.Left.Pixels, compactWindos ? 32 : 170, .1f), 0);
+
+
 
         if (GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft)
         {
@@ -232,15 +236,13 @@ public class DialogueQuestion :AutoUIState
         _question.EndLoadText();
     }
 
-    public Item CreatePotionByName(string name)
+    public static Item CreatePotionByName(string name)
     {
         var item = new Item();
         item.SetDefaults(ModContent.ItemType<BasePotion>());
         var modItem = AsPotion(item);
         var list = name.Split(' ');
-        var material = new Item();
         var stack = new Stack<Dictionary<string, PotionData>>();
-
         foreach (var craft in list)
         {
             switch (craft)
@@ -252,38 +254,40 @@ public class DialogueQuestion :AutoUIState
                     stack.Push(MashUp(stack.Pop(), stack.Pop()));
                     break;
                 case "@":
-                    stack.Push(stack.Pop());
+                    stack.Push(Putify(stack.Pop()));
                     break;
                 default:
                     BuffID.Search.TryGetId(craft, out var buffid);
-                    material = new Item();
+                    Item material = new Item();
                     material.SetDefaults(PotionWithBuffList[buffid]);
-                    var potiondata = new PotionData(craft, material.type, 1, 1, 1);
+                    var potiondata = new PotionData(craft, material.type, 1, 1, material.buffType);
                     stack.Push(new Dictionary<string, PotionData>
                     {
-                        { name, potiondata }
+                        { craft, potiondata }
                     });
                     break;
             }
         }
+        modItem._Name = name;
+        modItem.PotionDictionary = stack.Pop();
         return item;
     }
 
-    public Dictionary<string, PotionData> MashUp(Dictionary<string, PotionData> first, Dictionary<string, PotionData>second)
+    public static Dictionary<string, PotionData> MashUp(Dictionary<string, PotionData> first, Dictionary<string, PotionData>second)
     {
-        foreach (var data in second)
+        foreach (var data in first)
         {
-            if (first.TryGetValue(data.Key,out var value))
+            if (second.TryGetValue(data.Key,out var value))
             {
                 value.Counts += data.Value.Counts;
                 continue;
             }
-            first.TryAdd(data.Key, data.Value);
+            second.TryAdd(data.Key, data.Value);
         }
-        return first;
+        return second;
     }
 
-    private Dictionary<string, PotionData> Putify(Dictionary<string, PotionData> dict)
+    private static Dictionary<string, PotionData> Putify(Dictionary<string, PotionData> dict)
     {
         foreach (var data in dict)
         {
@@ -294,10 +298,6 @@ public class DialogueQuestion :AutoUIState
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        //spriteBatch.Draw(Assets.UI.Question, GetDimensions().Position(), new Rectangle(0, 0, 626, 12), Color.White);
-        //spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X,(int)GetDimensions().Y+12,626, (int)Height.Pixels-12), new Rectangle(0, 20, 626, 40), Color.White);
-        //spriteBatch.Draw(Assets.UI.Question, GetDimensions().Position() + new Vector2(0, Height.Pixels-158), new Rectangle(0, 248, 626, 158), Color.White);
-
         spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X, (int)GetDimensions().Y, 14, 14), new Rectangle(0, 0, 14, 14), Color.White);
         spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X+14, (int)GetDimensions().Y, (int)Width.Pixels - 28, 14), new Rectangle(14, 0, 14, 14), Color.White);
         spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X+ (int)Width.Pixels - 14, (int)GetDimensions().Y, 14, 14), new Rectangle(612, 0, 14, 14), Color.White);
@@ -308,9 +308,9 @@ public class DialogueQuestion :AutoUIState
         spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X, (int)GetDimensions().Y + (int)Height.Pixels - 14, 14, 14), new Rectangle(0, 392, 14, 14), Color.White);
         spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X + 14, (int)GetDimensions().Y + (int)Height.Pixels - 14, (int)Width.Pixels - 28, 14), new Rectangle(14, 392, 14, 14), Color.White);
         spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X + (int)Width.Pixels - 14, (int)GetDimensions().Y + (int)Height.Pixels - 14, 14, 14), new Rectangle(612, 392, 14, 14), Color.White);
-
-        spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X + 14, (int)GetDimensions().Y + 14, (int)Width.Pixels -28, (int)Height.Pixels-28), new Rectangle(14, 14, 14, 14), Color.White);
-
+        
+        spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X + 14, (int)GetDimensions().Y + 14, (int)Width.Pixels - 28, (int)Height.Pixels - 28), new Rectangle(14, 14, 14, 14), Color.White);
+        spriteBatch.Draw(Assets.UI.Question, iElement.GetDimensions().ToRectangle(), new Rectangle(170, 252, 268, 10), Color.White);
 
         base.Draw(spriteBatch);
 

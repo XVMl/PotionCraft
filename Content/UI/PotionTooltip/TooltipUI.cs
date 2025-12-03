@@ -30,8 +30,6 @@ namespace PotionCraft.Content.UI.PotionTooltip
     {
         public override bool Isload()=> true;
         public override string LayersFindIndex => "Vanilla: Mouse Item / NPC Head";
-
-        //private bool ShowToolTip;
         
         private UIElement Area;
 
@@ -81,6 +79,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
         {
             if (oldPotion._Name != newPotion._Name) return false;
 
+            if(oldPotion.IconID != newPotion.IconID) return false;
+
             if(oldPotion.CustomName !=newPotion.CustomName) return false;
 
             if (oldPotion.Signatures != newPotion.Signatures) return false;
@@ -110,6 +110,11 @@ namespace PotionCraft.Content.UI.PotionTooltip
             }
             Area.Left.Set(pos.X +x, 0); 
             Area.Top.Set(pos.Y + y, 0);
+            
+            if (NameArea.Top.Pixels + NameArea.Height.Pixels > Main.screenHeight)
+                NameArea.Top.Set(Main.screenHeight - NameArea.Height.Pixels - 20, 0);
+            if (Area.Top.Pixels + Area.Height.Pixels > Main.screenHeight)
+                Area.Top.Set(Main.screenHeight - Area.Height.Pixels - 20, 0);
             //Active = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
             if (!Active || Main.HoverItem.ModItem is not BasePotion) 
                 return;
@@ -132,7 +137,6 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 _ => 300,
             };
             var data = WrapTextWithColors_ComPact(ShowBasePotion.PotionName, linetextnum);
-            Main.NewText(ShowBasePotion._Name);
             var marks= WrapTextWithColors_ComPact(ShowBasePotion.Signatures, linetextnum);
             PotionName.SetText(data.Item1);
             PotionMarks.SetText(marks.Item1);
@@ -145,6 +149,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Area.Height.Set(Math.Max(400, count * 50 + 90), 0);
             PotionIngredients.Height.Set(count*50+70, 0);
             PotionIngredients.UIgrid.Height.Set(count * 50 + 70, 0);
+
+            
         }
 
         public static (string,bool) GetKeybind(ModKeybind key)

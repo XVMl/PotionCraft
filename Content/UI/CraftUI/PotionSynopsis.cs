@@ -237,7 +237,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
             //Main.NewText(Item.ModItem.Name);
 
-            if (JsonLoader.Materials.Contains(Item.ModItem.Name))
+            if (Item.ModItem is BaseCustomMaterials)
             {
                 var item = new Item();
                 ModContent.TryFind("PotionCraft", Item.ModItem.Name, out ModItem modItem);
@@ -279,16 +279,6 @@ namespace PotionCraft.Content.UI.CraftUI
             if (!IsMouseHovering || !ExtraInformation) return;
             Main.LocalPlayer.mouseInterface = true;
             Main.HoverItem = Item;
-        }
-    }
-
-    public class SelectIcon : PotionElement<BrewPotionState>
-    {
-        public SelectIcon()
-        {
-            Width.Set(342, 0);
-            Height.Set(224, 0);
-            
         }
     }
 

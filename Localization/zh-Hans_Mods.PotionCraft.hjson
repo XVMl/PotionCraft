@@ -147,19 +147,19 @@ Dialogue: {
 	Prompt: {
 		// None: This is a tip
 		// Putity: click
-		// MashUp: click
-		// Marks: click
-		// PotionName: click
-		// EditName: click
-		// NameSelector: click
-		// MarksSelector: click
-		// SynopsisIcon: click
-		// ClearAll: click
-		// BrewPotion: click
-		// NumberSlider: click
-		// AutoUse: click
-		// LockPotion: click
-		// PackingPotion: click
+		MashUp: 将新药剂复合
+		Marks: 在此处为药剂添加备注或签名等
+		PotionName: 自定义药剂的文本
+		EditName: 为药剂添加自定义名称
+		NameSelector: 打开颜色选择器
+		MarksSelector: 打开颜色选择器
+		SynopsisIcon: 更换药剂的图标，使用方式，声音等
+		ClearAll: 废除当前的药剂
+		BrewPotion: 调配药剂
+		NumberSlider: 滑动以改变调制的数量
+		AutoUse: 开启后会在你重生时自动使用
+		LockPotion: 开启后其他玩家无法查看，编辑此药剂
+		PackingPotion: 开启后包装此药剂
 		// HelpButton: click
 		// MaterialList: click
 		// PotiomList: click

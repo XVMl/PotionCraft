@@ -12,6 +12,7 @@ using Terraria.GameContent;
 using Terraria.UI.Chat;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 using Humanizer;
+using System.Collections.Generic;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
@@ -44,6 +45,8 @@ namespace PotionCraft.Content.UI.CraftUI
 
         //private PotionBaseSelect potionBaseSelect;
 
+        private List<MovementElement> movementList=new();
+
         public override void OnInitialize()
         {
             potionCrucible = new PotionCrucible(this);
@@ -61,22 +64,11 @@ namespace PotionCraft.Content.UI.CraftUI
             PotionSynopsis = new PotionSynopsis(this);
             PotionSynopsis.Top.Set(300, 0);
             PotionSynopsis.Left.Set(370, 0);
-            //PotionSynopsis.IdelAnimation = () =>
-            //{
-            //    PotionSynopsis.Top.Set(PotionSynopsis.Top.Pixels +
-            //        (float)(.51 * Math.Sin(Math.PI / 150 * Main.time)), 0);
-            //};
-            //PotionSynopsis.SourcePotion = new Vector2(PotionSynopsis.Left.Pixels, PotionSynopsis.Top.Pixels);
             Append(PotionSynopsis);
 
             potionComponent = new PotionComponent(this);
             potionComponent.Top.Set(300, 0);
             potionComponent.Left.Set(1150, 0);
-            //potionComponent.IdelAnimation = () =>
-            //{
-            //    potionComponent.Top.Set(potionComponent.Top.Pixels +
-            //        (float)(.41 * Math.Sin(Math.PI / 154 * Main.time)), 0);
-            //};
             Append(potionComponent);
 
             TransitionAnimation = () =>
@@ -154,7 +146,7 @@ namespace PotionCraft.Content.UI.CraftUI
                 ));
             }
         }
-        
+
         public static void Putify(BasePotion potion,Item item)
         {
             foreach (var buff in potion.PotionDictionary)
@@ -227,7 +219,13 @@ namespace PotionCraft.Content.UI.CraftUI
             potionCrucible.Top.Set(180, 0);
         }
 
-        
+        public override void LeftClick(UIMouseEvent evt)
+        {
+            base.LeftClick(evt);
+            movementList.Add(new MovementElement(Main.MouseScreen, potionCrucible.GetDimensions().Center()
+                , Main.HoverItem, (x) => { return x; }));
+        }
+
 
         public static void DrawCost(SpriteBatch spriteBatch,int cost,Vector2 pos)
         {
@@ -330,6 +328,16 @@ namespace PotionCraft.Content.UI.CraftUI
             potionComponent.Update(gameTime);
             potionCrucible.Update(gameTime);
             //potionBaseSelect.Update(gameTime);
+            foreach (var element in movementList)
+            {
+                if(element.CheckEnd)
+                {
+                    movementList.Remove(element);
+                    continue;
+                }
+                element.Update();
+            }
+
         }
         
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -337,109 +345,36 @@ namespace PotionCraft.Content.UI.CraftUI
             base.DrawSelf(spriteBatch);
         }
 
-    }
-
-    public class PotionCrucible : PotionElement<BrewPotionState>
-    {
-        private UIElement Crucible;
-
-        public Button<BrewPotionState> MashUp;
-
-        public Button<BrewPotionState> Putity;
-
-        private BrewPotionState BrewPotionState;
-        public PotionCrucible(BrewPotionState brewPotionState)
+        public class MovementElement
         {
-            BrewPotionState = brewPotionState;
-            PotionCraftState = brewPotionState;
-            Height.Set(400, 0);
-            Width.Set(400, 0);
-            Crucible = new UIElement();
-            Crucible.Width.Set(384, 0);
-            Crucible.Height.Set(234, 0);
-            Crucible.Top.Set(250, 0);
-            Crucible.HAlign = .5f;
-            Append(Crucible);
+            private Vector2 startPos;
 
-            MashUp = new(Assets.UI.HelpIcon, Color.White, brewPotionState)
+            private Vector2 endPos;
+
+            private Vector2 middlePos;
+
+            private Vector2 Position;
+
+            private Func<float, float> movement;
+
+            private Item item;
+
+            public MovementElement(Vector2 startPos, Vector2 endPos, Item _item, Func<float, float> movement)
             {
-                Name = "MashUp",
-                Active = false
-            };
-            MashUp.Width.Set(32, 0);
-            MashUp.Height.Set(32, 0);
-            MashUp.Top.Set(160, 0);
-            MashUp.Left.Set(360, 0);
-            MashUp.OnClike = () =>
+                this.startPos = startPos;
+                this.endPos = endPos;
+                item = _item;
+                this.movement = movement;
+            }
+
+
+            public bool CheckEnd => Position == endPos;
+
+            public void Update()
             {
-                BrewPotionState.MashUp(brewPotionState.CreatPotion, brewPotionState.currentItem);
-                brewPotionState.Craft = null;
-                brewPotionState.PotionMaterial = null;
-                Putity.Active = false;
-                MashUp.Active = false;
-                brewPotionState.Refresh();
-            };
-            MashUp.TransitionAnimation = () =>
-            {
-                MashUp.A = MathHelper.Lerp(MashUp.A, MashUp.Active ? 1 : .7f, .05f);
-            };
-            MashUp.HoverTexture = Assets.UI.HelpIconActive;
-            Append(MashUp);
+                
+            }
 
-            Putity = new(Assets.UI.HelpIcon, Color.White, brewPotionState)
-            {
-                Name = "Putity",
-                Active = false
-            };
-            Putity.Width.Set(32, 0);
-            Putity.Height.Set(32, 0);
-            Putity.Top.Set(200, 0);
-            Putity.Left.Set(360, 0);
-            Putity.OnClike = () =>
-            {
-                BrewPotionState.Putify(brewPotionState.CreatPotion, brewPotionState.currentItem);
-                brewPotionState.Craft = null;
-                brewPotionState.PotionMaterial = null;
-                Putity.Active = false;
-                MashUp.Active = false;
-                brewPotionState.Refresh();
-            };
-            Putity.TransitionAnimation = () =>
-            {
-                Putity.A = MathHelper.Lerp(Putity.A, Putity.Active ? 1 : .7f, .05f);
-            };
-            Putity.HoverTexture = Assets.UI.HelpIconActive;
-            Append(Putity);
-
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-            MashUp.Update(gameTime);
-            Putity.Update(gameTime);
-        }
-
-        public override void LeftClick(UIMouseEvent evt)
-        {
-            if (!PotionCraftState.Active) return;
-            if (Main.mouseItem.IsAir)
-                return;
-
-            if (!PotionList.ContainsKey(Main.mouseItem.Name) && Main.mouseItem.ModItem is not MagicPanacea)
-                return;
-
-            BrewPotionState.AddPotion(Main.mouseItem);
-            Main.LocalPlayer.HeldItem.TurnToAir();
-            Main.mouseItem.TurnToAir();
-            
-        }
-
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(Assets.UI.Crucible, Crucible.GetDimensions().ToRectangle(), Color.White);
-            base.Draw(spriteBatch);
         }
 
     }
