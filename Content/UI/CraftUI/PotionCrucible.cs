@@ -5,6 +5,9 @@ using Terraria.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class PotionCrucible : PotionElement<BrewPotionState>
@@ -16,6 +19,9 @@ namespace PotionCraft.Content.UI.CraftUI
         public Button<BrewPotionState> Putity;
 
         private BrewPotionState BrewPotionState;
+
+        private List<MovementElement> movementList = new();
+
         public PotionCrucible(BrewPotionState brewPotionState)
         {
             BrewPotionState = brewPotionState;
@@ -86,6 +92,16 @@ namespace PotionCraft.Content.UI.CraftUI
             base.Update(gameTime);
             MashUp.Update(gameTime);
             Putity.Update(gameTime);
+            for (int i = 0; i < movementList.Count; i++)
+            {
+                MovementElement element = movementList[i];
+                if (element.CheckEnd)
+                {
+                    movementList.Remove(element);
+                    continue;
+                }
+                element.Update();
+            }
         }
 
         public override void LeftClick(UIMouseEvent evt)
@@ -93,7 +109,8 @@ namespace PotionCraft.Content.UI.CraftUI
             if (!PotionCraftState.Active) return;
             if (Main.mouseItem.IsAir)
                 return;
-
+            movementList.Add(new MovementElement(Main.MouseScreen, GetDimensions().Center()
+                , Main.mouseItem));
             if (!PotionList.ContainsKey(Main.mouseItem.Name) && Main.mouseItem.ModItem is not MagicPanacea)
                 return;
 
@@ -106,9 +123,71 @@ namespace PotionCraft.Content.UI.CraftUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            foreach (var element in movementList)
+            {
+                element.Draw(spriteBatch);
+            }
             spriteBatch.Draw(Assets.UI.Crucible, Crucible.GetDimensions().ToRectangle(), Color.White);
+            
             base.Draw(spriteBatch);
         }
+
+
+        public class MovementElement
+        {
+            private Vector2 startPos;
+
+            private Vector2 endPos;
+
+            private Vector2 position;
+
+            private Func<float, float> movement;
+
+            public Item item;
+
+            private int time = 0;
+
+            public MovementElement(Vector2 startPos, Vector2 endPos, Item _item)
+            {
+                this.startPos = startPos;
+                position = startPos;
+                this.endPos = endPos;
+                item = _item;
+                Main.NewText((int)Math.Sqrt((endPos.Y - startPos.Y) / 0.03f));
+            }
+
+            public bool CheckEnd => time == (int)Math.Sqrt((endPos.Y - startPos.Y) /0.03f);
+
+            public void Update()
+            {
+                time++;
+                //Main.NewText((endPos.X - startPos.X) * time / 100);
+                //position.X = startPos.X + (endPos.X - startPos.X) * time / 100;
+                //position.Y = movement.Invoke(position.X);
+                //position.X = MathHelper.Lerp(position.X, endPos.X, .1f);
+                position.Y = startPos.Y + time * time * .03f;
+                //position.Y = movement.Invoke(position.X);
+            }
+
+            public static (float a, float b, float c) CalculateParabolaCoefficients(Vector2 p1, Vector2 p2, Vector2 p3)
+            {
+                var b = ((p1.Y - p3.Y) * (p1.X * p1.X - p2.X * p2.X) - (p1.Y - p2.Y) * (p1.X * p1.X - p3.X * p3.X)) /
+                        ((p1.X - p3.X) * (p1.X * p1.X - p2.X * p2.X) - (p1.X - p2.X) * (p1.X * p2.X - p3.X * p3.X));
+
+                var a = ((p1.Y - p2.Y) - b * (p1.X - p2.X)) / (p1.X * p1.X - p2.X * p2.X);
+
+                var c = p1.Y - a * p1.X * p1.X - b * p1.X;
+                return (a, b, c);
+            }
+
+            public void Draw(SpriteBatch spriteBatch)
+            {
+                Main.inventoryScale = 2.030f;
+                ItemSlot.Draw(spriteBatch, ref item, 21, position);
+            }
+
+        }
+
 
     }
 

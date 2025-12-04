@@ -13,6 +13,7 @@ using Terraria.UI.Chat;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 using Humanizer;
 using System.Collections.Generic;
+using Luminance.Common.Utilities;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState
@@ -45,8 +46,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
         //private PotionBaseSelect potionBaseSelect;
 
-        private List<MovementElement> movementList=new();
-
+       
         public override void OnInitialize()
         {
             potionCrucible = new PotionCrucible(this);
@@ -219,13 +219,7 @@ namespace PotionCraft.Content.UI.CraftUI
             potionCrucible.Top.Set(180, 0);
         }
 
-        public override void LeftClick(UIMouseEvent evt)
-        {
-            base.LeftClick(evt);
-            movementList.Add(new MovementElement(Main.MouseScreen, potionCrucible.GetDimensions().Center()
-                , Main.HoverItem, (x) => { return x; }));
-        }
-
+        
 
         public static void DrawCost(SpriteBatch spriteBatch,int cost,Vector2 pos)
         {
@@ -323,59 +317,24 @@ namespace PotionCraft.Content.UI.CraftUI
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            if (IsMouseHovering)
+                Main.LocalPlayer.mouseInterface = true;
+
             PotionSynopsis.Update(gameTime);
             potionSetting.Update(gameTime);
             potionComponent.Update(gameTime);
             potionCrucible.Update(gameTime);
-            //potionBaseSelect.Update(gameTime);
-            foreach (var element in movementList)
-            {
-                if(element.CheckEnd)
-                {
-                    movementList.Remove(element);
-                    continue;
-                }
-                element.Update();
-            }
+            
 
         }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+            
+        }
+
         
-        protected override void DrawSelf(SpriteBatch spriteBatch)
-        {
-            base.DrawSelf(spriteBatch);
-        }
-
-        public class MovementElement
-        {
-            private Vector2 startPos;
-
-            private Vector2 endPos;
-
-            private Vector2 middlePos;
-
-            private Vector2 Position;
-
-            private Func<float, float> movement;
-
-            private Item item;
-
-            public MovementElement(Vector2 startPos, Vector2 endPos, Item _item, Func<float, float> movement)
-            {
-                this.startPos = startPos;
-                this.endPos = endPos;
-                item = _item;
-                this.movement = movement;
-            }
-
-
-            public bool CheckEnd => Position == endPos;
-
-            public void Update()
-            {
-                
-            }
-
-        }
 
     }
 

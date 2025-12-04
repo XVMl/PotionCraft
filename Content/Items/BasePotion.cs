@@ -29,11 +29,11 @@ namespace PotionCraft.Content.Items
             get
             {
                 if (CanCustomName) 
-                    return $"{CustomName}{BaseName}";
+                    return $"{CustomName}";
                 return LanguageManager.Instance.ActiveCulture.Name switch
                 {
-                    "zh-Hans" => LocationTranslate(_Name,false)+BaseName,
-                    _ => LocationTranslate(_Name)+BaseName,
+                    "zh-Hans" => $"{LocationTranslate(_Name, false)} {Deafult_Hex.Insert(10,BaseName)}",
+                    _ => $"{LocationTranslate(_Name)} {Deafult_Hex.Insert(10, BaseName)}",
                 };
             }
         }

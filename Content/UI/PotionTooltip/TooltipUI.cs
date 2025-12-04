@@ -111,10 +111,10 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Area.Left.Set(pos.X +x, 0); 
             Area.Top.Set(pos.Y + y, 0);
             
-            if (NameArea.Top.Pixels + NameArea.Height.Pixels > Main.screenHeight)
-                NameArea.Top.Set(Main.screenHeight - NameArea.Height.Pixels - 20, 0);
-            if (Area.Top.Pixels + Area.Height.Pixels > Main.screenHeight)
-                Area.Top.Set(Main.screenHeight - Area.Height.Pixels - 20, 0);
+            //if (NameArea.Top.Pixels + NameArea.Height.Pixels > Main.screenHeight)
+            //    NameArea.Top.Set(Main.screenHeight - NameArea.Height.Pixels - 20, 0);
+            //if (Area.Top.Pixels + Area.Height.Pixels > Main.screenHeight)
+            //    Area.Top.Set(Main.screenHeight - Area.Height.Pixels - 20, 0);
             //Active = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
             if (!Active || Main.HoverItem.ModItem is not BasePotion) 
                 return;
@@ -146,11 +146,11 @@ namespace PotionCraft.Content.UI.PotionTooltip
             PotionMarks.Top.Set(textheight+56, 0);
             NameArea.Height.Set(textheight+marksheight + 75, 0);
             var count = ShowBasePotion.PotionDictionary.Count/2+1;
-            Area.Height.Set(Math.Max(400, count * 50 + 90), 0);
+            //Area.Height.Set(Math.Max(400, count * 50 + 90), 0);
+            Area.Height.Set(1000, 0);
             PotionIngredients.Height.Set(count*50+70, 0);
             PotionIngredients.UIgrid.Height.Set(count * 50 + 70, 0);
 
-            
         }
 
         public static (string,bool) GetKeybind(ModKeybind key)

@@ -35,7 +35,12 @@ public class LoaderPotionOrMaterial:ModSystem
                 Terrariabuffs.Add(BuffID.Search.GetName(item.buffType));
             }
         }
-        
+        var list =new List<string>();
+        for(int i=1;i<125;i++)
+        {
+            list.Add(BuffID.Search.GetName(i));
+        }
+        Mod.Logger.Debug(PotionWithBuffList);
     }
 
 
