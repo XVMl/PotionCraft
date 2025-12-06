@@ -10,12 +10,36 @@
       "CanEditor": true
     },
     {
+      "_Name": "Shine @ @ @ @ @ @ @ @ @ @",
+      "IconID": 0,
+      "CustomName": "",
+      "CanCustomName": false,
+      "Signatures": "",
+      "CanEditor": true
+    },
+    {
       "_Name": "Shine Battle +",
       "IconID": 5096,
       "CustomName": "[c/830CE3:魔法][c/6E3713:巧克力曲奇饼干]",
       "CanCustomName": true,
       "Signatures": "",
       "CanEditor": true
+    },
+    {
+      "_Name": "Shine Battle +",
+      "IconID": -1,
+      "CustomName": "",
+      "CanCustomName": true,
+      "Signatures": "",
+      "CanEditor": true
+    },
+    {
+      "_Name": "Shine Battle +",
+      "IconID": 0,
+      "CustomName": "",
+      "CanCustomName": true,
+      "Signatures": "",
+      "CanEditor": false
     }
   ]
 }

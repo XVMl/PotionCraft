@@ -317,9 +317,7 @@ namespace PotionCraft.Content.UI.CraftUI
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (IsMouseHovering)
-                Main.LocalPlayer.mouseInterface = true;
-
+            
             PotionSynopsis.Update(gameTime);
             potionSetting.Update(gameTime);
             potionComponent.Update(gameTime);

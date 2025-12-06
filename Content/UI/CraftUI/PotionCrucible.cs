@@ -161,12 +161,7 @@ namespace PotionCraft.Content.UI.CraftUI
             public void Update()
             {
                 time++;
-                //Main.NewText((endPos.X - startPos.X) * time / 100);
-                //position.X = startPos.X + (endPos.X - startPos.X) * time / 100;
-                //position.Y = movement.Invoke(position.X);
-                //position.X = MathHelper.Lerp(position.X, endPos.X, .1f);
                 position.Y = startPos.Y + time * time * .03f;
-                //position.Y = movement.Invoke(position.X);
             }
 
             public static (float a, float b, float c) CalculateParabolaCoefficients(Vector2 p1, Vector2 p2, Vector2 p3)

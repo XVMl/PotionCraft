@@ -110,12 +110,14 @@ namespace PotionCraft.Content.UI.PotionTooltip
             }
             Area.Left.Set(pos.X +x, 0); 
             Area.Top.Set(pos.Y + y, 0);
+
+            if (NameArea.Top.Pixels + NameArea.Height.Pixels > Main.screenHeight - 20)
+                NameArea.Top.Set(Main.screenHeight - NameArea.Height.Pixels - 20, 0);
             
-            //if (NameArea.Top.Pixels + NameArea.Height.Pixels > Main.screenHeight)
-            //    NameArea.Top.Set(Main.screenHeight - NameArea.Height.Pixels - 20, 0);
-            //if (Area.Top.Pixels + Area.Height.Pixels > Main.screenHeight)
-            //    Area.Top.Set(Main.screenHeight - Area.Height.Pixels - 20, 0);
-            //Active = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
+            if (Area.Top.Pixels + Area.Height.Pixels > Main.screenHeight - 20)
+                Area.Top.Set(Main.screenHeight - Area.Height.Pixels - 20, 0);
+
+            Active = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
             if (!Active || Main.HoverItem.ModItem is not BasePotion) 
                 return;
 
@@ -146,8 +148,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
             PotionMarks.Top.Set(textheight+56, 0);
             NameArea.Height.Set(textheight+marksheight + 75, 0);
             var count = ShowBasePotion.PotionDictionary.Count/2+1;
-            //Area.Height.Set(Math.Max(400, count * 50 + 90), 0);
-            Area.Height.Set(1000, 0);
+            Area.Height.Set(Math.Max(400, count * 46 + 90), 0);
+            //Area.Height.Set(1000, 0);
             PotionIngredients.Height.Set(count*50+70, 0);
             PotionIngredients.UIgrid.Height.Set(count * 50 + 70, 0);
 
@@ -170,6 +172,13 @@ namespace PotionCraft.Content.UI.PotionTooltip
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             if (!Active) return;
+            //spriteBatch.End();
+            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicWrap, DepthStencilState.None, new RasterizerState
+            //{
+            //    CullMode = CullMode.None,
+            //    ScissorTestEnable = true
+            //},null, Main.UIScaleMatrix);
+
             var nametex = UITexture("ToolName").Value;
             var namearea = NameArea.GetDimensions().ToRectangle();
             var nameheight = namearea.Height-36;
@@ -201,33 +210,41 @@ namespace PotionCraft.Content.UI.PotionTooltip
             if (!PotionCraftModPlayer.PotionCraftKeybind.Current) 
                 return;
             var AreaRectangle = Area.GetDimensions().ToRectangle();
-            var height = AreaRectangle.Height-96;
-            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y, 360, 48), new(0, 0, 360, 48), Color.White);
+            var height = (int)Area.Height.Pixels - 96;
+            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle((int)Area.GetDimensions().X,(int)Area.GetDimensions().Y, 360, 48), new(0, 0, 360, 48), Color.White);
             for (; ; )
             {
                 switch (height)
                 {
                     case > 440:
-                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y + 48 + (int)Area.Height.Pixels - 96 - height, 360, 440), new(0, 48, 360, 440), Color.White);
+                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, (int)Area.Top.Pixels + 48 + (int)Area.Height.Pixels - 96 - height, 360, 440), new(0, 48, 360, 440), Color.White);
                         height -= 440;
                         break;
                     case > 0:
-                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y + 48 + (int)Area.Height.Pixels - 96 - height, 360, height), new(0, 48, 360, height), Color.White);
+                        spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, (int)Area.Top.Pixels + 48 + (int)Area.Height.Pixels - 96 - height, 360, height), new(0, 48, 360, height), Color.White);
                         height = 0;
                         break;
                 }
                 if (height == 0) break;
             }
-            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, AreaRectangle.Y + AreaRectangle.Height-48, 360, 48), new(0, 488, 360, 48), Color.White);
+            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, (int)(Area.Top.Pixels + Area.Height.Pixels) - 48, 360, 48), new(0, 488, 360, 48), Color.White);
+
+            //spriteBatch.End();
+            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, new RasterizerState
+            //{
+            //    CullMode = CullMode.None,
+            //    ScissorTestEnable = true
+            //},null,Main.UIScaleMatrix);
+           
             
             var lock_rectangle= ShowBasePotion.CanEditor ? new Rectangle(62, 0, 18, 18) : new Rectangle(80, 0, 18, 18);
-            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft()+new Vector2(60,AreaRectangle.Height-68), lock_rectangle, Deafult);
+            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft()+new Vector2(60, Area.Height.Pixels - 68), lock_rectangle, Deafult);
 
             var auto_rotation =  ShowBasePotion.AutoUse ? Main.time * .03f : 0;
-            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(129, AreaRectangle.Height - 58), new Rectangle(40, 0, 18, 18), Deafult, (float)auto_rotation, new Vector2(18,18)/2, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(129, Area.Height.Pixels - 58), new Rectangle(40, 0, 18, 18), Deafult, (float)auto_rotation, new Vector2(18,18)/2, 1, SpriteEffects.None, 0);
 
             var packing_rectangle = ShowBasePotion.IsPackage ? new Rectangle(0, 0, 18, 18) : new Rectangle(22, 0, 18, 18); 
-            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(90, AreaRectangle.Height-68), packing_rectangle, Deafult);
+            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(90, Area.Height.Pixels -68), packing_rectangle, Deafult);
 
         }
     }
