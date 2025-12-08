@@ -1,20 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using log4net.Repository.Hierarchy;
-using Microsoft.Build.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PotionCraft.Content.System;
 using ReLogic.Content;
-using ReLogic.Graphics;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.GameInput;
-using Terraria.ModLoader;
 using Terraria.UI;
-using Terraria.UI.Chat;
 using static PotionCraft.Content.System.LanguageHelper;
 
 namespace PotionCraft.Content.UI.CraftUI;
@@ -89,9 +83,15 @@ public class Input:PotionElement<BrewPotionState>
             return;
         Main.blockInput = false;
         Inputting = false;
+        SaveText();
+        Onchange?.Invoke();
+    }
+
+    private void SaveText()
+    {
         var original = GetUnmodifiedPart(TempText, ref Currentvalue);
-        if(!string.IsNullOrEmpty(original))
-            Recordvalue.Add((TempColor,original));
+        if (!string.IsNullOrEmpty(original))
+            Recordvalue.Add((TempColor, original));
 
         if (!string.IsNullOrEmpty(Currentvalue))
             Recordvalue.Add((RGBToHex(SelectColor), Currentvalue));
@@ -100,13 +100,12 @@ public class Input:PotionElement<BrewPotionState>
         TempColor = "";
         TempColor = Deafult_Hex;
         Refresh();
-        Onchange?.Invoke();
     }
 
     public void Refresh()
     {
         Showstring = string.Join("", Recordvalue.Select(s => string.IsNullOrEmpty(s.Item1) ? Deafult_Hex.Insert(10,s.Item2) : $"[c/{s.Item1}:{s.Item2}]"));
-        Showstring = WrapTextWithColors_ComPact(Showstring, 180).Item1;
+        Showstring = WrapTextWithColors_ComPact(Showstring, Width.Pixels-10).Item1;
         // Mod instance = ModContent.GetInstance<PotionCraft>();
         // instance.Logger.Debug(Showstring);
     }
@@ -198,9 +197,14 @@ public class Input:PotionElement<BrewPotionState>
         
         Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
         Utils.DrawBorderString(spriteBatch, show, vector2,Color.White);
+
+        var cursor = vector2 + MeasureString_Cursor(Currentvalue);
+        if (cursor.X> Width.Pixels-10)
+            SaveText();
+        
         if (Main.GameUpdateCount % 20U >= 10U)
             return;
-        Utils.DrawBorderString(spriteBatch, "|", vector2 + MeasureString_Cursor(Currentvalue), Color.White, 1f, 0.0f, 0.0f, -1);
+        Utils.DrawBorderString(spriteBatch, "|", cursor, Color.White, 1f, 0.0f, 0.0f, -1);
     }
 
 }

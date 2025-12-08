@@ -2,8 +2,8 @@
   "Type": "Potion",
   "Potions": [
     {
-      "_Name": "ObsidianSkin Regeneration Swiftness Gills Ironskin ManaRegeneration MagicPower Featherfall Spelunker Invisibility Shine NightOwl Battle Thorns WaterWalking Archery Hunter Gravitation WeaponImbueVenom WeaponImbueCursedFlames WeaponImbueFire WeaponImbueGold WeaponImbueIchor WeaponImbueNanites WeaponImbueConfetti WeaponImbuePoison Mining Heartreach Calm Builder Titan Flipper Summoning Dangersense AmmoReservation Lifeforce Endurance Rage Inferno Wrath Fishing Sonar Crate Warmth + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +",
-      "IconID": 0,
+      "_Name": "ObsidianSkin Regeneration Swiftness Gills Ironskin ManaRegeneration MagicPower Featherfall Spelunker Invisibility Shine NightOwl Battle Thorns WaterWalking Archery Hunter Gravitation WeaponImbueVenom WeaponImbueCursedFlames WeaponImbueFire WeaponImbueGold WeaponImbueIchor WeaponImbueNanites WeaponImbueConfetti WeaponImbuePoison Mining Heartreach Calm Builder Titan Flipper Summoning Dangersense AmmoReservation Lifeforce Endurance Rage + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +",
+      "IconName": "",
       "CustomName": "",
       "CanCustomName": false,
       "Signatures": "",
@@ -11,7 +11,7 @@
     },
     {
       "_Name": "Shine @ @ @ @ @ @ @ @ @ @",
-      "IconID": 0,
+      "IconName": "",
       "CustomName": "",
       "CanCustomName": false,
       "Signatures": "",
@@ -19,7 +19,7 @@
     },
     {
       "_Name": "Shine Battle +",
-      "IconID": 5096,
+      "IconName": "ChocolateChipCookie",
       "CustomName": "[c/830CE3:魔法][c/6E3713:巧克力曲奇饼干]",
       "CanCustomName": true,
       "Signatures": "",
@@ -27,17 +27,17 @@
     },
     {
       "_Name": "Shine Battle +",
-      "IconID": -1,
+      "IconName": "PotionCraft/ChewingGum",
       "CustomName": "",
-      "CanCustomName": true,
+      "CanCustomName": false,
       "Signatures": "",
       "CanEditor": true
     },
     {
       "_Name": "Shine Battle +",
-      "IconID": 0,
+      "IconName": "",
       "CustomName": "",
-      "CanCustomName": true,
+      "CanCustomName": false,
       "Signatures": "",
       "CanEditor": false
     }

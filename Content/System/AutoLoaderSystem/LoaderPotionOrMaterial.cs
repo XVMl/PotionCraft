@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework.Input;
+using PotionCraft.Content.Items;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Xml.Linq;
@@ -40,7 +41,8 @@ public class LoaderPotionOrMaterial:ModSystem
         {
             list.Add(BuffID.Search.GetName(i));
         }
-        Mod.Logger.Debug(PotionWithBuffList);
+
+       
     }
 
 

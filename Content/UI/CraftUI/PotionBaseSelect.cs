@@ -95,6 +95,7 @@ namespace PotionCraft.Content.UI.CraftUI
                         Rectangle frame = ((Main.itemAnimations[item.type] == null) ? value.Frame() : Main.itemAnimations[item.type].GetFrame(value));
                         brewPotionState.CreatPotion.Frame = frame;
                         brewPotionState.Refresh();
+                        
                     }
                 });
             });

@@ -35,6 +35,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
 
         private UIElement NameArea;
 
+        private bool visiable;
+
         private static BasePotion ShowBasePotion= ModContent.GetInstance<BasePotion>();
 
         private PotionIngredients PotionIngredients;
@@ -47,6 +49,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
         {
             Area = new();
             NameArea = new();
+            Active = true;
             NameArea.Width.Set(360f, 0f);
             NameArea.Height.Set(123f, 0f);
             Append(NameArea);
@@ -117,8 +120,8 @@ namespace PotionCraft.Content.UI.PotionTooltip
             if (Area.Top.Pixels + Area.Height.Pixels > Main.screenHeight - 20)
                 Area.Top.Set(Main.screenHeight - Area.Height.Pixels - 20, 0);
 
-            Active = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
-            if (!Active || Main.HoverItem.ModItem is not BasePotion) 
+            visiable = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
+            if (!visiable || Main.HoverItem.ModItem is not BasePotion) 
                 return;
 
             if (CheckPotion(ShowBasePotion, AsPotion(Main.HoverItem)))
@@ -169,49 +172,47 @@ namespace PotionCraft.Content.UI.PotionTooltip
             return (sb.ToString(),true);
         }
 
-        protected override void DrawSelf(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            if (!Active) return;
-            //spriteBatch.End();
-            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicWrap, DepthStencilState.None, new RasterizerState
-            //{
-            //    CullMode = CullMode.None,
-            //    ScissorTestEnable = true
-            //},null, Main.UIScaleMatrix);
+            if (!visiable) return;
 
             var nametex = UITexture("ToolName").Value;
             var namearea = NameArea.GetDimensions().ToRectangle();
-            var nameheight = namearea.Height-36;
+            var nameheight = (int)NameArea.Height.Pixels - 36;
             spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y, 360, 18), new(0, 0, 360, 18), Color.White);
             for (; ; )
             {
                 switch (nameheight)
                 {
                     case > 120:
-                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 18 + namearea.Height - 36 - nameheight, 360, 120), new(0, 18, 360, 120), Color.White);
+                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, (int)NameArea.Top.Pixels + 18 + namearea.Height - 36 - nameheight, 360, 120), new(0, 18, 360, 120), Color.White);
                         nameheight -= 120;
                         break;
                     case > 0:
-                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 18 + namearea.Height - 36 - nameheight, 360, nameheight), new(0, 18, 360, nameheight), Color.White);
+                        spriteBatch.Draw(nametex, new Rectangle(namearea.X, (int)NameArea.Top.Pixels + 18 + namearea.Height - 36 - nameheight, 360, nameheight), new(0, 18, 360, nameheight), Color.White);
                         nameheight = 0;
                         break;
                 }
                 if (nameheight <= 0) break;
             }
 
-            spriteBatch.Draw(nametex, new Vector2(0, PotionMarks.Top.Pixels-20)+namearea.TopLeft(), new(0, 132, 360, 20), Color.White);
+            spriteBatch.Draw(nametex, new Vector2(0, PotionMarks.Top.Pixels - 20) + namearea.TopLeft(), new(0, 132, 360, 20), Color.White);
             spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + namearea.Height - 18, 360, 18), new(0, 176, 360, 18), Color.White);
             var data = GetKeybind(PotionCraftModPlayer.PotionCraftKeybind);
 
 
             if (!data.Item2)
-                Utils.DrawBorderString(spriteBatch,$"{TryGetLanguagValue("KeybindsTips", data.Item1)}", namearea.TopLeft()+new Vector2(0, namearea.Height), Color.White);
-            
-            if (!PotionCraftModPlayer.PotionCraftKeybind.Current) 
+                Utils.DrawBorderString(spriteBatch, $"{TryGetLanguagValue("KeybindsTips", data.Item1)}", namearea.TopLeft() + new Vector2(0, namearea.Height), Color.White);
+
+            if (!ShowBasePotion.CanEditor)
                 return;
+            
+            if (!PotionCraftModPlayer.PotionCraftKeybind.Current )
+                goto End;
+
             var AreaRectangle = Area.GetDimensions().ToRectangle();
             var height = (int)Area.Height.Pixels - 96;
-            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle((int)Area.GetDimensions().X,(int)Area.GetDimensions().Y, 360, 48), new(0, 0, 360, 48), Color.White);
+            spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle((int)Area.GetDimensions().X, (int)Area.GetDimensions().Y, 360, 48), new(0, 0, 360, 48), Color.White);
             for (; ; )
             {
                 switch (height)
@@ -229,23 +230,83 @@ namespace PotionCraft.Content.UI.PotionTooltip
             }
             spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, (int)(Area.Top.Pixels + Area.Height.Pixels) - 48, 360, 48), new(0, 488, 360, 48), Color.White);
 
-            //spriteBatch.End();
-            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, new RasterizerState
-            //{
-            //    CullMode = CullMode.None,
-            //    ScissorTestEnable = true
-            //},null,Main.UIScaleMatrix);
-           
-            
-            var lock_rectangle= ShowBasePotion.CanEditor ? new Rectangle(62, 0, 18, 18) : new Rectangle(80, 0, 18, 18);
-            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft()+new Vector2(60, Area.Height.Pixels - 68), lock_rectangle, Deafult);
+            var lock_rectangle = ShowBasePotion.CanEditor ? new Rectangle(62, 0, 18, 18) : new Rectangle(80, 0, 18, 18);
+            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(60, Area.Height.Pixels - 68), lock_rectangle, Deafult);
 
-            var auto_rotation =  ShowBasePotion.AutoUse ? Main.time * .03f : 0;
-            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(129, Area.Height.Pixels - 58), new Rectangle(40, 0, 18, 18), Deafult, (float)auto_rotation, new Vector2(18,18)/2, 1, SpriteEffects.None, 0);
+            var auto_rotation = ShowBasePotion.AutoUse ? Main.time * .03f : 0;
+            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(129, Area.Height.Pixels - 58), new Rectangle(40, 0, 18, 18), Deafult, (float)auto_rotation, new Vector2(18, 18) / 2, 1, SpriteEffects.None, 0);
 
-            var packing_rectangle = ShowBasePotion.IsPackage ? new Rectangle(0, 0, 18, 18) : new Rectangle(22, 0, 18, 18); 
-            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(90, Area.Height.Pixels -68), packing_rectangle, Deafult);
+            var packing_rectangle = ShowBasePotion.IsPackage ? new Rectangle(0, 0, 18, 18) : new Rectangle(22, 0, 18, 18);
+            spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(90, Area.Height.Pixels - 68), packing_rectangle, Deafult);
 
+
+            End:
+            base.Draw(spriteBatch);
         }
+
+        //protected override void DrawSelf(SpriteBatch spriteBatch)
+        //{
+        //    if (!Active) return;
+
+        //    var nametex = UITexture("ToolName").Value;
+        //    var namearea = NameArea.GetDimensions().ToRectangle();
+        //    var nameheight = namearea.Height-36;
+        //    spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y, 360, 18), new(0, 0, 360, 18), Color.White);
+        //    for (; ; )
+        //    {
+        //        switch (nameheight)
+        //        {
+        //            case > 120:
+        //                spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 18 + namearea.Height - 36 - nameheight, 360, 120), new(0, 18, 360, 120), Color.White);
+        //                nameheight -= 120;
+        //                break;
+        //            case > 0:
+        //                spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + 18 + namearea.Height - 36 - nameheight, 360, nameheight), new(0, 18, 360, nameheight), Color.White);
+        //                nameheight = 0;
+        //                break;
+        //        }
+        //        if (nameheight <= 0) break;
+        //    }
+
+        //    spriteBatch.Draw(nametex, new Vector2(0, PotionMarks.Top.Pixels-20)+namearea.TopLeft(), new(0, 132, 360, 20), Color.White);
+        //    spriteBatch.Draw(nametex, new Rectangle(namearea.X, namearea.Y + namearea.Height - 18, 360, 18), new(0, 176, 360, 18), Color.White);
+        //    var data = GetKeybind(PotionCraftModPlayer.PotionCraftKeybind);
+
+
+        //    if (!data.Item2)
+        //        Utils.DrawBorderString(spriteBatch,$"{TryGetLanguagValue("KeybindsTips", data.Item1)}", namearea.TopLeft()+new Vector2(0, namearea.Height), Color.White);
+            
+        //    if (!PotionCraftModPlayer.PotionCraftKeybind.Current) 
+        //        return;
+        //    var AreaRectangle = Area.GetDimensions().ToRectangle();
+        //    var height = (int)Area.Height.Pixels - 96;
+        //    spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle((int)Area.GetDimensions().X,(int)Area.GetDimensions().Y, 360, 48), new(0, 0, 360, 48), Color.White);
+        //    for (; ; )
+        //    {
+        //        switch (height)
+        //        {
+        //            case > 440:
+        //                spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, (int)Area.Top.Pixels + 48 + (int)Area.Height.Pixels - 96 - height, 360, 440), new(0, 48, 360, 440), Color.White);
+        //                height -= 440;
+        //                break;
+        //            case > 0:
+        //                spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, (int)Area.Top.Pixels + 48 + (int)Area.Height.Pixels - 96 - height, 360, height), new(0, 48, 360, height), Color.White);
+        //                height = 0;
+        //                break;
+        //        }
+        //        if (height == 0) break;
+        //    }
+        //    spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, (int)(Area.Top.Pixels + Area.Height.Pixels) - 48, 360, 48), new(0, 488, 360, 48), Color.White);
+
+        //    var lock_rectangle= ShowBasePotion.CanEditor ? new Rectangle(62, 0, 18, 18) : new Rectangle(80, 0, 18, 18);
+        //    spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft()+new Vector2(60, Area.Height.Pixels - 68), lock_rectangle, Deafult);
+
+        //    var auto_rotation =  ShowBasePotion.AutoUse ? Main.time * .03f : 0;
+        //    spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(129, Area.Height.Pixels - 58), new Rectangle(40, 0, 18, 18), Deafult, (float)auto_rotation, new Vector2(18,18)/2, 1, SpriteEffects.None, 0);
+
+        //    var packing_rectangle = ShowBasePotion.IsPackage ? new Rectangle(0, 0, 18, 18) : new Rectangle(22, 0, 18, 18); 
+        //    spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(90, Area.Height.Pixels -68), packing_rectangle, Deafult);
+
+        //}
     }
 }

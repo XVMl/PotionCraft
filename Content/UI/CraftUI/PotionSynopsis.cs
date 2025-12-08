@@ -3,19 +3,13 @@ using PotionCraft.Content.System;
 using Terraria;
 using Microsoft.Xna.Framework;
 using PotionCraft.Content.Items;
-using static PotionCraft.Assets;
-using static PotionCraft.Content.System.LanguageHelper;
-using Terraria.GameContent.UI.Elements;
 using System;
 using Terraria.UI;
 using Terraria.ModLoader;
-using System.Runtime.CompilerServices;
-using PotionCraft.Content.System.AutoLoaderSystem;
-using Terraria.GameContent.Creative;
-using Newtonsoft.Json.Linq;
 using Terraria.GameContent;
-using System.Collections.Generic;
 using Terraria.ID;
+using static PotionCraft.Assets;
+using static PotionCraft.Content.System.LanguageHelper;
 
 namespace PotionCraft.Content.UI.CraftUI
 {

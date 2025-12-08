@@ -62,6 +62,8 @@ public class DialogueState:AutoUIState
         {
             PotionCraftUI.UIstate.TryGetValue(nameof(BrewPotionState), out var state);
             state.Active = true;
+            PotionCraftUI.UIstate.TryGetValue(nameof(ExamplePotion), out var examplePotion);
+            examplePotion.Active = false;
 
             dialogueSelect.Active = false;
             dialogueSelect.Top.Set(270, 0);
@@ -86,6 +88,8 @@ public class DialogueState:AutoUIState
             //dialogue.Active = false;
             PotionCraftUI.UIstate.TryGetValue(nameof(PotionBaseSelect), out var potionbase);
             potionbase.Active = false;
+
+
 
             dialogueSelect.Active = true;
             

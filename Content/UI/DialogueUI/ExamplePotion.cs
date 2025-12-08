@@ -32,8 +32,10 @@ public class ExamplePotion : AutoUIState
         Active = false;
 
         List = new UIGrid();
-        List.Width.Set(342, 0);
+        List.Width.Set(600, 0);
         List.Height.Set(420, 0);
+        List.Left.Set(50, 0);
+        List.Top.Set(50, 0);
 
         List.ListPadding = 80f;
         Append(List);
@@ -96,7 +98,7 @@ public class ExamplePotion : AutoUIState
     {
         public string _Name = "";
 
-        public int IconID = ModContent.ItemType<BasePotion>();
+        public string IconName = "";
 
         public string CustomName = "";
 
@@ -114,9 +116,7 @@ public class ExamplePotion : AutoUIState
             potion.CanCustomName = CanCustomName;
             potion.Signatures = Signatures;
             potion.CanEditor = CanEditor;
-
-            if(IconID !=0)
-                potion.IconID = IconID;
+            potion.IconName = IconName;
 
         }
     }

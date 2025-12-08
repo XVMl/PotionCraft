@@ -115,10 +115,29 @@ namespace PotionCraft.Content.Items
         [NetSend]
         public bool IsPackage = true;
         /// <summary>
-        /// 用于记录药剂的图标ID
+        /// 药剂的图标ID
+        /// </summary>
+        public int IconID
+        {
+            get
+            {
+                var id = ModContent.ItemType<BasePotion>();
+
+                if (ItemID.Search.ContainsName(IconName))
+                    id = ItemID.Search.GetId(IconName);
+                
+                return id;
+            }
+            set
+            {
+                IconName = ItemID.Search.GetName(value);
+            }
+        }
+        /// <summary>
+        /// 用于记录药剂查找图标的名称
         /// </summary>
         [NetSend]
-        public int IconID = ModContent.ItemType<BasePotion>();
+        public string IconName = "";
         /// <summary>
         /// 用于记录药剂是否自动使用
         /// </summary>
@@ -133,7 +152,7 @@ namespace PotionCraft.Content.Items
         /// 用于记录是否可以编辑
         /// </summary>
         [NetSend]
-        public bool CanEditor;
+        public bool CanEditor = true;
         /// <summary>
         /// 
         /// </summary>
@@ -186,7 +205,7 @@ namespace PotionCraft.Content.Items
             tag["PotionUseStyle"] = PotionUseStyle;
             tag["PotionUseSound"] = PotionUseSounds;
             tag["IsPackage"] = IsPackage;
-            tag["IconID"] = IconID;
+            tag["IconName"] = IconName;
             tag["CanCustomName"] = CanCustomName;
             tag["_Name"] = _Name;
             tag["CanEditor"] = CanEditor;
@@ -232,7 +251,7 @@ namespace PotionCraft.Content.Items
             PotionUseSounds = tag.Get<int>("PotionUseSound");
             IsPackage = tag.Get<bool>("IsPackage");
             CanCustomName = tag.Get<bool>("CanCustomName");
-            IconID = tag.Get<int>("IconID");
+            IconName = tag.Get<string>("IconName");
             _Name = tag.GetString("_Name");
             CanEditor= tag.GetBool("CanEditor");
 
