@@ -11,9 +11,7 @@ using Terraria.ID;
 using Terraria.GameContent;
 using Terraria.UI.Chat;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
-using Humanizer;
-using System.Collections.Generic;
-using Luminance.Common.Utilities;
+
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class BrewPotionState : AutoUIState

@@ -8,6 +8,7 @@ using PotionCraft.Content.System;
 using ReLogic.Content;
 using Terraria;
 using Terraria.GameInput;
+using Terraria.ModLoader;
 using Terraria.UI;
 using static PotionCraft.Content.System.LanguageHelper;
 
@@ -106,8 +107,8 @@ public class Input:PotionElement<BrewPotionState>
     {
         Showstring = string.Join("", Recordvalue.Select(s => string.IsNullOrEmpty(s.Item1) ? Deafult_Hex.Insert(10,s.Item2) : $"[c/{s.Item1}:{s.Item2}]"));
         Showstring = WrapTextWithColors_ComPact(Showstring, Width.Pixels-10).Item1;
-        // Mod instance = ModContent.GetInstance<PotionCraft>();
-        // instance.Logger.Debug(Showstring);
+        //Mod instance = ModContent.GetInstance<PotionCraft>();
+        //instance.Logger.Debug(Showstring);
     }
 
     public override void Update(GameTime gameTime)
@@ -122,18 +123,18 @@ public class Input:PotionElement<BrewPotionState>
         
         if (Inputting)
             HandleInputText();
-        
-        
+
     }
 
     private void StListText()
     {
         if (Recordvalue.Count == 0)
-            return ;
+            return;
         Currentvalue = Recordvalue.Last().Item2;
         TempText = Currentvalue;
         TempColor = Recordvalue.Last().Item1;
         Recordvalue.Remove(Recordvalue.Last());
+
         Refresh();
     }
 
@@ -163,8 +164,20 @@ public class Input:PotionElement<BrewPotionState>
 
             return original[..i];
         }
-
         return original[..minLength];
+    }
+
+    public static string GetUnmodifiedPart_Last(string original, string modified)
+    {
+        var minLength = Math.Min(original.Length, modified.Length);
+        for (var i = 0; i < minLength; i++)
+        {
+            if (original[i] == modified[i])
+                continue;
+
+            return original[i..];
+        }
+        return original[minLength..];
     }
     public override void LeftClick(UIMouseEvent evt)
     {
@@ -188,20 +201,21 @@ public class Input:PotionElement<BrewPotionState>
         HandleInputText();
 
         var show = "";
-        
+
         if (!string.IsNullOrEmpty(TempText))
-            show +=$"[c/{TempText}:"+ GetUnmodifiedPart(TempText, Currentvalue)+"]";
-        
-        if (!string.IsNullOrEmpty(Currentvalue))
-            show += $"[c/{RGBToHex(SelectColor)}:{Currentvalue}]";
+            show += $"[c/{TempColor}:{TempText}]";
+
+        var part2 = GetUnmodifiedPart_Last(Currentvalue, TempText);
+        if (!string.IsNullOrEmpty(Currentvalue) && !string.IsNullOrEmpty(part2))
+            show += $"[c/{RGBToHex(SelectColor)}:{part2}]";
         
         Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
         Utils.DrawBorderString(spriteBatch, show, vector2,Color.White);
 
         var cursor = vector2 + MeasureString_Cursor(Currentvalue);
-        if (cursor.X> Width.Pixels-10)
-            SaveText();
-        
+        //if (cursor.X > Width.Pixels - 10)
+        //SaveText();
+
         if (Main.GameUpdateCount % 20U >= 10U)
             return;
         Utils.DrawBorderString(spriteBatch, "|", cursor, Color.White, 1f, 0.0f, 0.0f, -1);

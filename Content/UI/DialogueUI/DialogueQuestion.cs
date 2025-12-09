@@ -94,10 +94,18 @@ public class DialogueQuestion :AutoUIState
         _previewButton.Height.Set(18, 0);
         _previewButton.Left.Set(232, 0);
         _previewButton.Top.Set(272, 0);
-        //_previewButton.OnClike = () =>
-        //{
-        //    _coloreelectorbutton.Active = !_coloreelectorbutton.Active;
-        //};
+        _previewButton.Iconcolor = Deafult;
+        _previewButton.OnClike = () =>
+        {
+            if (!_submitIcon.Active)
+                return;
+
+            _submitIcon.Active = false;
+            RemoveChild(_submitIcon);
+
+            _previewIcon.Active = true;
+            Append(_previewIcon);
+        };
         Append(_previewButton);
 
         _submitButton = new(Assets.UI.Icon, Color.White, new Rectangle(118, 0, 18, 18), dialogueQuestion);
@@ -106,10 +114,18 @@ public class DialogueQuestion :AutoUIState
         _submitButton.Height.Set(18, 0);
         _submitButton.Left.Set(232, 0);
         _submitButton.Top.Set(294, 0);
-        //_submitButton.OnClike = () =>
-        //{
-        //    _coloreelectorbutton.Active = !_coloreelectorbutton.Active;
-        //};
+        _submitButton.Iconcolor = Deafult;
+        _submitButton.OnClike = () =>
+        {
+            if (!_previewIcon.Active)
+                return;
+            
+            _previewIcon.Active = false;
+            RemoveChild(_previewIcon);
+
+            _submitIcon.Active = true;
+            Append(_submitIcon);
+        };
         Append(_submitButton);
 
         _submit = new(Assets.UI.Icon, Color.White, new Rectangle(138, 0, 18, 18), dialogueQuestion);
@@ -118,6 +134,7 @@ public class DialogueQuestion :AutoUIState
         _submit.Height.Set(18, 0);
         _submit.Left.Set(368, 0);
         _submit.Top.Set(352, 0);
+        _submit.Iconcolor = Deafult;
         //_submit.OnClike = () =>
         //{
         //    _coloreelectorbutton.Active = !_coloreelectorbutton.Active;
@@ -200,6 +217,9 @@ public class DialogueQuestion :AutoUIState
 
         _previewIcon.Top.Set(MathHelper.Lerp(_previewIcon.Top.Pixels, Height.Pixels - 138, .1f), 0);
         _previewIcon.Left.Set(MathHelper.Lerp(_previewIcon.Left.Pixels, compactWindos ? 120:258, .1f), 0);
+        
+        _submitIcon.Top.Set(MathHelper.Lerp(_submitIcon.Top.Pixels, Height.Pixels - 138, .1f), 0);
+        _submitIcon.Left.Set(MathHelper.Lerp(_submitIcon.Left.Pixels, compactWindos ? 120 : 258, .1f), 0);
 
         _previewButton.Top.Set(MathHelper.Lerp(_previewButton.Top.Pixels, Height.Pixels - 134, .1f), 0);
         _previewButton.Left.Set(MathHelper.Lerp(_previewButton.Left.Pixels, compactWindos ? 94 : 232, .1f), 0);

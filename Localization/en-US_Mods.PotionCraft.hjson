@@ -163,6 +163,8 @@ Dialogue: {
 		HelpButton: click
 		MaterialList: click
 		PotiomList: click
+		CrucibleButton: click
+		HajimiButton: click
 	}
 }
 

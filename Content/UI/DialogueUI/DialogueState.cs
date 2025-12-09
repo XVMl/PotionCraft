@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
+using Terraria;
 
 namespace PotionCraft.Content.UI.DialogueUI;
 
@@ -103,6 +104,6 @@ public class DialogueState:AutoUIState
     {
         base.Update(gameTime);
         dialogueElement.Update(gameTime);
-        //question.Update(gameTime);
+        Main.NewText(CurrentElement);
     }
 }

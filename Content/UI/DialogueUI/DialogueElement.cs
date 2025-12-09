@@ -54,7 +54,7 @@ public class DialogueElement:PotionElement<DialogueState>
             return;
         var text = TryGetLanguagValue($"Dialogue.Prompt.{AutoUIState.CurrentElement}");
         
-        _dialogue.SetText(WrapTextWithColors_ComPact(text,200).Item1);
+        _dialogue.SetText(FontAssets.MouseText.Value.CreateWrappedText(text,150));
         _currentElement = AutoUIState.CurrentElement;
     }
 
@@ -62,5 +62,7 @@ public class DialogueElement:PotionElement<DialogueState>
     {
         spriteBatch.Draw(Assets.UI.DialogueUI.Value, GetDimensions().Position(), Color.White);
         base.Draw(spriteBatch);
+        spriteBatch.Draw(Assets.NPCs.Hajimi, GetDimensions().Position()+new Vector2(460,38), Color.White);
+        spriteBatch.Draw(Assets.NPCs.Emoji2, GetDimensions().Position() + new Vector2(460, 36), Color.White);
     }
 }

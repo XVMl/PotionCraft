@@ -99,10 +99,10 @@ namespace PotionCraft.Content.UI.CraftUI
             _inputbutton.Height.Set(18, 0);
             _inputbutton.Top.Set(245, 0);
             _inputbutton.Left.Set(298, 0);
-            
             _inputbutton.OnClike = () =>
             {
                 _coloreelectorbutton.Active = !_coloreelectorbutton.Active;
+                _potionname.Canedit = !_potionname.Canedit;
             };
             Append(_inputbutton);
 
@@ -113,7 +113,9 @@ namespace PotionCraft.Content.UI.CraftUI
             _potionname.Height.Set(90, 0);
             _potionname.Onchange = () =>
             {
+                _brewPotionState.CreatPotion.CanCustomName = true;
                 _brewPotionState.CreatPotion.CustomName = _potionname.Showstring;
+                _brewPotionState.Refresh();
             };
             _potionname.Left.Set(46, 0);
             _potionname.Top.Set(170,0);
@@ -135,6 +137,7 @@ namespace PotionCraft.Content.UI.CraftUI
             _potionremarks.Onchange = () =>
             {
                 _brewPotionState.CreatPotion.Signatures = _potionremarks.Showstring;
+                _brewPotionState.Refresh();
             };
             Append(_potionremarks);
         }
