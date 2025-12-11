@@ -1,22 +1,16 @@
-﻿using Microsoft.Build.Framework;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
-using PotionCraft.Content.UI.CraftUI;
-using ReLogic.Graphics;
 using System;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.Social.Steam;
 using Terraria.UI;
 using static PotionCraft.Assets;
 using static PotionCraft.Content.System.LanguageHelper;
@@ -128,7 +122,9 @@ namespace PotionCraft.Content.UI.PotionTooltip
                 return;
             PotionIngredients.UIgrid.Clear();
             NameArea.Height.Set(123, 0);
-            ShowBasePotion = PotionElement<TooltipUI>.AsPotion(Main.HoverItem);
+            //ShowBasePotion = PotionElement<TooltipUI>.AsPotion(Main.HoverItem);
+            ShowBasePotion = (Main.HoverItem.Clone()).ModItem as BasePotion;
+
             CalculateHeight();
             PotionIngredients.SetPotionCraftState(this, Main.HoverItem);
         }

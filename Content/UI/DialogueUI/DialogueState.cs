@@ -90,8 +90,6 @@ public class DialogueState:AutoUIState
             PotionCraftUI.UIstate.TryGetValue(nameof(PotionBaseSelect), out var potionbase);
             potionbase.Active = false;
 
-
-
             dialogueSelect.Active = true;
             
         };

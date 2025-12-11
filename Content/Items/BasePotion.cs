@@ -156,7 +156,7 @@ namespace PotionCraft.Content.Items
         /// <summary>
         /// 
         /// </summary>
-        public Rectangle Frame = Rectangle.Empty;
+        //public Rectangle Frame = Rectangle.Empty;
 
         [NetSend]
         public int useAnimation=45;
@@ -273,13 +273,15 @@ namespace PotionCraft.Content.Items
             {
                 Main.instance.LoadItem(IconID);
                 var icon = TextureAssets.Item[IconID].Value;
-                if (Frame.Equals(Rectangle.Empty))
-                {
-                    Texture2D value = TextureAssets.Item[IconID].Value;
-                    Frame = ((Main.itemAnimations[IconID] == null) ? value.Frame() : Main.itemAnimations[IconID].GetFrame(value));
-                }
-                var _origin = Frame.Size() / 2;
-                spriteBatch.Draw(icon, position, Frame, Color.White, 0, _origin, scale*1.1f, SpriteEffects.None, 0);
+                var iframe = ((Main.itemAnimations[Item.type] == null) ? icon.Frame() : Main.itemAnimations[Item.type].GetFrame(icon));
+
+                //if (iframe.Equals(Rectangle.Empty))
+                //{
+                //    Texture2D value = TextureAssets.Item[IconID].Value;
+                //    Frame = ((Main.itemAnimations[IconID] == null) ? value.Frame() : Main.itemAnimations[IconID].GetFrame(value));
+                //}
+                var _origin = iframe.Size() / 2;
+                spriteBatch.Draw(icon, position, iframe, Color.White, 0, _origin, scale*1.1f, SpriteEffects.None, 0);
                 return false;
             }
             for (int i = 0; i < DrawPotionList.Count; i++)
@@ -299,13 +301,15 @@ namespace PotionCraft.Content.Items
             {
                 Main.instance.LoadItem(IconID);
                 var icon = TextureAssets.Item[IconID].Value;
-                if (Frame.Equals(Rectangle.Empty))
-                {
-                    Texture2D value = TextureAssets.Item[IconID].Value;
-                    Frame = ((Main.itemAnimations[IconID] == null) ? value.Frame() : Main.itemAnimations[IconID].GetFrame(value));
-                }
-                var _origin = Frame.Size() / 2;
-                spriteBatch.Draw(icon, Item.position - Main.screenPosition, Frame, Color.White, 0, _origin, scale*1.1f, SpriteEffects.None, 0);
+                var iframe = ((Main.itemAnimations[Item.type] == null) ? icon.Frame() : Main.itemAnimations[Item.type].GetFrame(icon));
+
+                //if (Frame.Equals(Rectangle.Empty))
+                //{
+                //    Texture2D value = TextureAssets.Item[IconID].Value;
+                //    Frame = ((Main.itemAnimations[IconID] == null) ? value.Frame() : Main.itemAnimations[IconID].GetFrame(value));
+                //}
+                var _origin = iframe.Size() / 2;
+                spriteBatch.Draw(icon, Item.position - Main.screenPosition, iframe, Color.White, 0, _origin, scale*1.1f, SpriteEffects.None, 0);
                 return false;
             }
             for (int i = 0; i < DrawPotionList.Count; i++)

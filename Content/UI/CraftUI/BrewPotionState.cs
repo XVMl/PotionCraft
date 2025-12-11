@@ -171,11 +171,11 @@ namespace PotionCraft.Content.UI.CraftUI
                 name,
                 item.type,
                 1,
-                0,
+                item.buffTime,
                 item.buffType
             ));
-            potion.PotionDictionary[name].BuffTime+= item.buffTime;
-            potion.PotionDictionary[name].Counts++;
+            //potion.PotionDictionary[name].BuffTime+= item.buffTime;
+            //potion.PotionDictionary[name].Counts++;
             potion.DrawPotionList.Add(item.type);
             potion.DrawCountList.Add(1);
             potion._Name +=

@@ -72,7 +72,7 @@ namespace PotionCraft.Content.UI.CraftUI
                     brewPotionState.CreatPotion.IconID = i.type;
                     Texture2D value = TextureAssets.Item[i.type].Value;
                     Rectangle frame = ((Main.itemAnimations[i.type] == null) ? value.Frame() : Main.itemAnimations[i.type].GetFrame(value));
-                    brewPotionState.CreatPotion.Frame = frame;
+                    //brewPotionState.CreatPotion.Frame = frame;
                     brewPotionState.Refresh();
                 }
             });
@@ -93,7 +93,7 @@ namespace PotionCraft.Content.UI.CraftUI
                         brewPotionState.CreatPotion.IconID = item.type;
                         Texture2D value = TextureAssets.Item[item.type].Value;
                         Rectangle frame = ((Main.itemAnimations[item.type] == null) ? value.Frame() : Main.itemAnimations[item.type].GetFrame(value));
-                        brewPotionState.CreatPotion.Frame = frame;
+                        //brewPotionState.CreatPotion.Frame = frame;
                         brewPotionState.Refresh();
                         
                     }

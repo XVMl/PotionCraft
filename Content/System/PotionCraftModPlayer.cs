@@ -20,6 +20,8 @@ public class PotionCraftModPlayer:ModPlayer
 
     public string PotionName="";
 
+    public int remainingTime = 0;
+
     public static ModKeybind PotionCraftKeybind;
 
     public static MethodInfo Helditem = typeof(Player).GetMethod(nameof(Main.LocalPlayer.HeldItem), BindingFlags.Public | BindingFlags.Instance);
@@ -63,15 +65,21 @@ public class PotionCraftModPlayer:ModPlayer
             distortion.Activate();
         }
         
+        if(remainingTime > 0)
+            remainingTime--;
     }
 
     public override void SaveData(TagCompound tag)
     {
-        tag["CanNOBasePotion"] =  CanNOBasePotion;  
+        tag["CanNOBasePotion"] =  CanNOBasePotion;
+        tag["PotionName"] = PotionName;
+        tag["remainingTime"] = remainingTime;
     }
 
     public override void LoadData(TagCompound tag)
     {
         CanNOBasePotion = tag.GetBool("CanNOBasePotion");
+        PotionName = tag.GetString("PotionName");
+        remainingTime = tag.GetInt("remainingTime");
     }
 }

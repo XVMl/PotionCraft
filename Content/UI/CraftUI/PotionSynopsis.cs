@@ -225,7 +225,7 @@ namespace PotionCraft.Content.UI.CraftUI
                 Rectangle frame = ((Main.itemAnimations[Item.type] == null) ? value.Frame() : Main.itemAnimations[Item.type].GetFrame(value));
 
                 //if (count > 0)
-                brewPotionState.CreatPotion.Frame = frame;
+                //brewPotionState.CreatPotion.Frame = frame;
                 brewPotionState.Refresh();
             }
 
@@ -250,7 +250,7 @@ namespace PotionCraft.Content.UI.CraftUI
                 brewPotionState.CreatPotion.useTime = item.useTime;
                 Texture2D value = TextureAssets.Item[item.type].Value;
                 Rectangle frame = ((Main.itemAnimations[item.type] == null) ? value.Frame() : Main.itemAnimations[item.type].GetFrame(value));
-                brewPotionState.CreatPotion.Frame = frame;
+                //brewPotionState.CreatPotion.Frame = frame;
             }
         }
 

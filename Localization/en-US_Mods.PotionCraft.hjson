@@ -165,6 +165,7 @@ Dialogue: {
 		PotiomList: click
 		CrucibleButton: click
 		HajimiButton: click
+		QuestionButton:click
 	}
 }
 
