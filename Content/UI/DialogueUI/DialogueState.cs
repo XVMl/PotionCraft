@@ -89,7 +89,6 @@ public class DialogueState:AutoUIState
             //dialogue.Active = false;
             PotionCraftUI.UIstate.TryGetValue(nameof(PotionBaseSelect), out var potionbase);
             potionbase.Active = false;
-
             dialogueSelect.Active = true;
             
         };
@@ -102,6 +101,5 @@ public class DialogueState:AutoUIState
     {
         base.Update(gameTime);
         dialogueElement.Update(gameTime);
-        Main.NewText(CurrentElement);
     }
 }

@@ -64,8 +64,8 @@ public class DialogueElement:PotionElement<DialogueState>
         base.Draw(spriteBatch);
         spriteBatch.Draw(Assets.NPCs.Hajimi, GetDimensions().Position()+new Vector2(460,38), Color.White);
         spriteBatch.Draw(Assets.NPCs.Emoji2, GetDimensions().Position() + new Vector2(460, 36), Color.White);
-        //if (Main.GameUpdateCount % 20U >= 10U)
-        //    return;
-        //spriteBatch.Draw(Assets.NPCs.Emoji1, GetDimensions().Position() + new Vector2(460, 36), Color.White);
+        if (Main.GameUpdateCount % 200 >= 5)
+            return;
+        spriteBatch.Draw(Assets.NPCs.Emoji1, GetDimensions().Position() + new Vector2(460, 36), Color.White);
     }
 }

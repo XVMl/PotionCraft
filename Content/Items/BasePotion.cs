@@ -378,9 +378,6 @@ namespace PotionCraft.Content.Items
                 if (field.GetCustomAttribute<NetSend>() is null)
                     continue;
 
-
-                //Mod instance = ModContent.GetInstance<PotionCraft>();
-                //instance.Logger.Debug(field.Name);
                 var type = field.FieldType;
                 if (type == typeof(int))
                 {

@@ -55,6 +55,11 @@ public class PotionCraftModPlayer:ModPlayer
         PotionCraftUI.UIstate.TryGetValue(nameof(TooltipUI), out var state);
         state.Active = Main.HoverItem.type.Equals(ModContent.ItemType<BasePotion>());
 
+        if (remainingTime > 0)
+            remainingTime--;
+
+        if (remainingTime == 0)
+            PotionName = "";
 
         if (!ActiveState)
             return;

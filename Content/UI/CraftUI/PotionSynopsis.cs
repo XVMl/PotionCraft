@@ -145,6 +145,7 @@ namespace PotionCraft.Content.UI.CraftUI
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            _potionname?.Update(gameTime);
             _potionremarks?.Update(gameTime);
             _coloreelectorbutton?.Update(gameTime);
         }

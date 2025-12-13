@@ -1,16 +1,13 @@
-﻿
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PotionCraft.Content.Items;
 using PotionCraft.Content.System;
-using PotionCraft.Content.System.AutoLoaderSystem;
 using PotionCraft.Content.UI.CraftUI;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
 

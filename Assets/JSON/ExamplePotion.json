@@ -4,6 +4,7 @@
     {
       "_Name": "ObsidianSkin Regeneration Swiftness Gills Ironskin ManaRegeneration MagicPower Featherfall Spelunker Invisibility Shine NightOwl Battle Thorns WaterWalking Archery Hunter Gravitation WeaponImbueVenom WeaponImbueCursedFlames WeaponImbueFire WeaponImbueGold WeaponImbueIchor WeaponImbueNanites WeaponImbueConfetti WeaponImbuePoison Mining Heartreach Calm Builder Titan Flipper Summoning Dangersense AmmoReservation Lifeforce Endurance Rage + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +",
       "IconName": "",
+      "Potiontips": "MashupExample",
       "CustomName": "",
       "CanCustomName": false,
       "Signatures": "",
@@ -12,6 +13,7 @@
     {
       "_Name": "Shine @ @ @ @ @ @ @ @ @ @",
       "IconName": "",
+      "Potiontips": "PurityExample",
       "CustomName": "",
       "CanCustomName": false,
       "Signatures": "",
@@ -20,6 +22,7 @@
     {
       "_Name": "Shine Battle +",
       "IconName": "ChocolateChipCookie",
+      "Potiontips": "CustomExample",
       "CustomName": "[c/830CE3:魔法][c/6E3713:巧克力曲奇饼干]",
       "CanCustomName": true,
       "Signatures": "",
@@ -28,6 +31,7 @@
     {
       "_Name": "Shine Battle +",
       "IconName": "PotionCraft/ChewingGum",
+      "Potiontips": "ModMaterialExample",
       "CustomName": "",
       "CanCustomName": false,
       "Signatures": "",
@@ -36,6 +40,7 @@
     {
       "_Name": "Shine Battle +",
       "IconName": "",
+      "Potiontips": "LockExample",
       "CustomName": "",
       "CanCustomName": false,
       "Signatures": "",

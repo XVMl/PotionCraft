@@ -18,6 +18,7 @@ using static ReLogic.Graphics.DynamicSpriteFont;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Graphics;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Xna.Framework.Input;
 
 namespace PotionCraft.Content.System
 {
@@ -49,7 +50,14 @@ namespace PotionCraft.Content.System
         {
             string lang = null;
             string key = "Mods.PotionCraft." + path.Replace(" ", "");
-            lang += Language.GetTextValue(key);
+            try
+            {
+                lang += Language.GetTextValue(key);
+            }
+            catch 
+            {
+
+            }
             return lang.Equals(key) ? null : lang;
         }
 

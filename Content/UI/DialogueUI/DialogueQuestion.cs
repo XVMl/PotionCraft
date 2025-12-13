@@ -187,6 +187,8 @@ public class DialogueQuestion :AutoUIState
 
     public void InitPreItem(int level)
     {
+        Main.NewText("!!!!");
+        Main.NewText(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName);
         if (!string.IsNullOrEmpty(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName))
             return;
         Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName =  CreatQuestion(level);
@@ -209,6 +211,7 @@ public class DialogueQuestion :AutoUIState
 
     public override void Update(GameTime gameTime)
     {
+        
         base.Update(gameTime);
         _question.Update(gameTime);
 
