@@ -170,6 +170,10 @@ Dialogue: {
 		// Zoom: c
 		// Contract: c
 		// Close: c
+		// Submit: c
+		// SubmitButton: c
+		// PreviewButton: c
+		// ItemSlot: c
 	}
 }
 

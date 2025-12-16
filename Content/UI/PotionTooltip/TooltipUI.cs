@@ -87,6 +87,17 @@ namespace PotionCraft.Content.UI.PotionTooltip
             return oldPotion.PotionDictionary.All(item => newPotion.PotionDictionary.Any(s => s.Value.BuffName == item.Value.BuffName && s.Value.BuffTime == item.Value.BuffTime));
         }
 
+        public static bool CheckPotion_Deeply(BasePotion oldPotion, BasePotion newPotion)
+        {
+            foreach (var field in oldPotion.GetType().GetFields())
+            {
+                if (field.GetValue(oldPotion) == field.GetValue(newPotion))
+                    continue;
+                return false;
+            }
+            return oldPotion.PotionDictionary.All(item => newPotion.PotionDictionary.Any(s => s.Value.BuffName == item.Value.BuffName && s.Value.BuffTime == item.Value.BuffTime));
+        }
+
         public static bool CheckPotion_Item(Item oldPotion,Item newPotion)
         {
             return oldPotion.ModItem is BasePotion && newPotion.ModItem is BasePotion &&
@@ -118,11 +129,10 @@ namespace PotionCraft.Content.UI.PotionTooltip
             if (!visiable || Main.HoverItem.ModItem is not BasePotion) 
                 return;
 
-            if (CheckPotion(ShowBasePotion, AsPotion(Main.HoverItem)))
+            if (CheckPotion_Deeply(ShowBasePotion, AsPotion(Main.HoverItem)))
                 return;
             PotionIngredients.UIgrid.Clear();
             NameArea.Height.Set(123, 0);
-            //ShowBasePotion = PotionElement<TooltipUI>.AsPotion(Main.HoverItem);
             ShowBasePotion = (Main.HoverItem.Clone()).ModItem as BasePotion;
 
             CalculateHeight();
@@ -224,7 +234,7 @@ namespace PotionCraft.Content.UI.PotionTooltip
             }
             spriteBatch.Draw(Assets.UI.Tooltip, new Rectangle(AreaRectangle.X, (int)(Area.Top.Pixels + Area.Height.Pixels) - 48, 360, 48), new(0, 488, 360, 48), Color.White);
 
-            var lock_rectangle = ShowBasePotion.CanEditor ? new Rectangle(62, 0, 18, 18) : new Rectangle(80, 0, 18, 18);
+            var lock_rectangle = ShowBasePotion.CanEditor ? new Rectangle(80, 0, 18, 18) : new Rectangle(62, 0, 18, 18);
             spriteBatch.Draw(Assets.UI.Icon.Value, AreaRectangle.TopLeft() + new Vector2(60, Area.Height.Pixels - 68), lock_rectangle, Deafult);
 
             var auto_rotation = ShowBasePotion.AutoUse ? Main.time * .03f : 0;

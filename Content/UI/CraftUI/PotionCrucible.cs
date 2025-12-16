@@ -115,9 +115,10 @@ namespace PotionCraft.Content.UI.CraftUI
                 return;
 
             BrewPotionState.AddPotion(Main.mouseItem);
-            Main.LocalPlayer.HeldItem.TurnToAir();
-            Main.mouseItem.TurnToAir();
-            
+            //Main.LocalPlayer.HeldItem.TurnToAir();
+            //Main.mouseItem.TurnToAir();
+            Main.LocalPlayer.HeldItem.stack--;
+            Main.mouseItem.stack--;
         }
 
 
@@ -152,7 +153,8 @@ namespace PotionCraft.Content.UI.CraftUI
                 this.startPos = startPos;
                 position = startPos;
                 this.endPos = endPos;
-                item = _item;
+                item = _item.Clone();
+                item.stack = 1;
                 Main.NewText((int)Math.Sqrt((endPos.Y - startPos.Y) / 0.03f));
             }
 

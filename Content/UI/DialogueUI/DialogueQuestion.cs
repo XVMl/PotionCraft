@@ -187,7 +187,6 @@ public class DialogueQuestion :AutoUIState
 
     public void InitPreItem(int level)
     {
-        Main.NewText("!!!!");
         Main.NewText(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName);
         if (!string.IsNullOrEmpty(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName))
             return;

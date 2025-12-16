@@ -102,7 +102,8 @@ namespace PotionCraft.Content.UI.CraftUI
             potionlock.OnClike = () =>
             {
                 potionlock.Value = !potionlock.Value;
-                brewPotionState.CreatPotion.CanEditor = !potionlock.Value;
+                brewPotionState.CreatPotion.CanEditor = potionlock.Value;
+                Main.NewText(brewPotionState.CreatPotion.CanEditor);
                 potionlock.Rectangle = potionlock.Value ? new Rectangle(82, 0, 18, 18) : new Rectangle(64, 0, 18, 18);
                 brewPotionState.Refresh();
             };
@@ -121,7 +122,7 @@ namespace PotionCraft.Content.UI.CraftUI
             packing.OnClike = () =>
             {
                 packing.Value = !packing.Value;
-                brewPotionState.CreatPotion.IsPackage = !packing.Value;
+                brewPotionState.CreatPotion.IsPackage = packing.Value;
                 packing.Rectangle = packing.Value ? new Rectangle(22, 0, 18, 18) : new Rectangle(0, 0, 18, 18);
                 brewPotionState.Refresh();
             };
