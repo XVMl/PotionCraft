@@ -22,6 +22,8 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private UIGrid List;
 
+        private Vector2 Offset = Vector2.Zero;
+
         public override void OnInitialize()
         {
             Top.Set(320, 0);
@@ -55,6 +57,20 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 item.Update(gameTime);
             }
+
+            if (GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft)
+            {
+                if (Offset == Vector2.Zero)
+                    Offset = Main.MouseScreen - GetDimensions().Position();
+                Left.Set((int)(Main.MouseScreen - Offset).X, 0);
+                Top.Set((int)(Main.MouseScreen - Offset).Y, 0);
+            }
+            else
+            {
+                Offset = Vector2.Zero;
+            }
+
+
         }
 
         public void Init(PotionBaseSelect potionBaseSelect)
@@ -128,7 +144,8 @@ namespace PotionCraft.Content.UI.CraftUI
         
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().ToRectangle(), new Rectangle(0, 20, 342, 40), Color.White);
+            spriteBatch.Draw(Assets.UI.ColorUI, new Rectangle((int)GetDimensions().X, (int)GetDimensions().Y+20, 342, (int)Height.Pixels-16), new Rectangle(0, 20, 342, 20), Color.White);
+            //spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().ToRectangle(), new Rectangle(0, 20, 342, 40), Color.White);
             spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().Position(), new Rectangle(0,0,342,100),Color.White);
             spriteBatch.Draw(Assets.UI.ColorUI, GetDimensions().Position() + new Vector2(0,420), new Rectangle(0, 208, 342, 16), Color.White );
             base.Draw(spriteBatch);

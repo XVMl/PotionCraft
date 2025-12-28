@@ -33,6 +33,8 @@ public class Button<T> : PotionElement<T> where T : AutoUIState
 
     public bool Value;
 
+    public bool Rotation;
+
     public Color Color;
 
     public Color Iconcolor = Color.White;
@@ -87,8 +89,10 @@ public class Button<T> : PotionElement<T> where T : AutoUIState
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        if(!Rectangle.IsEmpty)
-            spriteBatch.Draw(_asset.Value, GetDimensions().ToRectangle(),Rectangle ,Iconcolor*A);
+        if (Rotation)
+            spriteBatch.Draw(Assets.UI.Icon.Value, GetDimensions().Position() + Rectangle.Size()/2, Rectangle, Iconcolor * A, (float)Main.time * .03f, Rectangle.Size() / 2, 1, SpriteEffects.None, 0);
+        else if (!Rectangle.IsEmpty)
+            spriteBatch.Draw(_asset.Value, GetDimensions().ToRectangle(), Rectangle, Iconcolor * A);
         else
             spriteBatch.Draw(_asset.Value, GetDimensions().ToRectangle(), Iconcolor*A);
 

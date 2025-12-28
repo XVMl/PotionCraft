@@ -62,7 +62,7 @@ namespace PotionCraft.Content.UI.CraftUI
             {
                 PotionCraftUI.UIstate.TryGetValue(nameof(ColorSelector), out var state);
                 state.A = 0;
-                state.Top.Set(270, 0);
+                //state.Top.Set(270, 0);
                 state.Active = !state.Active;
             };
             Append(coloreelectorbutton);
@@ -83,7 +83,7 @@ namespace PotionCraft.Content.UI.CraftUI
                     if (!_coloreelectorbutton.Active) return;
                     PotionCraftUI.UIstate.TryGetValue(nameof(ColorSelector), out var state);
                     state.A = 0;
-                    state.Top.Set(270, 0);
+                    //state.Top.Set(270, 0);
                     state.Active = !state.Active;
                 }
             };

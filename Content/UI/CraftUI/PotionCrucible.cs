@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 namespace PotionCraft.Content.UI.CraftUI
 {
     public class PotionCrucible : PotionElement<BrewPotionState>

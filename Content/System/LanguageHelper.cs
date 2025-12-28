@@ -70,9 +70,9 @@ namespace PotionCraft.Content.System
         }
 
         public static string TryGetPurifyText(int count) => PurifyColor.GetValueOrDefault(count.ToString(), "[c/FC1488:]")?
-            .Insert(10, TryGetLanguagValue($"Craft.Purified"));
+            .Insert(10, TryGetLanguagValue($"Craft.Long-lasting"));
         public static string TryGetMashUpText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), "[c/02000f:]")?
-            .Insert(10, TryGetLanguagValue($"Craft.MashUp"));
+            .Insert(10, TryGetLanguagValue($"Craft.Composite"));
 
         public static string TryGetAndText(int count) => MashUpColor.GetValueOrDefault(count.ToString(), "[c/02000f:]")?
             .Insert(10, TryGetLanguagValue($"Craft.And"));

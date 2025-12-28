@@ -11,6 +11,8 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using static PotionCraft.Content.System.LanguageHelper;
 using static PotionCraft.Content.System.AutoLoaderSystem.LoaderPotionOrMaterial;
+using Terraria.GameContent.UI.Elements;
+using Luminance.Common.Utilities;
 
 namespace PotionCraft.Content.UI.DialogueUI;
 
@@ -35,6 +37,8 @@ public class DialogueQuestion :AutoUIState
     private Button<DialogueQuestion> _zoom;
 
     private UIElement iElement;
+
+    private UIText Time;
 
     private bool compactWindos;
 
@@ -179,18 +183,20 @@ public class DialogueQuestion :AutoUIState
         };
         Append(_zoom);
 
+        Time = new("");
+        Time.Left.Set(50, 0); 
+        Time.Top.Set(220,0);
+        Append(Time);
+
         iElement = new();
         iElement.Width.Set(268, 0);
         iElement.Height.Set(10,0);
         Append(iElement);
     }
 
-    public void InitPreItem(int level)
+    public void InitPreItem()
     {
-        Main.NewText(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName);
-        if (!string.IsNullOrEmpty(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName))
-            return;
-        Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName =  CreatQuestion(level);
+        
         var item = new Item();
         item = CreatePotionByName(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName);
         
@@ -235,13 +241,23 @@ public class DialogueQuestion :AutoUIState
         iElement.Top.Set(MathHelper.Lerp(iElement.Top.Pixels, Height.Pixels - 152, .1f), 0);
         iElement.Left.Set(MathHelper.Lerp(iElement.Left.Pixels, compactWindos ? 32 : 170, .1f), 0);
 
+        Time.Top.Set(MathHelper.Lerp(Time.Top.Pixels, Height.Pixels - 32, .1f), 0);
+        var seconds= Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().remainingTime / 60;
+        var minutes = seconds / 60;
+        seconds %=  60;
+        var time = "";
+        if (minutes > 0)
+            time += $"{minutes} m ";
+        if (seconds > 0)
+            time += seconds.ToString();
+
+        Time.SetText(time);
 
 
         if (GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft)
         {
             if (Offset == Vector2.Zero)
                 Offset = Main.MouseScreen - GetDimensions().Position();
-
             Left.Set((int)(Main.MouseScreen- Offset).X, 0);
             Top.Set((int)(Main.MouseScreen -Offset).Y, 0);
         }
@@ -333,6 +349,9 @@ public class DialogueQuestion :AutoUIState
         
         spriteBatch.Draw(Assets.UI.Question, new Rectangle((int)GetDimensions().X + 14, (int)GetDimensions().Y + 14, (int)Width.Pixels - 28, (int)Height.Pixels - 28), new Rectangle(14, 14, 14, 14), Color.White);
         spriteBatch.Draw(Assets.UI.Question, iElement.GetDimensions().ToRectangle(), new Rectangle(170, 252, 268, 10), Color.White);
+
+        spriteBatch.Draw(Assets.UI.Question, GetDimensions().Position()+new Vector2(20,Height.Pixels-40), new Rectangle(20, 368, 22, 22), Color.White);
+
 
         base.Draw(spriteBatch);
 

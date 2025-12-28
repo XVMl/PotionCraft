@@ -33,6 +33,8 @@ namespace PotionCraft.Content.UI.CraftUI
 
         private Vector2 mousedata;
 
+        private Vector2 Offset = Vector2.Zero;
+
         private float R = 1;
         private float G = 0;
         private float B = 0;
@@ -68,9 +70,9 @@ namespace PotionCraft.Content.UI.CraftUI
             selectprogress.VAlign = .4f;
             TransitionAnimation = () =>
             {
-                var top = MathHelper.Lerp(Top.Pixels, Active ? 300 : 270, .1f);
+                //var top = MathHelper.Lerp(Top.Pixels, Active ? 300 : 270, .1f);
+                //Top.Set(top, 0);
                 A = MathHelper.Lerp(A, Active ? 1 : 0, .05f);
-                Top.Set(top, 0);
             };
             Append(select);
             Append(palette);
@@ -87,6 +89,18 @@ namespace PotionCraft.Content.UI.CraftUI
 
             if (selectmouseLeft)
                 SetColor();
+
+            if (!selectmouseLeft && !palettemouseLeft && GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft)
+            {
+                if (Offset == Vector2.Zero)
+                    Offset = Main.MouseScreen - GetDimensions().Position();
+                Left.Set((int)(Main.MouseScreen - Offset).X, 0);
+                Top.Set((int)(Main.MouseScreen - Offset).Y, 0);
+            }
+            else
+            {
+                Offset = Vector2.Zero;
+            }
 
             if (Main.mouseLeft)
                 return;

@@ -4,7 +4,6 @@ using PotionCraft.Content.System;
 using System;
 using System.Reflection;
 using Terraria.ModLoader;
-using Terraria.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
 using Terraria.ID;
@@ -47,6 +46,10 @@ namespace PotionCraft.Content.UI.CraftUI
        
         public override void OnInitialize()
         {
+            MinWidth.Set(1900, 0);
+            MinHeight.Set(1000, 0);
+            HAlign = .5f;
+            VAlign = .5f;
             potionCrucible = new PotionCrucible(this);
             potionCrucible.HAlign = .5f;
             potionCrucible.Top.Set(180f, 0);
@@ -61,7 +64,7 @@ namespace PotionCraft.Content.UI.CraftUI
 
             PotionSynopsis = new PotionSynopsis(this);
             PotionSynopsis.Top.Set(300, 0);
-            PotionSynopsis.Left.Set(370, 0);
+            PotionSynopsis.Left.Set(400, 0);
             Append(PotionSynopsis);
 
             potionComponent = new PotionComponent(this);
@@ -330,7 +333,7 @@ namespace PotionCraft.Content.UI.CraftUI
             
         }
 
-        
+
 
     }
 

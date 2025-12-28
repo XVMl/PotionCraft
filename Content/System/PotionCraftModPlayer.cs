@@ -31,18 +31,19 @@ public class PotionCraftModPlayer:ModPlayer
         PotionCraftKeybind = KeybindLoader.RegisterKeybind(this.Mod, "ExtraList", Keys.LeftShift);
     }
 
-    public override void UpdateDead()
+    public override void OnRespawn()
     {
-        foreach (var activeItem in Main.ActiveItems)
+        if (Main.myPlayer != Player.whoAmI)
+            return;
+        Main.NewText(Main.LocalPlayer.name);
+        foreach (var item in Player.inventory)
         {
-            if (activeItem.ModItem is not BasePotion)       
+            if (item.ModItem is not BasePotion potion)
                 continue;
-            var potion = AsPotion(activeItem);
-            if (!potion.AutoUse)
+            if(!potion.AutoUse)
                 continue;
             potion.UseItem(Main.LocalPlayer);
-            potion.Item.stack -= 1;
-            return;
+            potion.Item.stack--;
         }
     }
 
@@ -69,9 +70,7 @@ public class PotionCraftModPlayer:ModPlayer
             distortion.TrySetParameter("screenscalerevise", new Vector2(Main.screenWidth, Main.screenHeight) / Main.GameViewMatrix.Zoom);
             distortion.Activate();
         }
-        
-        if(remainingTime > 0)
-            remainingTime--;
+
     }
 
     public override void SaveData(TagCompound tag)

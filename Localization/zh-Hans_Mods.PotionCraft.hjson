@@ -180,9 +180,9 @@ Dialogue: {
 // BaseName.0: Potion
 
 Craft: {
-	Purified: 纯化
+	Long-lasting: 长效
 	And: 和
-	MashUp: 复合
+	Composite : 复合
 }
 
 Keybinds.ExtraList.DisplayName: Extra List

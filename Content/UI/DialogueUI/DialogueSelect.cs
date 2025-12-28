@@ -1,9 +1,7 @@
-﻿
-using log4net.Core;
+﻿using Luminance.Common.Utilities;
 using Microsoft.Xna.Framework;
 using PotionCraft.Content.System;
 using PotionCraft.Content.UI.CraftUI;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader.UI.Elements;
 namespace PotionCraft.Content.UI.DialogueUI;
@@ -13,14 +11,6 @@ public class DialogueSelect:PotionElement<DialogueState>
     private Button<DialogueState> Help;
 
     private Button<DialogueState> Question;
-
-    private Button<DialogueState> level1;
-
-    private Button<DialogueState> level2;
-    
-    private Button<DialogueState> level3;
-
-    private Button<DialogueState> level4;
     
     private UIGrid iGrid;
 
@@ -50,81 +40,19 @@ public class DialogueSelect:PotionElement<DialogueState>
             example.Init(example);
         };
         Help.HoverTexture = Assets.UI.DialogueElementActive;
-        //Append(Help);
         iGrid.Add(Help);
 
         Question = new(Assets.UI.DialogueElement, Color.White, dialogueState, "炼药挑战");
         Question.Name = "QuestionButton";
         Question.Width.Set(436, 0);
         Question.Height.Set(72, 0);
-        //Question.VAlign = 1f;
         Question.OnClike = () =>
         {
-            SelectDifficulty();
+            SelectDifficulty(dialogueState);
         };
         Question.HoverTexture = Assets.UI.DialogueElementActive;
         //Append(Question);
         iGrid.Add(Question);
-
-
-        level1 = new Button<DialogueState>(Assets.UI.DialogueElement, Color.White, dialogueState, "简单")
-        {
-            Name = "SelectLevel",
-            OnClike = () =>
-            {
-                PotionCraftUI.UIstate.TryGetValue(nameof(DialogueQuestion), out var state);
-                state.Active = true;
-                ((DialogueQuestion)state).InitPreItem(1);
-                iGrid.Clear();
-            }
-        };
-        level1.Width.Set(436, 0);
-        level1.Height.Set(72, 0);
-        level1.HoverTexture = Assets.UI.DialogueElementActive;
-
-        level2 = new Button<DialogueState>(Assets.UI.DialogueElement, Color.White, dialogueState, "简单")
-        {
-            Name = "SelectLevel",
-            OnClike = () =>
-            {
-                PotionCraftUI.UIstate.TryGetValue(nameof(DialogueQuestion), out var state);
-                state.Active = true; 
-                ((DialogueQuestion)state).InitPreItem(2);
-                iGrid.Clear();
-            }
-        };
-        level2.Width.Set(436, 0);
-        level2.Height.Set(72, 0);
-        level2.HoverTexture = Assets.UI.DialogueElementActive;
-
-        level3 = new Button<DialogueState>(Assets.UI.DialogueElement, Color.White, dialogueState, "简单")
-        {
-            Name = "SelectLevel",
-            OnClike = () =>
-            {
-                PotionCraftUI.UIstate.TryGetValue(nameof(DialogueQuestion), out var state);
-                state.Active = true;
-                ((DialogueQuestion)state).InitPreItem(3);
-                iGrid.Clear();
-            }
-        };
-        level3.Width.Set(436, 0);
-        level3.Height.Set(72, 0);
-        level3.HoverTexture = Assets.UI.DialogueElementActive;
-
-        level4 = new Button<DialogueState>(Assets.UI.DialogueElement, Color.White, dialogueState, "简单")
-        {
-            Name = "SelectLevel",
-            OnClike = () =>
-            {
-                PotionCraftUI.UIstate.TryGetValue(nameof(DialogueQuestion), out var state);
-                ((DialogueQuestion)state).InitPreItem(4);
-                iGrid.Clear();
-            }
-        };
-        level4.Width.Set(436, 0);
-        level4.Height.Set(72, 0);
-        level4.HoverTexture = Assets.UI.DialogueElementActive;
 
     }
 
@@ -136,24 +64,49 @@ public class DialogueSelect:PotionElement<DialogueState>
         iGrid.Add(Question);
     }
 
-    private void SelectDifficulty()
+    public void SelectDifficultyButton(DialogueState dialogueState)
+    {
+        for(int i=1;i<=4;i++)
+        {
+            var button = new Button<DialogueState>(Assets.UI.DialogueElement, Color.White, dialogueState, "简单")
+            {
+                Name = "SelectLevel",
+                OnClike = () =>
+                {
+                    if (!string.IsNullOrEmpty(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName))
+                        return;
+                    PotionCraftUI.UIstate.TryGetValue(nameof(DialogueQuestion), out var state);
+                    state.Active = true;
+                    Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName =LanguageHelper.CreatQuestion(i);
+                    ((DialogueQuestion)state).InitPreItem();
+                    Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().remainingTime = Utilities.MinutesToFrames(6);
+                    iGrid.Clear();
+                }
+            };
+            button.Width.Set(436, 0);
+            button.Height.Set(72, 0);
+            button.HoverTexture = Assets.UI.DialogueElementActive;
+            iGrid.Add(button);
+        }
+        
+    }
+
+    private void SelectDifficulty(DialogueState dialogueState)
     {
         PotionCraftUI.UIstate.TryGetValue(nameof(DialogueQuestion), out var state);
 
         if (Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().remainingTime > 0)
+        {
+            
+            state.Active = true;
+            Main.NewText(Main.LocalPlayer.GetModPlayer<PotionCraftModPlayer>().PotionName);
+            ((DialogueQuestion)state).InitPreItem();
             return;
+        }
 
         iGrid.Clear();
 
-        iGrid.Add(level1);
-        iGrid.Add(level2); 
-        iGrid.Add(level3); 
-        iGrid.Add(level4);
-
-        //End:
-
-        //Active = false;
-        //state.Active = true;
+        SelectDifficultyButton(dialogueState);
     }
 
     public override void Update(GameTime gameTime)

@@ -58,6 +58,10 @@ namespace PotionCraft.Content.UI.PotionTooltip
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            foreach (var item in UIgrid)
+            {
+                item.Update(gameTime);
+            }
         }
 
         public void SetPotionCraftState(BasePotion potion)
@@ -122,21 +126,27 @@ namespace PotionCraft.Content.UI.PotionTooltip
             Area.Append(IngredientName);
         }
 
-        protected override void DrawChildren(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
+            base.Draw(spriteBatch);
             if (!PotionCraftModPlayer.PotionCraftKeybind.Current && !Displaye)
             {
                 LeftOffset = 0;
                 return;
             }
-            if (overlenght>0 &&LeftOffset<overlenght)
+            if (overlenght > 0 && LeftOffset < overlenght)
                 LeftOffset += 0.3f;
-            
+
             base.DrawChildren(spriteBatch);
             IngredientName.Left.Set(-LeftOffset, 0);
             Utils.DrawBorderString(spriteBatch, Count.ToString(), GetDimensions().ToRectangle().TopLeft() + new Vector2(30, 25), Color.White);
             spriteBatch.Draw(TextureAssets.Item[IngredientType].Value, GetDimensions().ToRectangle().TopLeft() + new Vector2(20, 25), null, Color.White, 0, TextureAssets.Item[IngredientType].Value.Size() / 2, 1f, 0, 0);
 
+        }
+
+        protected override void DrawChildren(SpriteBatch spriteBatch)
+        {
+            
         }
     }
 }
